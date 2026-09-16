@@ -1,4 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Requis pour l'appel a l'API restcountries.com (nationalites) et
+         plus generalement tout acces reseau. Sans cette permission, les
+         builds release (qui n'heritent pas du manifeste debug) n'ont pas
+         acces a internet. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <!-- Requis par flutter_local_notifications pour afficher les alertes
          de check-in/check-out (point 31) sur Android 13+. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
