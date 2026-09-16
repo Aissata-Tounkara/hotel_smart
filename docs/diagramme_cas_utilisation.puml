@@ -1,0 +1,69 @@
+@startuml diagramme_cas_utilisation
+title Hotel Smart - Diagramme de cas d'utilisation
+
+left to right direction
+
+actor Admin
+actor Receptionniste
+actor Client
+
+rectangle "Hotel Smart" {
+  usecase "Se connecter" as UC_Login
+  usecase "Se deconnecter" as UC_Logout
+  usecase "Gerer son profil" as UC_Profile
+
+  ' --- Admin ---
+  usecase "Gerer les utilisateurs (CRUD)" as UC_Users
+  usecase "Creer un compte Client lie a une fiche" as UC_LinkClient
+  usecase "Consulter le tableau de bord" as UC_Dashboard
+  usecase "Consulter les statistiques" as UC_Stats
+
+  ' --- Receptionniste ---
+  usecase "Gerer les chambres (CRUD)" as UC_Rooms
+  usecase "Rechercher / filtrer les chambres" as UC_RoomsSearch
+  usecase "Creer une reservation" as UC_ReservationCreate
+  usecase "Gerer les reservations (statuts)" as UC_ReservationManage
+  usecase "Effectuer un check-in / check-out" as UC_CheckInOut
+  usecase "Gerer les clients (CRUD)" as UC_Clients
+  usecase "Gerer les paiements" as UC_Payments
+  usecase "Recevoir des notifications locales" as UC_Notifications
+
+  ' --- Client ---
+  usecase "Consulter ses reservations" as UC_MyReservations
+  usecase "Consulter son profil" as UC_MyProfile
+
+  UC_Users .> UC_LinkClient : <<include>>
+  UC_ReservationCreate .> UC_RoomsSearch : <<include>>
+  UC_ReservationManage .> UC_CheckInOut : <<extend>>
+  UC_CheckInOut .> UC_Notifications : <<extend>>
+}
+
+Admin --> UC_Login
+Admin --> UC_Logout
+Admin --> UC_Profile
+Admin --> UC_Users
+Admin --> UC_Dashboard
+Admin --> UC_Stats
+Admin --> UC_Rooms
+Admin --> UC_ReservationManage
+
+Receptionniste --> UC_Login
+Receptionniste --> UC_Logout
+Receptionniste --> UC_Profile
+Receptionniste --> UC_Rooms
+Receptionniste --> UC_RoomsSearch
+Receptionniste --> UC_ReservationCreate
+Receptionniste --> UC_ReservationManage
+Receptionniste --> UC_CheckInOut
+Receptionniste --> UC_Clients
+Receptionniste --> UC_Payments
+Receptionniste --> UC_Notifications
+Receptionniste --> UC_Dashboard
+
+Client --> UC_Login
+Client --> UC_Logout
+Client --> UC_Profile
+Client --> UC_MyReservations
+Client --> UC_MyProfile
+
+@enduml

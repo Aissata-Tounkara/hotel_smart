@@ -1,0 +1,139 @@
+@startuml diagramme_classes
+title Hotel Smart - Diagramme de classes
+
+enum RoleUtilisateur {
+  admin
+  receptionniste
+  client
+}
+
+enum TypeChambre {
+  simple
+  double_
+  suite
+}
+
+enum StatutChambre {
+  disponible
+  occupee
+  maintenance
+}
+
+enum StatutReservation {
+  enAttente
+  confirmee
+  annulee
+  terminee
+}
+
+enum StatutPaiement {
+  paye
+  enAttente
+  rembourse
+}
+
+enum TypeNotification {
+  checkIn
+  checkOut
+}
+
+class Utilisateur {
+  + int? id
+  + String nom
+  + String email
+  + String motDePasseHache
+  + RoleUtilisateur role
+  + int? clientId
+  + DateTime dateCreation
+  --
+  + Map<String, dynamic> toMap()
+  + Utilisateur.fromMap(Map)
+}
+
+class Client {
+  + int? id
+  + String nom
+  + String prenom
+  + String telephone
+  + String email
+  + String nationalite
+  + String? cin
+  + DateTime dateCreation
+  --
+  + Map<String, dynamic> toMap()
+  + Client.fromMap(Map)
+}
+
+class Chambre {
+  + int? id
+  + String numero
+  + TypeChambre type
+  + double prixParNuit
+  + StatutChambre statut
+  + String? description
+  + int etage
+  --
+  + Map<String, dynamic> toMap()
+  + Chambre.fromMap(Map)
+}
+
+class Reservation {
+  + int? id
+  + int clientId
+  + int chambreId
+  + DateTime dateArrivee
+  + DateTime dateDepart
+  + StatutReservation statut
+  + double montantTotal
+  + DateTime dateCreation
+  --
+  + int dureeSejour()
+  + Map<String, dynamic> toMap()
+  + Reservation.fromMap(Map)
+}
+
+class Paiement {
+  + int? id
+  + int reservationId
+  + double montant
+  + StatutPaiement statut
+  + String methode
+  + DateTime datePaiement
+  --
+  + Map<String, dynamic> toMap()
+  + Paiement.fromMap(Map)
+}
+
+class NotificationAlerte {
+  + int? id
+  + int reservationId
+  + TypeNotification type
+  + String titre
+  + String message
+  + DateTime dateAlerte
+  + bool lue
+  --
+  + Map<String, dynamic> toMap()
+  + NotificationAlerte.fromMap(Map)
+}
+
+class Statistique {
+  + int chambresDisponibles
+  + int chambresOccupees
+  + int reservationsDuJour
+  + double chiffreAffairesMensuel
+  + double tauxOccupation
+  --
+  + Statistique.calculer(chambres, reservations, paiements)
+}
+
+Utilisateur "0..1" -- "1" Client : clientId
+Client "1" -- "0..*" Reservation : possede
+Chambre "1" -- "0..*" Reservation : concerne
+Reservation "1" -- "0..1" Paiement : genere
+Reservation "1" -- "0..*" NotificationAlerte : declenche
+Statistique ..> Chambre : agrege
+Statistique ..> Reservation : agrege
+Statistique ..> Paiement : agrege
+
+@enduml
