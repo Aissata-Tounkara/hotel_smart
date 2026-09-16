@@ -7,7 +7,7 @@ Application mobile Flutter de gestion hoteliere pour l'hotel **Le Palace**
 
 - Flutter / Dart (SDK stable)
 - Base de donnees locale : SQLite (`sqflite`)
-- API REST externe : `https://restcountries.com/v3.1/all` (nationalites) via `http`
+- API REST externe : `https://countries.dev/countries?fields=name` (nationalites) via `http`
 - Gestion d'etat : `provider` (ChangeNotifier)
 - Design : Material Design 3
 - Autres : `path`, `shared_preferences`, `flutter_spinkit`, `intl`, `crypto`,
@@ -65,6 +65,13 @@ DatabaseHelper (Singleton) — ouverture/creation de la base SQLite
 - **Compte Admin par defaut** : a la creation de la base, un compte
   `admin@hotelsmart.dz` (mot de passe hache en SHA-256) est insere
   automatiquement pour ne jamais bloquer l'acces a l'application.
+- **API des nationalites** : le cahier des charges citait
+  `restcountries.com/v3.1`, mise hors service depuis (redirige vers une v5
+  qui exige une cle API - inadapte a une app mobile, une cle embarquee
+  etant visible par decompilation triviale de l'APK). Remplacee par
+  `countries.dev`, gratuite et sans authentification. Une liste de secours
+  locale (30 nationalites courantes) prend automatiquement le relai si
+  l'API est indisponible, pour ne jamais bloquer le formulaire client.
 - **Theme Material 3** : bleu nuit `#0D1B2A` (primaire) et or `#D4AF37`
   (accent), declines en variantes claire et sombre.
 

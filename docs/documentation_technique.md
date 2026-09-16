@@ -11,7 +11,7 @@ Admin, Receptionniste, Client.
 | Besoin | Choix | Justification |
 |---|---|---|
 | Base de donnees locale | `sqflite` | Standard Flutter pour SQLite embarque, pas de dependance reseau |
-| API externe | `http` + restcountries.com | Peuple la liste des nationalites (point 27) |
+| API externe | `http` + countries.dev | Peuple la liste des nationalites (point 27), avec liste de secours locale si indisponible |
 | Gestion d'etat | `provider` (ChangeNotifier) | Simple, largement adopte, suffisant pour la taille du projet |
 | Design | Material Design 3 | Impose par le cahier des charges |
 | Hachage mot de passe | `crypto` (SHA-256) | Ne jamais stocker de mot de passe en clair |
@@ -110,9 +110,13 @@ connecte (`estAdmin`, `estReceptionniste`, `estClient`,
 
 ## 7. Gestion des erreurs
 
-- **Reseau** (`ApiService`) : `ApiException` dediee, messages differencies
-  (pas de connexion, timeout, erreur serveur, reponse invalide) affiches
-  a l'utilisateur avec un bouton "Reessayer".
+- **Reseau** (`ApiService`) : `ApiException` dediee en interne, mais
+  `getNationalites()` ne la laisse jamais remonter jusqu'a l'UI - en cas
+  d'echec (pas de connexion, timeout, erreur serveur, reponse invalide),
+  une liste de secours locale de 30 nationalites est utilisee
+  automatiquement, avec un message discret (non bloquant) et un bouton
+  "Reessayer" pour retenter l'appel reseau. Le formulaire client n'est
+  ainsi jamais bloque par une panne du service tiers.
 - **Metier** (`AuthException`, `ReservationException`) : messages clairs
   affiches via `SnackBar` plutot que de laisser remonter une erreur brute.
 - **Cas limites** : formulaires valides cote client (`Validators`) avant

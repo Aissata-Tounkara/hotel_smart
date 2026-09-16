@@ -53,9 +53,11 @@ Apres connexion, le tableau de bord affiche :
 ## 5. Clients (Admin, Receptionniste)
 
 - **Ajouter/Modifier** un client : renseignez nom, prenom, telephone,
-  email, nationalite (liste chargee depuis internet - un message
-  s'affiche si vous etes hors connexion, avec un bouton **Reessayer**) et
-  CIN/passeport (optionnel).
+  email, nationalite (liste chargee depuis internet ; si vous etes hors
+  connexion ou que le service est indisponible, une liste de secours
+  locale s'affiche automatiquement avec un message discret et un bouton
+  **Reessayer** - le formulaire n'est jamais bloque) et CIN/passeport
+  (optionnel).
 - **Rechercher** : par nom, telephone ou email.
 
 ## 6. Utilisateurs (Admin uniquement)
@@ -108,5 +110,9 @@ votre compte depuis l'ecran Utilisateurs.
 **Je ne peux pas supprimer une chambre/un client.** Verifiez qu'aucune
 reservation active n'est bloquante ; en cas de doute, contactez un Admin.
 
-**Aucune nationalite ne s'affiche dans le formulaire client.** Verifiez
-votre connexion internet puis appuyez sur **Reessayer**.
+**Un message "liste hors-ligne" s'affiche sur le champ nationalite.**
+C'est normal si vous n'avez pas de connexion internet ou que le service
+est momentanement indisponible : une liste de secours locale (30
+nationalites courantes) est utilisee automatiquement pour ne jamais
+bloquer la creation d'un client. Appuyez sur **Reessayer** des que votre
+connexion est retablie pour recharger la liste complete.

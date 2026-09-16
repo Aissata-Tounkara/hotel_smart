@@ -23,5 +23,10 @@ class AppConstants {
   static const String defaultAdminName = 'Administrateur';
 
   // API externe (nationalites)
-  static const String restCountriesUrl = 'https://restcountries.com/v3.1/all?fields=name';
+  //
+  // Historique : le cahier des charges citait restcountries.com/v3.1, mis
+  // hors service (redirige vers une v5 qui exige une cle API, inadaptee a
+  // une app mobile ou toute cle embarquee est visible par decompilation).
+  // Remplacee par countries.dev, gratuite et sans authentification.
+  static const String countriesApiUrl = 'https://countries.dev/countries?fields=name';
 }

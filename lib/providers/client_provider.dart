@@ -5,7 +5,7 @@ import '../repositories/client_repository.dart';
 import '../services/api_service.dart';
 
 /// Etat global des clients : CRUD, recherche, et liste des nationalites
-/// recuperee depuis l'API restcountries.com (point 26, 27, 28).
+/// recuperee depuis l'API countries.dev (point 26, 27, 28).
 class ClientProvider extends ChangeNotifier {
   final ClientRepository _clientRepository;
   final ApiService _apiService;
@@ -19,13 +19,13 @@ class ClientProvider extends ChangeNotifier {
   bool _enChargement = false;
   bool _chargementNationalites = false;
   String? _erreur;
-  String? _erreurNationalites;
+  bool _nationalitesDepuisSecours = false;
   String _recherche = '';
 
   bool get enChargement => _enChargement;
   bool get chargementNationalites => _chargementNationalites;
   String? get erreur => _erreur;
-  String? get erreurNationalites => _erreurNationalites;
+  bool get nationalitesDepuisSecours => _nationalitesDepuisSecours;
   List<String> get nationalites => _nationalites;
 
   List<Client> get clients {
@@ -55,17 +55,12 @@ class ClientProvider extends ChangeNotifier {
 
   Future<void> chargerNationalites() async {
     _chargementNationalites = true;
-    _erreurNationalites = null;
     notifyListeners();
-    try {
-      _nationalites = await _apiService.getNationalites();
-    } on ApiException catch (e) {
-      _erreurNationalites = e.message;
-      _nationalites = [];
-    } finally {
-      _chargementNationalites = false;
-      notifyListeners();
-    }
+    final resultat = await _apiService.getNationalites();
+    _nationalites = resultat.nationalites;
+    _nationalitesDepuisSecours = resultat.depuisListeDeSecours;
+    _chargementNationalites = false;
+    notifyListeners();
   }
 
   void rechercher(String texte) {

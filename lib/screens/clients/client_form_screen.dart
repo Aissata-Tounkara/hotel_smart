@@ -7,7 +7,7 @@ import '../../providers/client_provider.dart';
 import '../../utils/validators.dart';
 
 /// Formulaire de creation/edition d'un client, avec liste des nationalites
-/// peuplee depuis l'API restcountries.com (points 26, 27, 28).
+/// peuplee depuis l'API countries.dev (points 26, 27, 28).
 class ClientFormScreen extends StatefulWidget {
   final Client? client;
   const ClientFormScreen({super.key, this.client});
@@ -167,36 +167,47 @@ class _ClientFormScreenState extends State<ClientFormScreen> {
       );
     }
 
-    if (clientProvider.erreurNationalites != null) {
-      return Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.red.shade50,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Row(
-          children: [
-            const Icon(Icons.wifi_off, color: Colors.red, size: 20),
-            const SizedBox(width: 8),
-            Expanded(child: Text(clientProvider.erreurNationalites!, style: const TextStyle(color: Colors.red))),
-            TextButton(
-              onPressed: () => context.read<ClientProvider>().chargerNationalites(),
-              child: const Text('Reessayer'),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (clientProvider.nationalitesDepuisSecours)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.amber.shade50,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.wifi_off, color: Colors.amber.shade800, size: 18),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Liste hors-ligne (service indisponible) : options limitees',
+                      style: TextStyle(color: Colors.amber.shade900, fontSize: 12),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => context.read<ClientProvider>().chargerNationalites(),
+                    child: const Text('Reessayer'),
+                  ),
+                ],
+              ),
             ),
-          ],
+          ),
+        DropdownButtonFormField<String>(
+          initialValue: clientProvider.nationalites.contains(_nationaliteSelectionnee) ? _nationaliteSelectionnee : null,
+          decoration: const InputDecoration(labelText: 'Nationalite', prefixIcon: Icon(Icons.public)),
+          isExpanded: true,
+          items: clientProvider.nationalites
+              .map((n) => DropdownMenuItem(value: n, child: Text(n, overflow: TextOverflow.ellipsis)))
+              .toList(),
+          onChanged: (v) => setState(() => _nationaliteSelectionnee = v),
+          validator: (v) => v == null ? 'Veuillez selectionner une nationalite' : null,
         ),
-      );
-    }
-
-    return DropdownButtonFormField<String>(
-      initialValue: clientProvider.nationalites.contains(_nationaliteSelectionnee) ? _nationaliteSelectionnee : null,
-      decoration: const InputDecoration(labelText: 'Nationalite', prefixIcon: Icon(Icons.public)),
-      isExpanded: true,
-      items: clientProvider.nationalites
-          .map((n) => DropdownMenuItem(value: n, child: Text(n, overflow: TextOverflow.ellipsis)))
-          .toList(),
-      onChanged: (v) => setState(() => _nationaliteSelectionnee = v),
-      validator: (v) => v == null ? 'Veuillez selectionner une nationalite' : null,
+      ],
     );
   }
 }

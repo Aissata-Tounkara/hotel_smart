@@ -23,8 +23,9 @@ par un Admin - jamais automatique.
 2. **Chambres** : montrer la recherche temps reel, les filtres (type,
    statut, prix), la bascule vue Carte/Liste, puis creer une chambre.
 3. **Clients** : creer un client, montrer la liste des nationalites
-   chargee depuis `restcountries.com` (et le message d'erreur si le
-   reseau est coupe - mode avion).
+   chargee depuis `countries.dev` (et le repli automatique sur la liste
+   de secours locale si le reseau est coupe - mode avion - sans jamais
+   bloquer le formulaire).
 4. **Reservation** : creer une reservation pour ce client -> montrer la
    detection automatique des chambres disponibles pour les dates
    choisies et le calcul automatique du montant.
