@@ -1,109 +1,291 @@
 import 'package:flutter/material.dart';
 
-/// Palette et themes Material Design 3 de Hotel Smart.
+/// Systeme de design premium de Hotel Smart : palette bleu nuit / or,
+/// typographie Playfair Display (titres) + Manrope (texte courant).
 ///
-/// Couleurs imposees par le cahier des charges :
-/// - Bleu nuit (#0D1B2A) en couleur primaire.
-/// - Or (#D4AF37) en couleur d'accent.
+/// Les polices sont embarquees localement (`assets/fonts/`) plutot que
+/// chargees a la volee (`google_fonts` telecharge depuis fonts.gstatic.com
+/// au premier lancement) : la meme exigence de fiabilite hors-ligne que
+/// pour l'API des nationalites s'applique a l'identite visuelle - elle ne
+/// doit jamais dependre d'un reseau disponible.
+///
+/// Toutes les couleurs de l'application doivent passer par cette classe :
+/// aucune couleur ad hoc ne doit etre introduite ailleurs, pour garantir
+/// une identite de marque hoteliere coherente sur tous les ecrans.
 class AppTheme {
   AppTheme._();
 
-  static const Color bleuNuit = Color(0xFF0D1B2A);
-  static const Color or = Color(0xFFD4AF37);
+  static const String policeTitres = 'PlayfairDisplay';
+  static const String policeCorps = 'Manrope';
 
-  static ThemeData get lightTheme {
-    final colorScheme = ColorScheme.fromSeed(
-      seedColor: bleuNuit,
-      brightness: Brightness.light,
-      primary: bleuNuit,
-      secondary: or,
-    );
-
-    return ThemeData(
-      useMaterial3: true,
-      colorScheme: colorScheme,
-      scaffoldBackgroundColor: const Color(0xFFF5F6F8),
-      appBarTheme: AppBarTheme(
-        backgroundColor: bleuNuit,
-        foregroundColor: Colors.white,
-        elevation: 0,
-        centerTitle: true,
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: bleuNuit,
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-      ),
-      floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        backgroundColor: or,
-        foregroundColor: bleuNuit,
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: or, width: 2),
-        ),
-        filled: true,
-        fillColor: Colors.white,
-      ),
-      cardTheme: CardThemeData(
-        elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      ),
-      tabBarTheme: const TabBarThemeData(
-        labelColor: or,
-        indicatorColor: or,
-      ),
+  /// Style Playfair Display (titres d'ecran, montants cles, wordmark).
+  static TextStyle playfair({
+    Color? color,
+    double? fontSize,
+    FontWeight fontWeight = FontWeight.w600,
+    double? letterSpacing,
+  }) {
+    return TextStyle(
+      fontFamily: policeTitres,
+      color: color,
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      letterSpacing: letterSpacing,
     );
   }
 
-  static ThemeData get darkTheme {
-    final colorScheme = ColorScheme.fromSeed(
-      seedColor: bleuNuit,
-      brightness: Brightness.dark,
-      primary: or,
+  /// Style Manrope (texte courant, labels, boutons).
+  static TextStyle manrope({
+    Color? color,
+    double? fontSize,
+    FontWeight fontWeight = FontWeight.normal,
+    double? letterSpacing,
+  }) {
+    return TextStyle(
+      fontFamily: policeCorps,
+      color: color,
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      letterSpacing: letterSpacing,
+    );
+  }
+
+  // --- Palette signature ---
+  static const Color bleuNuitProfond = Color(0xFF0A1628);
+  static const Color bleuNuitSurface = Color(0xFF122544);
+  static const Color or = Color(0xFFC9A961);
+  static const Color orLumineux = Color(0xFFE8CF8A);
+  static const Color ivoire = Color(0xFFF7F3EA);
+  static const Color encre = Color(0xFF16223A);
+  static const Color bordeaux = Color(0xFF8C2F39);
+
+  // Couleurs semantiques derivees de la palette (statuts), pour eviter
+  // toute couleur Material generique (vert/orange neon) hors marque.
+  static const Color succes = Color(0xFF4C7A5D);
+  static const Color alerte = or;
+  static const Color danger = bordeaux;
+  static const Color neutre = Color(0xFF6B7280);
+
+  static const LinearGradient degradeOr = LinearGradient(
+    colors: [or, orLumineux],
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+  );
+
+  static const LinearGradient degradeBleuNuit = LinearGradient(
+    colors: [bleuNuitProfond, bleuNuitSurface],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  /// Construit la typographie : Playfair Display pour les titres (display*,
+  /// headline*, titleLarge), Manrope pour le reste (texte courant, labels,
+  /// boutons).
+  static TextTheme _texteAvecCouleurs(Brightness brightness, Color couleurTitre, Color couleurCorps) {
+    final corps = ThemeData(brightness: brightness).textTheme.apply(
+          fontFamily: policeCorps,
+          bodyColor: couleurCorps,
+          displayColor: couleurTitre,
+        );
+    TextStyle? titre(TextStyle? style) => style?.copyWith(fontFamily: policeTitres, fontWeight: FontWeight.w600);
+    return corps.copyWith(
+      displayLarge: titre(corps.displayLarge),
+      displayMedium: titre(corps.displayMedium),
+      displaySmall: titre(corps.displaySmall),
+      headlineLarge: titre(corps.headlineLarge),
+      headlineMedium: titre(corps.headlineMedium),
+      headlineSmall: titre(corps.headlineSmall),
+      titleLarge: titre(corps.titleLarge),
+    );
+  }
+
+  /// Theme "clair" : fond ivoire, textes encre, app bars et accents bleu
+  /// nuit/or - l'identite de marque de jour.
+  static ThemeData get lightTheme {
+    final colorScheme = const ColorScheme.light(
+      brightness: Brightness.light,
+      primary: bleuNuitProfond,
+      onPrimary: ivoire,
       secondary: or,
+      onSecondary: bleuNuitProfond,
+      error: bordeaux,
+      onError: ivoire,
+      surface: Colors.white,
+      onSurface: encre,
     );
 
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
-      scaffoldBackgroundColor: const Color(0xFF0A121C),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: bleuNuit,
-        foregroundColor: Colors.white,
+      scaffoldBackgroundColor: ivoire,
+      textTheme: _texteAvecCouleurs(Brightness.light, encre, encre),
+      appBarTheme: AppBarTheme(
+        backgroundColor: bleuNuitProfond,
+        foregroundColor: ivoire,
         elevation: 0,
         centerTitle: true,
+        titleTextStyle: AppTheme.playfair(color: ivoire, fontSize: 20, fontWeight: FontWeight.w600),
+        iconTheme: const IconThemeData(color: orLumineux),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: or,
-          foregroundColor: bleuNuit,
+          foregroundColor: bleuNuitProfond,
+          textStyle: AppTheme.manrope(fontWeight: FontWeight.w700, letterSpacing: 0.3),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          elevation: 0,
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: bleuNuitProfond,
+          side: const BorderSide(color: or, width: 1.2),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          textStyle: AppTheme.manrope(fontWeight: FontWeight.w600),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: bleuNuitProfond,
+          textStyle: AppTheme.manrope(fontWeight: FontWeight.w600),
         ),
       ),
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: or,
-        foregroundColor: bleuNuit,
+        foregroundColor: bleuNuitProfond,
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
       ),
       inputDecorationTheme: InputDecorationTheme(
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: or, width: 2),
-        ),
-        filled: true,
-        fillColor: const Color(0xFF13233A),
+        labelStyle: AppTheme.manrope(color: encre.withValues(alpha: 0.65)),
+        border: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0x3316223A))),
+        enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0x3316223A))),
+        focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: or, width: 2)),
+        errorBorder: const UnderlineInputBorder(borderSide: BorderSide(color: bordeaux)),
+        focusedErrorBorder: const UnderlineInputBorder(borderSide: BorderSide(color: bordeaux, width: 2)),
+        filled: false,
       ),
       cardTheme: CardThemeData(
-        elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        elevation: 0,
+        color: Colors.white,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
+          side: BorderSide(color: encre.withValues(alpha: 0.08)),
+        ),
       ),
+      dividerTheme: DividerThemeData(color: encre.withValues(alpha: 0.1), space: 32),
+      dialogTheme: DialogThemeData(
+        backgroundColor: ivoire,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        titleTextStyle: AppTheme.playfair(color: encre, fontSize: 20, fontWeight: FontWeight.w600),
+        contentTextStyle: AppTheme.manrope(color: encre),
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: encre.withValues(alpha: 0.05),
+        selectedColor: or.withValues(alpha: 0.18),
+        labelStyle: AppTheme.manrope(color: encre, fontWeight: FontWeight.w600, fontSize: 12),
+        side: BorderSide(color: encre.withValues(alpha: 0.12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+      ),
+      tabBarTheme: const TabBarThemeData(labelColor: or, indicatorColor: or),
+    );
+  }
+
+  /// Theme "sombre" : reprend l'identite bleu nuit de l'ecran de connexion
+  /// sur toute l'application, plutot qu'un mode sombre Material generique.
+  static ThemeData get darkTheme {
+    final colorScheme = const ColorScheme.dark(
+      brightness: Brightness.dark,
+      primary: or,
+      onPrimary: bleuNuitProfond,
+      secondary: orLumineux,
+      onSecondary: bleuNuitProfond,
+      error: Color(0xFFD98089),
+      onError: bleuNuitProfond,
+      surface: bleuNuitSurface,
+      onSurface: ivoire,
+    );
+
+    return ThemeData(
+      useMaterial3: true,
+      colorScheme: colorScheme,
+      scaffoldBackgroundColor: bleuNuitProfond,
+      textTheme: _texteAvecCouleurs(Brightness.dark, ivoire, ivoire.withValues(alpha: 0.92)),
+      appBarTheme: AppBarTheme(
+        backgroundColor: bleuNuitProfond,
+        foregroundColor: ivoire,
+        elevation: 0,
+        centerTitle: true,
+        titleTextStyle: AppTheme.playfair(color: ivoire, fontSize: 20, fontWeight: FontWeight.w600),
+        iconTheme: const IconThemeData(color: orLumineux),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: or,
+          foregroundColor: bleuNuitProfond,
+          textStyle: AppTheme.manrope(fontWeight: FontWeight.w700, letterSpacing: 0.3),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          elevation: 0,
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: ivoire,
+          side: const BorderSide(color: or, width: 1.2),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          textStyle: AppTheme.manrope(fontWeight: FontWeight.w600),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: orLumineux,
+          textStyle: AppTheme.manrope(fontWeight: FontWeight.w600),
+        ),
+      ),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        backgroundColor: or,
+        foregroundColor: bleuNuitProfond,
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        labelStyle: AppTheme.manrope(color: ivoire.withValues(alpha: 0.65)),
+        border: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0x33F7F3EA))),
+        enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0x33F7F3EA))),
+        focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: or, width: 2)),
+        errorBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFD98089))),
+        focusedErrorBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFD98089), width: 2)),
+        filled: false,
+      ),
+      cardTheme: CardThemeData(
+        elevation: 0,
+        color: bleuNuitSurface,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
+          side: BorderSide(color: or.withValues(alpha: 0.15)),
+        ),
+      ),
+      dividerTheme: DividerThemeData(color: ivoire.withValues(alpha: 0.12), space: 32),
+      dialogTheme: DialogThemeData(
+        backgroundColor: bleuNuitSurface,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        titleTextStyle: AppTheme.playfair(color: ivoire, fontSize: 20, fontWeight: FontWeight.w600),
+        contentTextStyle: AppTheme.manrope(color: ivoire),
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: ivoire.withValues(alpha: 0.06),
+        selectedColor: or.withValues(alpha: 0.22),
+        labelStyle: AppTheme.manrope(color: ivoire, fontWeight: FontWeight.w600, fontSize: 12),
+        side: BorderSide(color: ivoire.withValues(alpha: 0.14)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+      ),
+      tabBarTheme: const TabBarThemeData(labelColor: or, indicatorColor: or),
     );
   }
 }

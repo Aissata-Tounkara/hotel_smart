@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../utils/app_theme.dart';
+
 /// Boite de dialogue de confirmation reutilisable avant une action
-/// destructive (suppression) ou sensible (changement de statut).
+/// destructive (suppression) ou sensible (changement de statut). Reprend
+/// le style du dialogTheme (fond ivoire/bleu nuit selon le theme, coins a
+/// 4px, typographie Playfair/Manrope).
 Future<bool> afficherConfirmation(
   BuildContext context, {
   required String titre,
@@ -21,7 +25,7 @@ Future<bool> afficherConfirmation(
         ),
         FilledButton(
           style: destructif
-              ? FilledButton.styleFrom(backgroundColor: Colors.red)
+              ? FilledButton.styleFrom(backgroundColor: AppTheme.bordeaux, foregroundColor: AppTheme.ivoire)
               : null,
           onPressed: () => Navigator.of(context).pop(true),
           child: Text(texteConfirmer),

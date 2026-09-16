@@ -57,3 +57,26 @@ flutter:
 
   assets:
     - assets/images/
+
+  # Typographie signature du design premium (Playfair Display / Manrope),
+  # embarquee localement plutot que chargee a la volee (fiabilite hors-ligne,
+  # meme principe que la migration de l'API des nationalites).
+  fonts:
+    - family: PlayfairDisplay
+      fonts:
+        - asset: assets/fonts/PlayfairDisplay-Variable.ttf
+          weight: 400
+        - asset: assets/fonts/PlayfairDisplay-Variable.ttf
+          weight: 600
+        - asset: assets/fonts/PlayfairDisplay-Variable.ttf
+          weight: 700
+    - family: Manrope
+      fonts:
+        - asset: assets/fonts/Manrope-Variable.ttf
+          weight: 400
+        - asset: assets/fonts/Manrope-Variable.ttf
+          weight: 500
+        - asset: assets/fonts/Manrope-Variable.ttf
+          weight: 600
+        - asset: assets/fonts/Manrope-Variable.ttf
+          weight: 700

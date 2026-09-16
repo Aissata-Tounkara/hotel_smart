@@ -8,7 +8,12 @@ import '../../providers/settings_provider.dart';
 import '../../providers/statistics_provider.dart';
 import '../../routes/app_routes.dart';
 import '../../utils/app_strings.dart';
+import '../../utils/app_theme.dart';
 import '../../utils/ui_helpers.dart';
+import '../../widgets/fade_slide_in.dart';
+import '../../widgets/hero_stat_card.dart';
+import '../../widgets/ornamental_divider.dart';
+import '../../widgets/premium_app_bar.dart';
 
 /// Tableau de bord principal. Le contenu (menu, statistiques) s'adapte au
 /// role de l'utilisateur connecte via [AuthProvider] (point 30).
@@ -44,8 +49,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final arabe = settingsProvider.estArabe;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppStrings.get('tableau_de_bord', arabe: arabe)),
+      appBar: PremiumAppBar(
+        title: AppStrings.get('tableau_de_bord', arabe: arabe),
         actions: [
           if (authProvider.peutGererOperations)
             Stack(
@@ -62,7 +67,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     right: 8,
                     child: Container(
                       padding: const EdgeInsets.all(4),
-                      decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+                      decoration: const BoxDecoration(color: AppTheme.bordeaux, shape: BoxShape.circle),
                       child: Text(
                         '${notificationProvider.alertesNonLues.length}',
                         style: const TextStyle(color: Colors.white, fontSize: 10),
@@ -82,19 +87,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ? const Center(child: Text('Aucun utilisateur connecte'))
           : RefreshIndicator(
               onRefresh: () => context.read<StatisticsProvider>().charger(),
-              child: ListView(
-                padding: const EdgeInsets.all(16),
-                children: [
-                  _EnteteBienvenue(utilisateur: utilisateur, arabe: arabe),
-                  if (authProvider.peutGererOperations) ...[
-                    const SizedBox(height: 24),
-                    const _CartesStatistiques(),
+              child: FadeSlideIn(
+                child: ListView(
+                  padding: const EdgeInsets.all(20),
+                  children: [
+                    _EnteteBienvenue(utilisateur: utilisateur, arabe: arabe),
+                    if (authProvider.peutGererOperations) ...[
+                      const OrnamentalDivider(),
+                      const _StatistiquesDashboard(),
+                    ],
+                    const OrnamentalDivider(),
+                    Text(
+                      AppStrings.get('acces_rapide', arabe: arabe),
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 14),
+                    _MenuRole(authProvider: authProvider, arabe: arabe),
                   ],
-                  const SizedBox(height: 24),
-                  Text(AppStrings.get('acces_rapide', arabe: arabe), style: Theme.of(context).textTheme.titleLarge),
-                  const SizedBox(height: 12),
-                  _MenuRole(authProvider: authProvider, arabe: arabe),
-                ],
+                ),
               ),
             ),
     );
@@ -107,9 +117,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         final alertes = notificationProvider.alertesNonLues;
         return SafeArea(
           child: alertes.isEmpty
-              ? const Padding(
-                  padding: EdgeInsets.all(24),
-                  child: Text('Aucune notification non lue'),
+              ? Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Text('Aucune notification non lue', style: AppTheme.manrope()),
                 )
               : ListView.builder(
                   shrinkWrap: true,
@@ -117,9 +127,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   itemBuilder: (context, i) {
                     final alerte = alertes[i];
                     return ListTile(
-                      leading: Icon(alerte.type.name == 'checkIn' ? Icons.login : Icons.logout),
-                      title: Text(alerte.titre),
-                      subtitle: Text(alerte.message),
+                      leading: Icon(
+                        alerte.type.name == 'checkIn' ? Icons.login : Icons.logout,
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                      title: Text(alerte.titre, style: AppTheme.manrope(fontWeight: FontWeight.w700)),
+                      subtitle: Text(alerte.message, style: AppTheme.manrope(fontSize: 12.5)),
                       trailing: IconButton(
                         icon: const Icon(Icons.check),
                         onPressed: () => notificationProvider.marquerCommeLue(alerte.id!),
@@ -133,8 +146,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 }
 
-class _CartesStatistiques extends StatelessWidget {
-  const _CartesStatistiques();
+class _StatistiquesDashboard extends StatelessWidget {
+  const _StatistiquesDashboard();
 
   @override
   Widget build(BuildContext context) {
@@ -146,46 +159,25 @@ class _CartesStatistiques extends StatelessWidget {
     }
     if (stats == null) return const SizedBox.shrink();
 
-    return GridView.count(
-      crossAxisCount: 2,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisSpacing: 12,
-      mainAxisSpacing: 12,
-      childAspectRatio: 1.6,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _CarteStat('Chambres disponibles', '${stats.chambresDisponibles}', Icons.check_circle_outline, Colors.green),
-        _CarteStat('Chambres occupees', '${stats.chambresOccupees}', Icons.hotel, Colors.orange),
-        _CarteStat('Reservations du jour', '${stats.reservationsDuJour}', Icons.event_available, Colors.blue),
-        _CarteStat('CA du mois', UiHelpers.formatMontant(stats.chiffreAffairesMensuel), Icons.trending_up, Colors.purple),
-      ],
-    );
-  }
-}
-
-class _CarteStat extends StatelessWidget {
-  final String titre;
-  final String valeur;
-  final IconData icone;
-  final Color couleur;
-  const _CarteStat(this.titre, this.valeur, this.icone, this.couleur);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
+        HeroStatCard(
+          label: 'Chiffre d\'affaires du mois',
+          value: UiHelpers.formatMontant(stats.chiffreAffairesMensuel),
+          icon: Icons.trending_up,
+        ),
+        const SizedBox(height: 14),
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
           children: [
-            Icon(icone, color: couleur),
-            const SizedBox(height: 6),
-            Text(valeur, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-            Text(titre, style: Theme.of(context).textTheme.bodySmall, maxLines: 2, overflow: TextOverflow.ellipsis),
+            MiniStat(label: 'Disponibles', value: '${stats.chambresDisponibles}', icon: Icons.check_circle_outline),
+            MiniStat(label: 'Occupees', value: '${stats.chambresOccupees}', icon: Icons.hotel),
+            MiniStat(label: 'Reservations du jour', value: '${stats.reservationsDuJour}', icon: Icons.event_available),
           ],
         ),
-      ),
+      ],
     );
   }
 }
@@ -197,35 +189,38 @@ class _EnteteBienvenue extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 28,
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              child: Text(
-                utilisateur.nom.isNotEmpty ? utilisateur.nom[0].toUpperCase() : '?',
-                style: const TextStyle(color: Colors.white, fontSize: 22),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('${AppStrings.get('bienvenue', arabe: arabe)}, ${utilisateur.nom}',
-                      style: Theme.of(context).textTheme.titleMedium),
-                  const SizedBox(height: 4),
-                  Text(utilisateur.role.libelle,
-                      style: Theme.of(context).textTheme.bodyMedium),
-                ],
-              ),
-            ),
-          ],
+    final theme = Theme.of(context);
+    final or = theme.colorScheme.secondary;
+    return Row(
+      children: [
+        Container(
+          width: 52,
+          height: 52,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(gradient: AppTheme.degradeOr, borderRadius: BorderRadius.circular(4)),
+          child: Text(
+            utilisateur.nom.isNotEmpty ? utilisateur.nom[0].toUpperCase() : '?',
+            style: AppTheme.playfair(color: AppTheme.bleuNuitProfond, fontSize: 22, fontWeight: FontWeight.w700),
+          ),
         ),
-      ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${AppStrings.get('bienvenue', arabe: arabe)}, ${utilisateur.nom}',
+                style: theme.textTheme.headlineSmall?.copyWith(fontSize: 20),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                utilisateur.role.libelle,
+                style: AppTheme.manrope(color: or, fontWeight: FontWeight.w600, fontSize: 13),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -254,28 +249,37 @@ class _MenuRole extends StatelessWidget {
       _MenuItem(AppStrings.get('mon_profil', arabe: arabe), Icons.person_outline, AppRoutes.profile),
     ];
 
+    final or = Theme.of(context).colorScheme.secondary;
+    final couleurTexte = Theme.of(context).textTheme.bodyLarge?.color ?? AppTheme.encre;
+
     return GridView.count(
       crossAxisCount: 2,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       crossAxisSpacing: 12,
       mainAxisSpacing: 12,
-      childAspectRatio: 1.4,
+      childAspectRatio: 1.5,
       children: items
-          .map((item) => Card(
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(16),
-                  onTap: () => Navigator.of(context).pushNamed(item.route),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(item.icone, size: 32, color: Theme.of(context).colorScheme.primary),
-                        const SizedBox(height: 8),
-                        Text(item.libelle, textAlign: TextAlign.center),
-                      ],
-                    ),
+          .map((item) => InkWell(
+                borderRadius: BorderRadius.circular(4),
+                onTap: () => Navigator.of(context).pushNamed(item.route),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: or.withValues(alpha: 0.35)),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  padding: const EdgeInsets.all(14),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(item.icone, size: 28, color: or),
+                      const SizedBox(height: 8),
+                      Text(
+                        item.libelle,
+                        textAlign: TextAlign.center,
+                        style: AppTheme.manrope(fontWeight: FontWeight.w600, fontSize: 13, color: couleurTexte),
+                      ),
+                    ],
                   ),
                 ),
               ))

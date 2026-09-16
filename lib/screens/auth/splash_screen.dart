@@ -8,6 +8,7 @@ import '../../utils/app_theme.dart';
 
 /// Ecran de demarrage : verifie s'il existe deja une session utilisateur
 /// (SharedPreferences) avant de rediriger vers le login ou le dashboard.
+/// Reprend l'habillage bleu nuit/or de l'ecran de connexion.
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -33,21 +34,33 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.bleuNuit,
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.hotel, color: AppTheme.or, size: 72),
-            const SizedBox(height: 16),
-            const Text(
-              'Hotel Smart',
-              style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 32),
-            const SpinKitThreeBounce(color: AppTheme.or, size: 28),
-          ],
+    return DecoratedBox(
+      decoration: const BoxDecoration(gradient: AppTheme.degradeBleuNuit),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(18),
+                decoration: const BoxDecoration(gradient: AppTheme.degradeOr, shape: BoxShape.circle),
+                child: const Icon(Icons.hotel, color: AppTheme.bleuNuitProfond, size: 40),
+              ),
+              const SizedBox(height: 18),
+              Text(
+                'HOTEL SMART',
+                style: AppTheme.playfair(
+                  color: AppTheme.ivoire,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 2.5,
+                ),
+              ),
+              const SizedBox(height: 32),
+              const SpinKitThreeBounce(color: AppTheme.or, size: 24),
+            ],
+          ),
         ),
       ),
     );

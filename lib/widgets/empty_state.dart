@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/app_theme.dart';
+
 /// Message affiche lorsqu'une liste (chambres, reservations, clients...)
 /// est vide, plutot que de laisser un ecran blanc silencieux.
 class EmptyState extends StatelessWidget {
@@ -10,18 +12,20 @@ class EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final or = Theme.of(context).colorScheme.secondary;
+    final couleurTexte = Theme.of(context).textTheme.bodyMedium?.color ?? Colors.grey;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icone, size: 56, color: Colors.grey.shade400),
-            const SizedBox(height: 12),
+            Icon(icone, size: 48, color: or.withValues(alpha: 0.6)),
+            const SizedBox(height: 14),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey.shade600),
+              style: AppTheme.manrope(color: couleurTexte.withValues(alpha: 0.7)),
             ),
           ],
         ),
