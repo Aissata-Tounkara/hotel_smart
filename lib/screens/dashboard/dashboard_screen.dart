@@ -95,19 +95,19 @@ class _MenuRole extends StatelessWidget {
   Widget build(BuildContext context) {
     final items = <_MenuItem>[
       if (authProvider.peutGererOperations) ...[
-        const _MenuItem('Chambres', Icons.bed_outlined),
-        const _MenuItem('Reservations', Icons.calendar_month_outlined),
-        const _MenuItem('Clients', Icons.people_outline),
-        const _MenuItem('Paiements', Icons.payments_outlined),
+        _MenuItem('Chambres', Icons.bed_outlined, AppRoutes.rooms),
+        _MenuItem('Reservations', Icons.calendar_month_outlined, AppRoutes.reservations),
+        _MenuItem('Clients', Icons.people_outline, AppRoutes.clients),
+        const _MenuItem('Paiements', Icons.payments_outlined, null),
       ],
       if (authProvider.estAdmin) ...[
-        const _MenuItem('Utilisateurs', Icons.admin_panel_settings_outlined),
-        const _MenuItem('Statistiques', Icons.bar_chart_outlined),
+        _MenuItem('Utilisateurs', Icons.admin_panel_settings_outlined, AppRoutes.users),
+        const _MenuItem('Statistiques', Icons.bar_chart_outlined, null),
       ],
       if (authProvider.estClient) ...[
-        const _MenuItem('Mes reservations', Icons.event_note_outlined),
+        _MenuItem('Mes reservations', Icons.event_note_outlined, AppRoutes.myReservations),
       ],
-      const _MenuItem('Mon profil', Icons.person_outline),
+      const _MenuItem('Mon profil', Icons.person_outline, null),
     ];
 
     return GridView.count(
@@ -122,9 +122,13 @@ class _MenuRole extends StatelessWidget {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(16),
                   onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('${item.libelle} — bientot disponible')),
-                    );
+                    if (item.route != null) {
+                      Navigator.of(context).pushNamed(item.route!);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('${item.libelle} — bientot disponible')),
+                      );
+                    }
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(16),
@@ -147,5 +151,6 @@ class _MenuRole extends StatelessWidget {
 class _MenuItem {
   final String libelle;
   final IconData icone;
-  const _MenuItem(this.libelle, this.icone);
+  final String? route;
+  const _MenuItem(this.libelle, this.icone, this.route);
 }
