@@ -86,7 +86,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: utilisateur == null
           ? const Center(child: Text('Aucun utilisateur connecte'))
           : RefreshIndicator(
-              onRefresh: () => context.read<StatisticsProvider>().charger(),
+              onRefresh: () => Future.wait([
+                context.read<StatisticsProvider>().charger(),
+                context.read<NotificationProvider>().rafraichir(),
+              ]),
               child: FadeSlideIn(
                 child: ListView(
                   padding: const EdgeInsets.all(20),

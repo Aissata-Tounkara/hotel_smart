@@ -23,6 +23,18 @@ Apres connexion, le tableau de bord affiche :
 - (Admin/Receptionniste) Une cloche de notifications signalant les
   check-in/check-out prevus aujourd'hui.
 
+![Tableau de bord avec badge de notification](screenshots/02-tableau-de-bord-notification-badge.png)
+
+*Un badge rouge apparait sur la cloche des qu'une reservation arrive ou
+part aujourd'hui. Appuyez dessus pour afficher la liste des alertes non
+lues et les marquer comme lues.*
+
+![Notification systeme Android de check-in](screenshots/02-notification-systeme-checkin.png)
+
+*En plus de la cloche dans l'application, une notification systeme
+Android s'affiche automatiquement pour chaque check-in ou check-out du
+jour, meme si l'application est en arriere-plan.*
+
 ## 3. Gestion des chambres (Admin, Receptionniste)
 
 - **Voir la liste** : bascule entre vue Carte et vue Liste via l'icone en
@@ -34,6 +46,22 @@ Apres connexion, le tableau de bord affiche :
 - **Ajouter** : bouton **+** en bas a droite.
 - **Modifier/Supprimer** : appuyez sur une chambre (vue liste : menu ⋮ ;
   vue carte : menu en haut a droite de la carte).
+
+![Liste des chambres avec leur statut](screenshots/03-chambres-liste.png)
+
+*Chaque carte affiche le numero, le type, le prix par nuit et le statut
+courant de la chambre (Disponible, Occupee ou Maintenance).*
+
+![Formulaire d'ajout d'une chambre](screenshots/03-chambre-nouveau-formulaire.png)
+
+*Numero, type, prix par nuit, etage et statut initial sont obligatoires ;
+la description est optionnelle.*
+
+![Formulaire de modification d'une chambre](screenshots/03-chambre-modifier-formulaire.png)
+
+*Le meme formulaire, pre-rempli, permet de corriger le prix, changer le
+statut (par exemple repasser une chambre en Maintenance) ou completer la
+description.*
 
 ## 4. Reservations (Admin, Receptionniste)
 
@@ -49,6 +77,12 @@ Apres connexion, le tableau de bord affiche :
 - **Check-out** : sur une reservation *Confirmee*, bouton **Check-out** ->
   termine la reservation et remet la chambre "Disponible".
 - **Annuler** : disponible sur une reservation *En attente*.
+
+![Liste des reservations avec leurs statuts](screenshots/04-reservations-liste-statuts.png)
+
+*Le filtre "Toutes" montre chaque reservation avec son statut colore
+(En attente, Confirmee, Terminee, Annulee). Le bouton d'action affiche
+(Check-in ou Check-out) depend du statut courant de la reservation.*
 
 ## 5. Clients (Admin, Receptionniste)
 
@@ -70,6 +104,11 @@ Apres connexion, le tableau de bord affiche :
   connecter et de voir *ses* reservations.
 - **Modifier/Supprimer** un compte depuis la liste.
 
+![Liste des comptes utilisateurs](screenshots/06-utilisateurs-liste.png)
+
+*Chaque ligne affiche le nom, l'email et le role du compte. L'icone
+corbeille permet de le supprimer directement depuis la liste.*
+
 ## 7. Paiements (Admin, Receptionniste)
 
 - **Enregistrer un paiement** : bouton **+**, selectionnez la
@@ -78,6 +117,16 @@ Apres connexion, le tableau de bord affiche :
 - **Changer le statut** : appuyez sur un paiement dans la liste pour
   choisir Paye / En attente / Rembourse.
 
+![Formulaire de nouveau paiement](screenshots/07-paiement-nouveau-formulaire.png)
+
+*Selectionnez la reservation, ajustez le montant si besoin, choisissez
+la methode (Especes, Carte...) et le statut du paiement.*
+
+![Liste des paiements enregistres](screenshots/07-paiements-liste.png)
+
+*Chaque paiement affiche le client, la methode, la date et le montant,
+avec un badge de statut (Paye, En attente, Rembourse).*
+
 ## 8. Statistiques (Admin)
 
 - Taux d'occupation moyen et chiffre d'affaires du mois en cartes de
@@ -85,6 +134,12 @@ Apres connexion, le tableau de bord affiche :
 - Graphique en barres : taux d'occupation des 6 derniers mois.
 - Graphique en barres : revenus cumules par type de chambre (Simple,
   Double, Suite).
+
+![Ecran statistiques](screenshots/08-statistiques.png)
+
+*Vue d'ensemble : chiffre d'affaires du mois, taux d'occupation moyen,
+puis les deux graphiques (occupation par mois, revenus par type de
+chambre).*
 
 ## 9. Mes reservations (Client)
 
