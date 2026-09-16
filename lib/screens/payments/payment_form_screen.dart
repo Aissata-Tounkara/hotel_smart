@@ -8,6 +8,10 @@ import '../../providers/payment_provider.dart';
 import '../../providers/reservation_provider.dart';
 import '../../utils/ui_helpers.dart';
 import '../../utils/validators.dart';
+import '../../widgets/app_text_field.dart';
+import '../../widgets/gradient_button.dart';
+import '../../widgets/ornamental_divider.dart';
+import '../../widgets/premium_app_bar.dart';
 
 /// Formulaire d'enregistrement d'un paiement pour une reservation
 /// (point 33).
@@ -79,11 +83,11 @@ class _PaymentFormScreenState extends State<PaymentFormScreen> {
     final clientsParId = {for (final c in clientProvider.clients) c.id: c};
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Nouveau paiement')),
+      appBar: const PremiumAppBar(title: 'Nouveau paiement'),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(20),
           children: [
             DropdownButtonFormField<Reservation>(
               initialValue: _reservationSelectionnee,
@@ -105,20 +109,22 @@ class _PaymentFormScreenState extends State<PaymentFormScreen> {
               }),
               validator: (v) => v == null ? 'Veuillez selectionner une reservation' : null,
             ),
-            const SizedBox(height: 16),
-            TextFormField(
+            const OrnamentalDivider(),
+            AppTextField(
               controller: _montantController,
+              label: 'Montant (DA)',
+              icon: Icons.payments_outlined,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              decoration: const InputDecoration(labelText: 'Montant (DA)', prefixIcon: Icon(Icons.payments_outlined)),
               validator: (v) => Validators.positiveNumber(v, champ: 'Le montant'),
             ),
-            const SizedBox(height: 16),
-            TextFormField(
+            const SizedBox(height: 20),
+            AppTextField(
               controller: _methodeController,
-              decoration: const InputDecoration(labelText: 'Methode de paiement', prefixIcon: Icon(Icons.credit_card)),
+              label: 'Methode de paiement',
+              icon: Icons.credit_card,
               validator: (v) => Validators.required(v, champ: 'La methode'),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             DropdownButtonFormField<StatutPaiement>(
               initialValue: _statut,
               decoration: const InputDecoration(labelText: 'Statut', prefixIcon: Icon(Icons.info_outline)),
@@ -127,15 +133,11 @@ class _PaymentFormScreenState extends State<PaymentFormScreen> {
                   .toList(),
               onChanged: (v) => setState(() => _statut = v!),
             ),
-            const SizedBox(height: 24),
-            SizedBox(
-              height: 50,
-              child: ElevatedButton(
-                onPressed: _enEnregistrement ? null : _enregistrer,
-                child: _enEnregistrement
-                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                    : const Text('Enregistrer'),
-              ),
+            const SizedBox(height: 28),
+            GradientButton(
+              label: 'ENREGISTRER',
+              loading: _enEnregistrement,
+              onPressed: _enregistrer,
             ),
           ],
         ),

@@ -72,8 +72,20 @@ DatabaseHelper (Singleton) — ouverture/creation de la base SQLite
   `countries.dev`, gratuite et sans authentification. Une liste de secours
   locale (30 nationalites courantes) prend automatiquement le relai si
   l'API est indisponible, pour ne jamais bloquer le formulaire client.
-- **Theme Material 3** : bleu nuit `#0D1B2A` (primaire) et or `#D4AF37`
-  (accent), declines en variantes claire et sombre.
+- **Design premium Material 3** : identite de marque hoteliere bleu nuit /
+  or (`utils/app_theme.dart`, classe `AppTheme`) - bleu nuit profond
+  `#0A1628` et surface `#122544`, or `#C9A961` et or lumineux `#E8CF8A`,
+  ivoire `#F7F3EA`, encre `#16223A`, bordeaux `#8C2F39` (erreurs).
+  Typographie Playfair Display (titres) + Manrope (texte courant),
+  embarquee localement (`assets/fonts/`). Composants signature reutilisables
+  dans `widgets/` : `AppTextField` (champs soulignes), `OrnamentalDivider`
+  (separateur a losange dore), `ArtDecoFan` (motif reserve a l'ecran de
+  connexion), `PremiumAppBar`, `GradientButton`, `HeroStatCard`/`MiniStat`,
+  `PremiumListTile`. Le theme sombre reprend l'habillage bleu nuit du login
+  plutot qu'un mode sombre Material generique. Toutes les couleurs de
+  statut (`utils/ui_helpers.dart`) sont derivees de cette meme palette,
+  choisies pour un contraste texte suffisant (WCAG AA) sur fond clair et
+  sombre.
 
 ## Documentation
 

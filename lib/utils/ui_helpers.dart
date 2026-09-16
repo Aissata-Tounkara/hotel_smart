@@ -4,9 +4,14 @@ import 'package:intl/intl.dart';
 import '../models/chambre.dart';
 import '../models/paiement.dart';
 import '../models/reservation.dart';
+import 'app_theme.dart';
 
 /// Helpers d'affichage partages (couleurs de statut, formatage
 /// dates/montants) pour garder une UI coherente entre les ecrans.
+///
+/// Les couleurs de statut passent toutes par [AppTheme] (jamais de
+/// `Colors.green`/`Colors.orange` Material generiques) pour rester dans
+/// le systeme de design premium bleu nuit/or.
 class UiHelpers {
   UiHelpers._();
 
@@ -25,35 +30,35 @@ class UiHelpers {
   static Color couleurStatutChambre(StatutChambre statut) {
     switch (statut) {
       case StatutChambre.disponible:
-        return Colors.green;
+        return AppTheme.succes;
       case StatutChambre.occupee:
-        return Colors.orange;
+        return AppTheme.alerte;
       case StatutChambre.maintenance:
-        return Colors.red;
+        return AppTheme.danger;
     }
   }
 
   static Color couleurStatutReservation(StatutReservation statut) {
     switch (statut) {
       case StatutReservation.enAttente:
-        return Colors.orange;
+        return AppTheme.alerte;
       case StatutReservation.confirmee:
-        return Colors.blue;
+        return AppTheme.bleuNuitSurface;
       case StatutReservation.annulee:
-        return Colors.red;
+        return AppTheme.danger;
       case StatutReservation.terminee:
-        return Colors.grey;
+        return AppTheme.neutre;
     }
   }
 
   static Color couleurStatutPaiement(StatutPaiement statut) {
     switch (statut) {
       case StatutPaiement.paye:
-        return Colors.green;
+        return AppTheme.succes;
       case StatutPaiement.enAttente:
-        return Colors.orange;
+        return AppTheme.alerte;
       case StatutPaiement.rembourse:
-        return Colors.blueGrey;
+        return AppTheme.neutre;
     }
   }
 }

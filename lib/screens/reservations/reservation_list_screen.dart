@@ -8,9 +8,13 @@ import '../../providers/auth_provider.dart';
 import '../../providers/client_provider.dart';
 import '../../providers/reservation_provider.dart';
 import '../../providers/room_provider.dart';
+import '../../utils/app_theme.dart';
 import '../../utils/ui_helpers.dart';
+import '../../widgets/app_text_field.dart';
 import '../../widgets/confirm_dialog.dart';
 import '../../widgets/empty_state.dart';
+import '../../widgets/fade_slide_in.dart';
+import '../../widgets/premium_app_bar.dart';
 import '../../widgets/status_badge.dart';
 import 'reservation_form_screen.dart';
 
@@ -89,7 +93,7 @@ class _ReservationListScreenState extends State<ReservationListScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Reservations')),
+      appBar: const PremiumAppBar(title: 'Reservations'),
       floatingActionButton: authProvider.peutGererOperations
           ? FloatingActionButton(
               onPressed: () => Navigator.of(context).push(
@@ -98,68 +102,68 @@ class _ReservationListScreenState extends State<ReservationListScreen> {
               child: const Icon(Icons.add),
             )
           : null,
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Rechercher par client ou chambre...',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              onChanged: (v) => setState(() => _recherche = v),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  _ChipStatut(label: 'Toutes', selectionne: reservationProvider.filtreStatut == null,
-                      onTap: () => reservationProvider.filtrerParStatut(null)),
-                  ...StatutReservation.values.map((s) => Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: _ChipStatut(
-                          label: s.libelle,
-                          selectionne: reservationProvider.filtreStatut == s,
-                          onTap: () => reservationProvider.filtrerParStatut(s),
-                        ),
-                      )),
-                ],
+      body: FadeSlideIn(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
+              child: AppTextField(
+                label: 'Rechercher par client ou chambre',
+                icon: Icons.search,
+                onChanged: (v) => setState(() => _recherche = v),
               ),
             ),
-          ),
-          Expanded(
-            child: reservationProvider.enChargement
-                ? const Center(child: CircularProgressIndicator())
-                : reservations.isEmpty
-                    ? const EmptyState(icone: Icons.event_busy, message: 'Aucune reservation trouvee')
-                    : RefreshIndicator(
-                        onRefresh: reservationProvider.charger,
-                        child: ListView.separated(
-                          padding: const EdgeInsets.all(12),
-                          itemCount: reservations.length,
-                          separatorBuilder: (_, _) => const SizedBox(height: 8),
-                          itemBuilder: (context, i) {
-                            final reservation = reservations[i];
-                            final client = clientsParId[reservation.clientId];
-                            final chambre = chambresParId[reservation.chambreId];
-                            return _CarteReservation(
-                              reservation: reservation,
-                              client: client,
-                              chambre: chambre,
-                              peutGerer: authProvider.peutGererOperations,
-                              onCheckIn: () => _checkIn(reservation),
-                              onCheckOut: () => _checkOut(reservation),
-                              onAnnuler: () => _annuler(reservation),
-                            );
-                          },
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    _ChipStatut(label: 'Toutes', selectionne: reservationProvider.filtreStatut == null,
+                        onTap: () => reservationProvider.filtrerParStatut(null)),
+                    ...StatutReservation.values.map((s) => Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: _ChipStatut(
+                            label: s.libelle,
+                            selectionne: reservationProvider.filtreStatut == s,
+                            onTap: () => reservationProvider.filtrerParStatut(s),
+                          ),
+                        )),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              child: reservationProvider.enChargement
+                  ? const Center(child: CircularProgressIndicator())
+                  : reservations.isEmpty
+                      ? const EmptyState(icone: Icons.event_busy, message: 'Aucune reservation trouvee')
+                      : RefreshIndicator(
+                          onRefresh: reservationProvider.charger,
+                          child: ListView.separated(
+                            padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                            itemCount: reservations.length,
+                            separatorBuilder: (_, _) => const SizedBox(height: 12),
+                            itemBuilder: (context, i) {
+                              final reservation = reservations[i];
+                              final client = clientsParId[reservation.clientId];
+                              final chambre = chambresParId[reservation.chambreId];
+                              return _CarteReservation(
+                                reservation: reservation,
+                                client: client,
+                                chambre: chambre,
+                                peutGerer: authProvider.peutGererOperations,
+                                onCheckIn: () => _checkIn(reservation),
+                                onCheckOut: () => _checkOut(reservation),
+                                onAnnuler: () => _annuler(reservation),
+                              );
+                            },
+                          ),
                         ),
-                      ),
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -198,60 +202,69 @@ class _CarteReservation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    client?.nomComplet ?? 'Client inconnu',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
+    final or = Theme.of(context).colorScheme.secondary;
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: or.withValues(alpha: 0.25)),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  client?.nomComplet ?? 'Client inconnu',
+                  style: AppTheme.playfair(fontSize: 16, color: Theme.of(context).textTheme.bodyLarge?.color),
                 ),
-                StatusBadge(
-                  texte: reservation.statut.libelle,
-                  couleur: UiHelpers.couleurStatutReservation(reservation.statut),
-                ),
-              ],
-            ),
-            const SizedBox(height: 6),
-            Text('Chambre ${chambre?.numero ?? '-'} - ${chambre?.type.libelle ?? ''}'),
-            Text('${UiHelpers.formatDate(reservation.dateArrivee)} -> ${UiHelpers.formatDate(reservation.dateDepart)} (${reservation.dureeSejour} nuits)'),
-            const SizedBox(height: 4),
-            Text(UiHelpers.formatMontant(reservation.montantTotal), style: const TextStyle(fontWeight: FontWeight.bold)),
-            if (peutGerer) ...[
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                children: [
-                  if (reservation.statut == StatutReservation.enAttente) ...[
-                    FilledButton.tonalIcon(
-                      onPressed: onCheckIn,
-                      icon: const Icon(Icons.login, size: 18),
-                      label: const Text('Check-in'),
-                    ),
-                    OutlinedButton.icon(
-                      onPressed: onAnnuler,
-                      icon: const Icon(Icons.cancel_outlined, size: 18),
-                      label: const Text('Annuler'),
-                    ),
-                  ],
-                  if (reservation.statut == StatutReservation.confirmee)
-                    FilledButton.tonalIcon(
-                      onPressed: onCheckOut,
-                      icon: const Icon(Icons.logout, size: 18),
-                      label: const Text('Check-out'),
-                    ),
-                ],
+              ),
+              StatusBadge(
+                texte: reservation.statut.libelle,
+                couleur: UiHelpers.couleurStatutReservation(reservation.statut),
               ),
             ],
+          ),
+          const SizedBox(height: 8),
+          Text('Chambre ${chambre?.numero ?? '-'} - ${chambre?.type.libelle ?? ''}', style: Theme.of(context).textTheme.bodyMedium),
+          Text(
+            '${UiHelpers.formatDate(reservation.dateArrivee)} -> ${UiHelpers.formatDate(reservation.dateDepart)} (${reservation.dureeSejour} nuits)',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          const SizedBox(height: 6),
+          Text(
+            UiHelpers.formatMontant(reservation.montantTotal),
+            style: AppTheme.manrope(fontWeight: FontWeight.w700, color: Theme.of(context).textTheme.bodyLarge?.color),
+          ),
+          if (peutGerer) ...[
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              children: [
+                if (reservation.statut == StatutReservation.enAttente) ...[
+                  FilledButton.tonalIcon(
+                    onPressed: onCheckIn,
+                    icon: const Icon(Icons.login, size: 18),
+                    label: const Text('Check-in'),
+                  ),
+                  OutlinedButton.icon(
+                    onPressed: onAnnuler,
+                    icon: const Icon(Icons.cancel_outlined, size: 18),
+                    label: const Text('Annuler'),
+                  ),
+                ],
+                if (reservation.statut == StatutReservation.confirmee)
+                  FilledButton.tonalIcon(
+                    onPressed: onCheckOut,
+                    icon: const Icon(Icons.logout, size: 18),
+                    label: const Text('Check-out'),
+                  ),
+              ],
+            ),
           ],
-        ),
+        ],
       ),
     );
   }

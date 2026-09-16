@@ -6,6 +6,9 @@ import '../../providers/auth_provider.dart';
 import '../../providers/user_provider.dart';
 import '../../widgets/confirm_dialog.dart';
 import '../../widgets/empty_state.dart';
+import '../../widgets/fade_slide_in.dart';
+import '../../widgets/premium_app_bar.dart';
+import '../../widgets/premium_list_tile.dart';
 import 'user_form_screen.dart';
 
 /// Gestion des comptes utilisateurs (CRUD complet), reservee a l'Admin
@@ -48,43 +51,42 @@ class _UserListScreenState extends State<UserListScreen> {
     final utilisateurs = userProvider.utilisateurs;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Utilisateurs')),
+      appBar: const PremiumAppBar(title: 'Utilisateurs'),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => const UserFormScreen()),
         ),
         child: const Icon(Icons.person_add),
       ),
-      body: userProvider.enChargement
-          ? const Center(child: CircularProgressIndicator())
-          : utilisateurs.isEmpty
-              ? const EmptyState(icone: Icons.people_alt_outlined, message: 'Aucun utilisateur')
-              : RefreshIndicator(
-                  onRefresh: userProvider.charger,
-                  child: ListView.separated(
-                    padding: const EdgeInsets.all(12),
-                    itemCount: utilisateurs.length,
-                    separatorBuilder: (_, _) => const SizedBox(height: 8),
-                    itemBuilder: (context, i) {
-                      final utilisateur = utilisateurs[i];
-                      return Card(
-                        child: ListTile(
+      body: FadeSlideIn(
+        child: userProvider.enChargement
+            ? const Center(child: CircularProgressIndicator())
+            : utilisateurs.isEmpty
+                ? const EmptyState(icone: Icons.people_alt_outlined, message: 'Aucun utilisateur')
+                : RefreshIndicator(
+                    onRefresh: userProvider.charger,
+                    child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                      itemCount: utilisateurs.length,
+                      itemBuilder: (context, i) {
+                        final utilisateur = utilisateurs[i];
+                        return PremiumListTile(
+                          icon: Icons.person_outline,
+                          title: utilisateur.nom,
+                          subtitle: '${utilisateur.email} - ${utilisateur.role.libelle}',
                           onTap: () => Navigator.of(context).push(
                             MaterialPageRoute(builder: (_) => UserFormScreen(utilisateur: utilisateur)),
                           ),
-                          leading: CircleAvatar(child: Text(utilisateur.nom.isNotEmpty ? utilisateur.nom[0].toUpperCase() : '?')),
-                          title: Text(utilisateur.nom),
-                          subtitle: Text('${utilisateur.email}\n${utilisateur.role.libelle}'),
-                          isThreeLine: true,
                           trailing: IconButton(
-                            icon: const Icon(Icons.delete_outline, color: Colors.red),
+                            icon: const Icon(Icons.delete_outline),
+                            color: Theme.of(context).colorScheme.error,
                             onPressed: () => _supprimer(context, utilisateur),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
-                ),
+      ),
     );
   }
 }

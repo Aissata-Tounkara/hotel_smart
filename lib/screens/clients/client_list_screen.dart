@@ -4,8 +4,12 @@ import 'package:provider/provider.dart';
 import '../../models/client.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/client_provider.dart';
+import '../../widgets/app_text_field.dart';
 import '../../widgets/confirm_dialog.dart';
 import '../../widgets/empty_state.dart';
+import '../../widgets/fade_slide_in.dart';
+import '../../widgets/premium_app_bar.dart';
+import '../../widgets/premium_list_tile.dart';
 import 'client_form_screen.dart';
 
 /// Liste des clients avec recherche temps reel et CRUD complet (point 26).
@@ -46,7 +50,7 @@ class _ClientListScreenState extends State<ClientListScreen> {
     final clients = clientProvider.clients;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Clients')),
+      appBar: const PremiumAppBar(title: 'Clients'),
       floatingActionButton: authProvider.peutGererOperations
           ? FloatingActionButton(
               onPressed: () => Navigator.of(context).push(
@@ -55,57 +59,52 @@ class _ClientListScreenState extends State<ClientListScreen> {
               child: const Icon(Icons.person_add_alt),
             )
           : null,
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Rechercher par nom, telephone, email...',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      body: FadeSlideIn(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
+              child: AppTextField(
+                label: 'Rechercher par nom, telephone, email',
+                icon: Icons.search,
+                onChanged: clientProvider.rechercher,
               ),
-              onChanged: clientProvider.rechercher,
             ),
-          ),
-          Expanded(
-            child: clientProvider.enChargement
-                ? const Center(child: CircularProgressIndicator())
-                : clients.isEmpty
-                    ? const EmptyState(icone: Icons.people_outline, message: 'Aucun client trouve')
-                    : RefreshIndicator(
-                        onRefresh: clientProvider.charger,
-                        child: ListView.separated(
-                          padding: const EdgeInsets.all(12),
-                          itemCount: clients.length,
-                          separatorBuilder: (_, _) => const SizedBox(height: 8),
-                          itemBuilder: (context, i) {
-                            final client = clients[i];
-                            return Card(
-                              child: ListTile(
+            Expanded(
+              child: clientProvider.enChargement
+                  ? const Center(child: CircularProgressIndicator())
+                  : clients.isEmpty
+                      ? const EmptyState(icone: Icons.people_outline, message: 'Aucun client trouve')
+                      : RefreshIndicator(
+                          onRefresh: clientProvider.charger,
+                          child: ListView.builder(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                            itemCount: clients.length,
+                            itemBuilder: (context, i) {
+                              final client = clients[i];
+                              return PremiumListTile(
+                                icon: Icons.person_outline,
+                                title: client.nomComplet,
+                                subtitle: '${client.telephone} - ${client.nationalite}',
                                 onTap: authProvider.peutGererOperations
                                     ? () => Navigator.of(context).push(
                                           MaterialPageRoute(builder: (_) => ClientFormScreen(client: client)),
                                         )
                                     : null,
-                                leading: CircleAvatar(
-                                  child: Text(client.prenom.isNotEmpty ? client.prenom[0].toUpperCase() : '?'),
-                                ),
-                                title: Text(client.nomComplet),
-                                subtitle: Text('${client.telephone} - ${client.nationalite}'),
                                 trailing: authProvider.peutGererOperations
                                     ? IconButton(
-                                        icon: const Icon(Icons.delete_outline, color: Colors.red),
+                                        icon: const Icon(Icons.delete_outline),
+                                        color: Theme.of(context).colorScheme.error,
                                         onPressed: () => _supprimer(context, client),
                                       )
                                     : null,
-                              ),
-                            );
-                          },
+                              );
+                            },
+                          ),
                         ),
-                      ),
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -6,6 +6,10 @@ import '../../models/utilisateur.dart';
 import '../../providers/client_provider.dart';
 import '../../providers/user_provider.dart';
 import '../../utils/validators.dart';
+import '../../widgets/app_text_field.dart';
+import '../../widgets/gradient_button.dart';
+import '../../widgets/ornamental_divider.dart';
+import '../../widgets/premium_app_bar.dart';
 
 /// Formulaire de creation/edition d'un compte utilisateur (reserve a
 /// l'Admin). Permet de lier manuellement un compte de role Client a une
@@ -103,48 +107,49 @@ class _UserFormScreenState extends State<UserFormScreen> {
     final clientProvider = context.watch<ClientProvider>();
 
     return Scaffold(
-      appBar: AppBar(title: Text(_estEdition ? 'Modifier l\'utilisateur' : 'Nouvel utilisateur')),
+      appBar: PremiumAppBar(title: _estEdition ? 'Modifier l\'utilisateur' : 'Nouvel utilisateur'),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(20),
           children: [
-            TextFormField(
+            AppTextField(
               controller: _nomController,
-              decoration: const InputDecoration(labelText: 'Nom complet', prefixIcon: Icon(Icons.person_outline)),
+              label: 'Nom complet',
+              icon: Icons.person_outline,
               validator: (v) => Validators.required(v, champ: 'Le nom'),
             ),
-            const SizedBox(height: 16),
-            TextFormField(
+            const SizedBox(height: 20),
+            AppTextField(
               controller: _emailController,
+              label: 'Email',
+              icon: Icons.email_outlined,
               keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(labelText: 'Email', prefixIcon: Icon(Icons.email_outlined)),
               validator: Validators.email,
             ),
-            const SizedBox(height: 16),
-            TextFormField(
+            const OrnamentalDivider(),
+            AppTextField(
               controller: _motDePasseController,
+              label: _estEdition ? 'Nouveau mot de passe (optionnel)' : 'Mot de passe',
+              icon: Icons.lock_outline,
               obscureText: true,
-              decoration: InputDecoration(
-                labelText: _estEdition ? 'Nouveau mot de passe (optionnel)' : 'Mot de passe',
-                prefixIcon: const Icon(Icons.lock_outline),
-              ),
               validator: (v) {
                 if (_estEdition && (v == null || v.isEmpty)) return null;
                 return Validators.password(v);
               },
             ),
-            const SizedBox(height: 16),
-            TextFormField(
+            const SizedBox(height: 20),
+            AppTextField(
               controller: _confirmationController,
+              label: 'Confirmer le mot de passe',
+              icon: Icons.lock_outline,
               obscureText: true,
-              decoration: const InputDecoration(labelText: 'Confirmer le mot de passe', prefixIcon: Icon(Icons.lock_outline)),
               validator: (v) {
                 if (_motDePasseController.text.isEmpty) return null;
                 return Validators.confirmPassword(v, _motDePasseController.text);
               },
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             DropdownButtonFormField<RoleUtilisateur>(
               initialValue: _role,
               decoration: const InputDecoration(labelText: 'Role', prefixIcon: Icon(Icons.admin_panel_settings_outlined)),
@@ -170,15 +175,11 @@ class _UserFormScreenState extends State<UserFormScreen> {
                 validator: (v) => v == null ? 'Veuillez selectionner une fiche client' : null,
               ),
             ],
-            const SizedBox(height: 24),
-            SizedBox(
-              height: 50,
-              child: ElevatedButton(
-                onPressed: _enEnregistrement ? null : _enregistrer,
-                child: _enEnregistrement
-                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                    : const Text('Enregistrer'),
-              ),
+            const SizedBox(height: 28),
+            GradientButton(
+              label: 'ENREGISTRER',
+              loading: _enEnregistrement,
+              onPressed: _enregistrer,
             ),
           ],
         ),

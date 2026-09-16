@@ -5,7 +5,11 @@ import '../../models/chambre.dart';
 import '../../models/client.dart';
 import '../../providers/client_provider.dart';
 import '../../providers/reservation_provider.dart';
+import '../../utils/app_theme.dart';
 import '../../utils/ui_helpers.dart';
+import '../../widgets/gradient_button.dart';
+import '../../widgets/ornamental_divider.dart';
+import '../../widgets/premium_app_bar.dart';
 
 /// Formulaire de nouvelle reservation : selection du client, des dates,
 /// puis des chambres disponibles avec calcul automatique du montant
@@ -86,14 +90,15 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
   Widget build(BuildContext context) {
     final clientProvider = context.watch<ClientProvider>();
     final reservationProvider = context.watch<ReservationProvider>();
+    final or = Theme.of(context).colorScheme.secondary;
     final montant = (_chambreSelectionnee != null && _dateArrivee != null && _dateDepart != null)
         ? reservationProvider.calculerMontant(_chambreSelectionnee!, _dateArrivee!, _dateDepart!)
         : null;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Nouvelle reservation')),
+      appBar: const PremiumAppBar(title: 'Nouvelle reservation'),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         children: [
           DropdownButtonFormField<Client>(
             initialValue: _clientSelectionne,
@@ -104,12 +109,12 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                 .toList(),
             onChanged: (v) => setState(() => _clientSelectionne = v),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           Row(
             children: [
               Expanded(
                 child: OutlinedButton.icon(
-                  icon: const Icon(Icons.calendar_today_outlined),
+                  icon: const Icon(Icons.calendar_today_outlined, size: 18),
                   label: Text(_dateArrivee == null ? 'Date arrivee' : UiHelpers.formatDate(_dateArrivee!)),
                   onPressed: () => _choisirDate(arrivee: true),
                 ),
@@ -117,23 +122,23 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
               const SizedBox(width: 12),
               Expanded(
                 child: OutlinedButton.icon(
-                  icon: const Icon(Icons.calendar_today),
+                  icon: const Icon(Icons.calendar_today, size: 18),
                   label: Text(_dateDepart == null ? 'Date depart' : UiHelpers.formatDate(_dateDepart!)),
                   onPressed: _dateArrivee == null ? null : () => _choisirDate(arrivee: false),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 24),
           if (_dateArrivee != null && _dateDepart != null) ...[
+            const OrnamentalDivider(),
             Text('Chambres disponibles', style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 8),
             if (reservationProvider.rechercheChambresEnCours)
               const Center(child: CircularProgressIndicator())
             else if (reservationProvider.chambresDisponibles.isEmpty)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                child: Text('Aucune chambre disponible pour ces dates'),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: Text('Aucune chambre disponible pour ces dates', style: Theme.of(context).textTheme.bodyMedium),
               )
             else
               RadioGroup<Chambre>(
@@ -143,6 +148,7 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                   children: reservationProvider.chambresDisponibles
                       .map((chambre) => RadioListTile<Chambre>(
                             value: chambre,
+                            activeColor: or,
                             title: Text('Chambre ${chambre.numero} - ${chambre.type.libelle}'),
                             subtitle: Text('${UiHelpers.formatMontant(chambre.prixParNuit)} / nuit'),
                           ))
@@ -151,24 +157,23 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
               ),
           ],
           if (montant != null) ...[
-            const Divider(height: 32),
+            const OrnamentalDivider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Montant total', style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(UiHelpers.formatMontant(montant), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                Text('Montant total', style: Theme.of(context).textTheme.titleMedium),
+                Text(
+                  UiHelpers.formatMontant(montant),
+                  style: AppTheme.playfair(fontSize: 20, color: Theme.of(context).textTheme.bodyLarge?.color),
+                ),
               ],
             ),
           ],
-          const SizedBox(height: 24),
-          SizedBox(
-            height: 50,
-            child: ElevatedButton(
-              onPressed: _enEnregistrement ? null : _confirmer,
-              child: _enEnregistrement
-                  ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                  : const Text('Confirmer la reservation'),
-            ),
+          const SizedBox(height: 28),
+          GradientButton(
+            label: 'CONFIRMER LA RESERVATION',
+            loading: _enEnregistrement,
+            onPressed: _confirmer,
           ),
         ],
       ),

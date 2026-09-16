@@ -4,7 +4,13 @@ import 'package:provider/provider.dart';
 import '../../models/utilisateur.dart';
 import '../../providers/auth_provider.dart';
 import '../../routes/app_routes.dart';
+import '../../utils/app_theme.dart';
 import '../../utils/validators.dart';
+import '../../widgets/app_text_field.dart';
+import '../../widgets/fade_slide_in.dart';
+import '../../widgets/gradient_button.dart';
+import '../../widgets/ornamental_divider.dart';
+import '../../widgets/premium_app_bar.dart';
 import '../settings/settings_screen.dart';
 
 /// Ecran de profil : modification du nom, de l'email et du mot de passe
@@ -76,10 +82,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
     final utilisateur = authProvider.utilisateurCourant;
+    final or = Theme.of(context).colorScheme.secondary;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Mon profil'),
+      appBar: PremiumAppBar(
+        title: 'Mon profil',
         actions: [
           IconButton(
             icon: const Icon(Icons.settings_outlined),
@@ -90,79 +97,92 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ],
       ),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            Center(
-              child: CircleAvatar(
-                radius: 40,
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                child: Text(
-                  (utilisateur?.nom.isNotEmpty ?? false) ? utilisateur!.nom[0].toUpperCase() : '?',
-                  style: const TextStyle(color: Colors.white, fontSize: 32),
+      body: FadeSlideIn(
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            padding: const EdgeInsets.all(20),
+            children: [
+              Center(
+                child: Container(
+                  width: 84,
+                  height: 84,
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(gradient: AppTheme.degradeOr, shape: BoxShape.circle),
+                  child: Text(
+                    (utilisateur?.nom.isNotEmpty ?? false) ? utilisateur!.nom[0].toUpperCase() : '?',
+                    style: AppTheme.playfair(fontSize: 34, color: AppTheme.bleuNuitProfond),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Center(
-              child: Text(utilisateur?.role.libelle ?? '', style: Theme.of(context).textTheme.bodyMedium),
-            ),
-            const SizedBox(height: 24),
-            TextFormField(
-              controller: _nomController,
-              decoration: const InputDecoration(labelText: 'Nom', prefixIcon: Icon(Icons.person_outline)),
-              validator: (v) => Validators.required(v, champ: 'Le nom'),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(labelText: 'Email', prefixIcon: Icon(Icons.email_outlined)),
-              validator: Validators.email,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _nouveauMotDePasseController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Nouveau mot de passe (optionnel)',
-                prefixIcon: Icon(Icons.lock_outline),
+              const SizedBox(height: 12),
+              Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: or.withValues(alpha: 0.12),
+                    border: Border.all(color: or.withValues(alpha: 0.5)),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    utilisateur?.role.libelle ?? '',
+                    style: AppTheme.manrope(
+                      color: Theme.of(context).textTheme.bodyMedium?.color,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
               ),
-              validator: (v) => v == null || v.isEmpty ? null : Validators.password(v),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _confirmationController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Confirmer le mot de passe',
-                prefixIcon: Icon(Icons.lock_outline),
+              const OrnamentalDivider(),
+              AppTextField(
+                controller: _nomController,
+                label: 'Nom',
+                icon: Icons.person_outline,
+                validator: (v) => Validators.required(v, champ: 'Le nom'),
               ),
-              validator: (v) {
-                if (_nouveauMotDePasseController.text.isEmpty) return null;
-                return Validators.confirmPassword(v, _nouveauMotDePasseController.text);
-              },
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              height: 50,
-              child: ElevatedButton(
-                onPressed: _enEnregistrement ? null : _enregistrer,
-                child: _enEnregistrement
-                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                    : const Text('Enregistrer'),
+              const SizedBox(height: 20),
+              AppTextField(
+                controller: _emailController,
+                label: 'Email',
+                icon: Icons.email_outlined,
+                keyboardType: TextInputType.emailAddress,
+                validator: Validators.email,
               ),
-            ),
-            const SizedBox(height: 16),
-            OutlinedButton.icon(
-              onPressed: _deconnecter,
-              icon: const Icon(Icons.logout, color: Colors.red),
-              label: const Text('Deconnexion', style: TextStyle(color: Colors.red)),
-              style: OutlinedButton.styleFrom(side: const BorderSide(color: Colors.red)),
-            ),
-          ],
+              const OrnamentalDivider(),
+              AppTextField(
+                controller: _nouveauMotDePasseController,
+                label: 'Nouveau mot de passe (optionnel)',
+                icon: Icons.lock_outline,
+                obscureText: true,
+                validator: (v) => v == null || v.isEmpty ? null : Validators.password(v),
+              ),
+              const SizedBox(height: 20),
+              AppTextField(
+                controller: _confirmationController,
+                label: 'Confirmer le mot de passe',
+                icon: Icons.lock_outline,
+                obscureText: true,
+                validator: (v) {
+                  if (_nouveauMotDePasseController.text.isEmpty) return null;
+                  return Validators.confirmPassword(v, _nouveauMotDePasseController.text);
+                },
+              ),
+              const SizedBox(height: 28),
+              GradientButton(
+                label: 'ENREGISTRER',
+                loading: _enEnregistrement,
+                onPressed: _enregistrer,
+              ),
+              const SizedBox(height: 16),
+              OutlinedButton.icon(
+                onPressed: _deconnecter,
+                icon: Icon(Icons.logout, color: Theme.of(context).colorScheme.error),
+                label: Text('Deconnexion', style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                style: OutlinedButton.styleFrom(side: BorderSide(color: Theme.of(context).colorScheme.error)),
+              ),
+            ],
+          ),
         ),
       ),
     );

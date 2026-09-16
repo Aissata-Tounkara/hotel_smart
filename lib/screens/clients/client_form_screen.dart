@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/client.dart';
 import '../../providers/client_provider.dart';
+import '../../utils/app_theme.dart';
 import '../../utils/validators.dart';
+import '../../widgets/app_text_field.dart';
+import '../../widgets/gradient_button.dart';
+import '../../widgets/ornamental_divider.dart';
+import '../../widgets/premium_app_bar.dart';
 
 /// Formulaire de creation/edition d'un client, avec liste des nationalites
 /// peuplee depuis l'API countries.dev (points 26, 27, 28).
@@ -99,53 +103,54 @@ class _ClientFormScreenState extends State<ClientFormScreen> {
     final clientProvider = context.watch<ClientProvider>();
 
     return Scaffold(
-      appBar: AppBar(title: Text(_estEdition ? 'Modifier le client' : 'Nouveau client')),
+      appBar: PremiumAppBar(title: _estEdition ? 'Modifier le client' : 'Nouveau client'),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(20),
           children: [
-            TextFormField(
+            AppTextField(
               controller: _prenomController,
-              decoration: const InputDecoration(labelText: 'Prenom', prefixIcon: Icon(Icons.person_outline)),
+              label: 'Prenom',
+              icon: Icons.person_outline,
               validator: (v) => Validators.required(v, champ: 'Le prenom'),
             ),
-            const SizedBox(height: 16),
-            TextFormField(
+            const SizedBox(height: 20),
+            AppTextField(
               controller: _nomController,
-              decoration: const InputDecoration(labelText: 'Nom', prefixIcon: Icon(Icons.badge_outlined)),
+              label: 'Nom',
+              icon: Icons.badge_outlined,
               validator: (v) => Validators.required(v, champ: 'Le nom'),
             ),
-            const SizedBox(height: 16),
-            TextFormField(
+            const SizedBox(height: 20),
+            AppTextField(
               controller: _telephoneController,
+              label: 'Telephone',
+              icon: Icons.phone_outlined,
               keyboardType: TextInputType.phone,
-              decoration: const InputDecoration(labelText: 'Telephone', prefixIcon: Icon(Icons.phone_outlined)),
               validator: Validators.phone,
             ),
-            const SizedBox(height: 16),
-            TextFormField(
+            const SizedBox(height: 20),
+            AppTextField(
               controller: _emailController,
+              label: 'Email',
+              icon: Icons.email_outlined,
               keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(labelText: 'Email', prefixIcon: Icon(Icons.email_outlined)),
               validator: Validators.email,
             ),
-            const SizedBox(height: 16),
-            TextFormField(
+            const OrnamentalDivider(),
+            AppTextField(
               controller: _cinController,
-              decoration: const InputDecoration(labelText: 'CIN / Passeport (optionnel)', prefixIcon: Icon(Icons.credit_card_outlined)),
+              label: 'CIN / Passeport (optionnel)',
+              icon: Icons.credit_card_outlined,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             _buildNationaliteField(clientProvider),
-            const SizedBox(height: 24),
-            SizedBox(
-              height: 50,
-              child: ElevatedButton(
-                onPressed: _enEnregistrement ? null : _enregistrer,
-                child: _enEnregistrement
-                    ? const SpinKitThreeBounce(color: Colors.white, size: 20)
-                    : const Text('Enregistrer'),
-              ),
+            const SizedBox(height: 28),
+            GradientButton(
+              label: 'ENREGISTRER',
+              loading: _enEnregistrement,
+              onPressed: _enregistrer,
             ),
           ],
         ),
@@ -172,21 +177,22 @@ class _ClientFormScreenState extends State<ClientFormScreen> {
       children: [
         if (clientProvider.nationalitesDepuisSecours)
           Padding(
-            padding: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.only(bottom: 12),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: Colors.amber.shade50,
-                borderRadius: BorderRadius.circular(8),
+                color: AppTheme.alerte.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(color: AppTheme.alerte.withValues(alpha: 0.4)),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.wifi_off, color: Colors.amber.shade800, size: 18),
+                  const Icon(Icons.wifi_off, color: AppTheme.or, size: 18),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       'Liste hors-ligne (service indisponible) : options limitees',
-                      style: TextStyle(color: Colors.amber.shade900, fontSize: 12),
+                      style: AppTheme.manrope(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 12),
                     ),
                   ),
                   TextButton(

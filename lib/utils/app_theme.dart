@@ -61,10 +61,20 @@ class AppTheme {
 
   // Couleurs semantiques derivees de la palette (statuts), pour eviter
   // toute couleur Material generique (vert/orange neon) hors marque.
-  static const Color succes = Color(0xFF4C7A5D);
-  static const Color alerte = or;
+  //
+  // Valeurs choisies (et assombries au besoin) pour garantir un contraste
+  // texte suffisant sur fond ivoire (>= 4.5:1, seuil WCAG AA texte normal) :
+  // l'or decoratif (#C9A961) n'offre qu'environ 2:1 sur ivoire et n'est
+  // donc jamais utilise comme couleur de texte, y compris pour le statut
+  // "alerte" qui utilise un ton bronze plus fonce derive de la meme teinte.
+  static const Color succes = Color(0xFF3F6B4E);
+  static const Color alerte = Color(0xFF7A5F30);
   static const Color danger = bordeaux;
-  static const Color neutre = Color(0xFF6B7280);
+  static const Color neutre = Color(0xFF565D6B);
+
+  /// Variante claire de [bordeaux], utilisee pour les messages d'erreur
+  /// sur fond bleu nuit (bordeaux pur y offrirait un contraste insuffisant).
+  static const Color dangerClair = Color(0xFFD98089);
 
   static const LinearGradient degradeOr = LinearGradient(
     colors: [or, orLumineux],
@@ -203,7 +213,7 @@ class AppTheme {
       onPrimary: bleuNuitProfond,
       secondary: orLumineux,
       onSecondary: bleuNuitProfond,
-      error: Color(0xFFD98089),
+      error: AppTheme.dangerClair,
       onError: bleuNuitProfond,
       surface: bleuNuitSurface,
       onSurface: ivoire,
@@ -257,8 +267,8 @@ class AppTheme {
         border: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0x33F7F3EA))),
         enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0x33F7F3EA))),
         focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: or, width: 2)),
-        errorBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFD98089))),
-        focusedErrorBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFD98089), width: 2)),
+        errorBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppTheme.dangerClair)),
+        focusedErrorBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppTheme.dangerClair, width: 2)),
         filled: false,
       ),
       cardTheme: CardThemeData(

@@ -8,6 +8,9 @@ import '../../providers/reservation_provider.dart';
 import '../../providers/room_provider.dart';
 import '../../utils/ui_helpers.dart';
 import '../../widgets/empty_state.dart';
+import '../../widgets/fade_slide_in.dart';
+import '../../widgets/premium_app_bar.dart';
+import '../../widgets/premium_list_tile.dart';
 import '../../widgets/status_badge.dart';
 
 /// Ecran reserve au role Client : consultation de ses propres reservations
@@ -54,42 +57,39 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
     final clientId = authProvider.utilisateurCourant?.clientId;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Mes reservations')),
-      body: _enChargement
-          ? const Center(child: CircularProgressIndicator())
-          : clientId == null
-              ? const EmptyState(
-                  icone: Icons.link_off,
-                  message: 'Votre compte n\'est relie a aucune fiche client.\nContactez la reception.',
-                )
-              : (_reservations == null || _reservations!.isEmpty)
-                  ? const EmptyState(icone: Icons.event_busy, message: 'Vous n\'avez aucune reservation')
-                  : RefreshIndicator(
-                      onRefresh: _charger,
-                      child: ListView.separated(
-                        padding: const EdgeInsets.all(12),
-                        itemCount: _reservations!.length,
-                        separatorBuilder: (_, _) => const SizedBox(height: 8),
-                        itemBuilder: (context, i) {
-                          final reservation = _reservations![i];
-                          final chambre = chambresParId[reservation.chambreId];
-                          return Card(
-                            child: ListTile(
-                              leading: const Icon(Icons.meeting_room_outlined),
-                              title: Text('Chambre ${chambre?.numero ?? '-'} - ${chambre?.type.libelle ?? ''}'),
-                              subtitle: Text(
-                                '${UiHelpers.formatDate(reservation.dateArrivee)} -> ${UiHelpers.formatDate(reservation.dateDepart)}\n${UiHelpers.formatMontant(reservation.montantTotal)}',
-                              ),
-                              isThreeLine: true,
+      appBar: const PremiumAppBar(title: 'Mes reservations'),
+      body: FadeSlideIn(
+        child: _enChargement
+            ? const Center(child: CircularProgressIndicator())
+            : clientId == null
+                ? const EmptyState(
+                    icone: Icons.link_off,
+                    message: 'Votre compte n\'est relie a aucune fiche client.\nContactez la reception.',
+                  )
+                : (_reservations == null || _reservations!.isEmpty)
+                    ? const EmptyState(icone: Icons.event_busy, message: 'Vous n\'avez aucune reservation')
+                    : RefreshIndicator(
+                        onRefresh: _charger,
+                        child: ListView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                          itemCount: _reservations!.length,
+                          itemBuilder: (context, i) {
+                            final reservation = _reservations![i];
+                            final chambre = chambresParId[reservation.chambreId];
+                            return PremiumListTile(
+                              icon: Icons.meeting_room_outlined,
+                              title: 'Chambre ${chambre?.numero ?? '-'} - ${chambre?.type.libelle ?? ''}',
+                              subtitle:
+                                  '${UiHelpers.formatDate(reservation.dateArrivee)} -> ${UiHelpers.formatDate(reservation.dateDepart)} - ${UiHelpers.formatMontant(reservation.montantTotal)}',
                               trailing: StatusBadge(
                                 texte: reservation.statut.libelle,
                                 couleur: UiHelpers.couleurStatutReservation(reservation.statut),
                               ),
-                            ),
-                          );
-                        },
+                            );
+                          },
+                        ),
                       ),
-                    ),
+      ),
     );
   }
 }

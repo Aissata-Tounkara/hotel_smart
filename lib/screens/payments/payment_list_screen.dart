@@ -5,8 +5,12 @@ import '../../models/paiement.dart';
 import '../../providers/client_provider.dart';
 import '../../providers/payment_provider.dart';
 import '../../providers/reservation_provider.dart';
+import '../../utils/app_theme.dart';
 import '../../utils/ui_helpers.dart';
 import '../../widgets/empty_state.dart';
+import '../../widgets/fade_slide_in.dart';
+import '../../widgets/premium_app_bar.dart';
+import '../../widgets/premium_list_tile.dart';
 import '../../widgets/status_badge.dart';
 import 'payment_form_screen.dart';
 
@@ -62,47 +66,49 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
     final paiements = paymentProvider.paiements;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Paiements')),
+      appBar: const PremiumAppBar(title: 'Paiements'),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => const PaymentFormScreen()),
         ),
         child: const Icon(Icons.add),
       ),
-      body: paymentProvider.enChargement
-          ? const Center(child: CircularProgressIndicator())
-          : paiements.isEmpty
-              ? const EmptyState(icone: Icons.receipt_long_outlined, message: 'Aucun paiement enregistre')
-              : RefreshIndicator(
-                  onRefresh: paymentProvider.charger,
-                  child: ListView.separated(
-                    padding: const EdgeInsets.all(12),
-                    itemCount: paiements.length,
-                    separatorBuilder: (_, _) => const SizedBox(height: 8),
-                    itemBuilder: (context, i) {
-                      final paiement = paiements[i];
-                      final reservation = reservationsParId[paiement.reservationId];
-                      final client = reservation != null ? clientsParId[reservation.clientId] : null;
-                      return Card(
-                        child: ListTile(
+      body: FadeSlideIn(
+        child: paymentProvider.enChargement
+            ? const Center(child: CircularProgressIndicator())
+            : paiements.isEmpty
+                ? const EmptyState(icone: Icons.receipt_long_outlined, message: 'Aucun paiement enregistre')
+                : RefreshIndicator(
+                    onRefresh: paymentProvider.charger,
+                    child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                      itemCount: paiements.length,
+                      itemBuilder: (context, i) {
+                        final paiement = paiements[i];
+                        final reservation = reservationsParId[paiement.reservationId];
+                        final client = reservation != null ? clientsParId[reservation.clientId] : null;
+                        return PremiumListTile(
+                          icon: Icons.receipt_long_outlined,
+                          title: client?.nomComplet ?? 'Reservation #${paiement.reservationId}',
+                          subtitle: '${paiement.methode} - ${UiHelpers.formatDate(paiement.datePaiement)}',
                           onTap: () => _changerStatut(paiement),
-                          leading: const Icon(Icons.receipt_long_outlined),
-                          title: Text(client?.nomComplet ?? 'Reservation #${paiement.reservationId}'),
-                          subtitle: Text('${paiement.methode} - ${UiHelpers.formatDate(paiement.datePaiement)}'),
                           trailing: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Text(UiHelpers.formatMontant(paiement.montant), style: const TextStyle(fontWeight: FontWeight.bold)),
+                              Text(
+                                UiHelpers.formatMontant(paiement.montant),
+                                style: AppTheme.manrope(fontWeight: FontWeight.w700, color: Theme.of(context).textTheme.bodyLarge?.color),
+                              ),
                               const SizedBox(height: 4),
                               StatusBadge(texte: paiement.statut.libelle, couleur: UiHelpers.couleurStatutPaiement(paiement.statut)),
                             ],
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
-                ),
+      ),
     );
   }
 }

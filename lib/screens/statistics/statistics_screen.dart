@@ -6,6 +6,10 @@ import '../../models/chambre.dart';
 import '../../providers/statistics_provider.dart';
 import '../../services/statistics_service.dart';
 import '../../utils/ui_helpers.dart';
+import '../../widgets/fade_slide_in.dart';
+import '../../widgets/hero_stat_card.dart';
+import '../../widgets/ornamental_divider.dart';
+import '../../widgets/premium_app_bar.dart';
 
 const _moisAbreges = ['Jan', 'Fev', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aou', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -31,65 +35,46 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     final stats = statisticsProvider.statistiques;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Statistiques')),
+      appBar: const PremiumAppBar(title: 'Statistiques'),
       body: statisticsProvider.enChargement && stats == null
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
               onRefresh: statisticsProvider.charger,
-              child: ListView(
-                padding: const EdgeInsets.all(16),
-                children: [
-                  if (stats != null) ...[
-                    Row(
-                      children: [
-                        Expanded(child: _CarteResume('Taux d\'occupation', '${stats.tauxOccupation.toStringAsFixed(1)}%', Icons.percent)),
-                        const SizedBox(width: 12),
-                        Expanded(child: _CarteResume('CA du mois', UiHelpers.formatMontant(stats.chiffreAffairesMensuel), Icons.trending_up)),
-                      ],
+              child: FadeSlideIn(
+                child: ListView(
+                  padding: const EdgeInsets.all(20),
+                  children: [
+                    if (stats != null) ...[
+                      HeroStatCard(
+                        label: 'Chiffre d\'affaires du mois',
+                        value: UiHelpers.formatMontant(stats.chiffreAffairesMensuel),
+                        icon: Icons.trending_up,
+                      ),
+                      const SizedBox(height: 14),
+                      MiniStat(
+                        label: 'Taux d\'occupation',
+                        value: '${stats.tauxOccupation.toStringAsFixed(1)}%',
+                        icon: Icons.percent,
+                      ),
+                      const OrnamentalDivider(),
+                    ],
+                    Text('Taux d\'occupation par mois', style: Theme.of(context).textTheme.titleMedium),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      height: 220,
+                      child: _GraphiqueOccupation(donnees: statisticsProvider.occupationParMois),
                     ),
-                    const SizedBox(height: 24),
+                    const OrnamentalDivider(),
+                    Text('Revenus par type de chambre', style: Theme.of(context).textTheme.titleMedium),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      height: 220,
+                      child: _GraphiqueRevenu(donnees: statisticsProvider.revenuParType),
+                    ),
                   ],
-                  Text('Taux d\'occupation par mois', style: Theme.of(context).textTheme.titleMedium),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    height: 220,
-                    child: _GraphiqueOccupation(donnees: statisticsProvider.occupationParMois),
-                  ),
-                  const SizedBox(height: 32),
-                  Text('Revenus par type de chambre', style: Theme.of(context).textTheme.titleMedium),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    height: 220,
-                    child: _GraphiqueRevenu(donnees: statisticsProvider.revenuParType),
-                  ),
-                ],
+                ),
               ),
             ),
-    );
-  }
-}
-
-class _CarteResume extends StatelessWidget {
-  final String titre;
-  final String valeur;
-  final IconData icone;
-  const _CarteResume(this.titre, this.valeur, this.icone);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icone, color: Theme.of(context).colorScheme.primary),
-            const SizedBox(height: 8),
-            Text(valeur, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-            Text(titre, style: Theme.of(context).textTheme.bodySmall),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -102,6 +87,7 @@ class _GraphiqueOccupation extends StatelessWidget {
   Widget build(BuildContext context) {
     if (donnees.isEmpty) return const Center(child: Text('Aucune donnee'));
     final couleur = Theme.of(context).colorScheme.primary;
+    final couleurTexte = Theme.of(context).textTheme.bodySmall?.color;
 
     return BarChart(
       BarChartData(
@@ -119,7 +105,7 @@ class _GraphiqueOccupation extends StatelessWidget {
                 if (index < 0 || index >= donnees.length) return const SizedBox.shrink();
                 return Padding(
                   padding: const EdgeInsets.only(top: 6),
-                  child: Text(_moisAbreges[donnees[index].mois - 1], style: const TextStyle(fontSize: 11)),
+                  child: Text(_moisAbreges[donnees[index].mois - 1], style: TextStyle(fontSize: 11, color: couleurTexte)),
                 );
               },
             ),
@@ -131,7 +117,7 @@ class _GraphiqueOccupation extends StatelessWidget {
           for (int i = 0; i < donnees.length; i++)
             BarChartGroupData(
               x: i,
-              barRods: [BarChartRodData(toY: donnees[i].taux, color: couleur, width: 18, borderRadius: BorderRadius.circular(4))],
+              barRods: [BarChartRodData(toY: donnees[i].taux, color: couleur, width: 18, borderRadius: BorderRadius.circular(3))],
             ),
         ],
       ),
@@ -147,6 +133,7 @@ class _GraphiqueRevenu extends StatelessWidget {
   Widget build(BuildContext context) {
     if (donnees.isEmpty) return const Center(child: Text('Aucune donnee'));
     final accent = Theme.of(context).colorScheme.secondary;
+    final couleurTexte = Theme.of(context).textTheme.bodySmall?.color;
     final maxY = donnees.map((d) => d.montant).fold<double>(0, (a, b) => a > b ? a : b);
 
     return BarChart(
@@ -165,7 +152,7 @@ class _GraphiqueRevenu extends StatelessWidget {
                 if (index < 0 || index >= donnees.length) return const SizedBox.shrink();
                 return Padding(
                   padding: const EdgeInsets.only(top: 6),
-                  child: Text(donnees[index].type.libelle, style: const TextStyle(fontSize: 11)),
+                  child: Text(donnees[index].type.libelle, style: TextStyle(fontSize: 11, color: couleurTexte)),
                 );
               },
             ),
@@ -177,7 +164,7 @@ class _GraphiqueRevenu extends StatelessWidget {
           for (int i = 0; i < donnees.length; i++)
             BarChartGroupData(
               x: i,
-              barRods: [BarChartRodData(toY: donnees[i].montant, color: accent, width: 24, borderRadius: BorderRadius.circular(4))],
+              barRods: [BarChartRodData(toY: donnees[i].montant, color: accent, width: 24, borderRadius: BorderRadius.circular(3))],
             ),
         ],
       ),

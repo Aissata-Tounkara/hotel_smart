@@ -212,10 +212,22 @@ class _EnteteBienvenue extends StatelessWidget {
                 '${AppStrings.get('bienvenue', arabe: arabe)}, ${utilisateur.nom}',
                 style: theme.textTheme.headlineSmall?.copyWith(fontSize: 20),
               ),
-              const SizedBox(height: 2),
-              Text(
-                utilisateur.role.libelle,
-                style: AppTheme.manrope(color: or, fontWeight: FontWeight.w600, fontSize: 13),
+              const SizedBox(height: 6),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                decoration: BoxDecoration(
+                  color: or.withValues(alpha: 0.12),
+                  border: Border.all(color: or.withValues(alpha: 0.5)),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  utilisateur.role.libelle,
+                  style: AppTheme.manrope(
+                    color: theme.textTheme.bodyMedium?.color,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 12,
+                  ),
+                ),
               ),
             ],
           ),

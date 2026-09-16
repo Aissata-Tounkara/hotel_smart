@@ -4,6 +4,10 @@ import 'package:provider/provider.dart';
 import '../../models/chambre.dart';
 import '../../providers/room_provider.dart';
 import '../../utils/validators.dart';
+import '../../widgets/app_text_field.dart';
+import '../../widgets/gradient_button.dart';
+import '../../widgets/ornamental_divider.dart';
+import '../../widgets/premium_app_bar.dart';
 
 /// Formulaire de creation/edition d'une chambre (points 17, 18).
 class RoomFormScreen extends StatefulWidget {
@@ -82,18 +86,19 @@ class _RoomFormScreenState extends State<RoomFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(_estEdition ? 'Modifier la chambre' : 'Nouvelle chambre')),
+      appBar: PremiumAppBar(title: _estEdition ? 'Modifier la chambre' : 'Nouvelle chambre'),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(20),
           children: [
-            TextFormField(
+            AppTextField(
               controller: _numeroController,
-              decoration: const InputDecoration(labelText: 'Numero de chambre', prefixIcon: Icon(Icons.tag)),
+              label: 'Numero de chambre',
+              icon: Icons.tag,
               validator: (v) => Validators.required(v, champ: 'Le numero'),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             DropdownButtonFormField<TypeChambre>(
               initialValue: _type,
               decoration: const InputDecoration(labelText: 'Type de chambre', prefixIcon: Icon(Icons.category_outlined)),
@@ -102,21 +107,23 @@ class _RoomFormScreenState extends State<RoomFormScreen> {
                   .toList(),
               onChanged: (v) => setState(() => _type = v!),
             ),
-            const SizedBox(height: 16),
-            TextFormField(
+            const SizedBox(height: 20),
+            AppTextField(
               controller: _prixController,
+              label: 'Prix par nuit (DA)',
+              icon: Icons.payments_outlined,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              decoration: const InputDecoration(labelText: 'Prix par nuit (DA)', prefixIcon: Icon(Icons.payments_outlined)),
               validator: (v) => Validators.positiveNumber(v, champ: 'Le prix'),
             ),
-            const SizedBox(height: 16),
-            TextFormField(
+            const SizedBox(height: 20),
+            AppTextField(
               controller: _etageController,
+              label: 'Etage',
+              icon: Icons.stairs_outlined,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: 'Etage', prefixIcon: Icon(Icons.stairs_outlined)),
               validator: (v) => Validators.positiveNumber(v, champ: 'L\'etage'),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             DropdownButtonFormField<StatutChambre>(
               initialValue: _statut,
               decoration: const InputDecoration(labelText: 'Statut', prefixIcon: Icon(Icons.info_outline)),
@@ -125,24 +132,17 @@ class _RoomFormScreenState extends State<RoomFormScreen> {
                   .toList(),
               onChanged: (v) => setState(() => _statut = v!),
             ),
-            const SizedBox(height: 16),
-            TextFormField(
+            const OrnamentalDivider(),
+            AppTextField(
               controller: _descriptionController,
+              label: 'Description (optionnel)',
               maxLines: 3,
-              decoration: const InputDecoration(labelText: 'Description (optionnel)', alignLabelWithHint: true),
             ),
-            const SizedBox(height: 24),
-            SizedBox(
-              height: 50,
-              child: ElevatedButton(
-                onPressed: _enEnregistrement ? null : _enregistrer,
-                child: _enEnregistrement
-                    ? const SizedBox(
-                        height: 20, width: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                      )
-                    : const Text('Enregistrer'),
-              ),
+            const SizedBox(height: 28),
+            GradientButton(
+              label: 'ENREGISTRER',
+              loading: _enEnregistrement,
+              onPressed: _enregistrer,
             ),
           ],
         ),
