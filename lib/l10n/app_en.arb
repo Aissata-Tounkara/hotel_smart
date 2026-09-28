@@ -49,5 +49,132 @@
   "themeSystem": "System",
   "language": "Language",
   "languageFrench": "French",
-  "languageEnglish": "English"
+  "languageEnglish": "English",
+  "save": "Save",
+  "cancel": "Cancel",
+  "confirm": "Confirm",
+  "edit": "Edit",
+  "delete": "Delete",
+  "retry": "Retry",
+  "apply": "Apply",
+  "reset": "Reset",
+  "filters": "Filters",
+  "viewList": "List view",
+  "viewCards": "Card view",
+  "searchRooms": "Search by room number or type",
+  "noRoomsFound": "No rooms found",
+  "deleteRoomTitle": "Delete room",
+  "deleteRoomConfirmation": "Delete room {number}? This action cannot be undone.",
+  "@deleteRoomConfirmation": {
+    "placeholders": { "number": { "type": "String" } }
+  },
+  "addRoom": "Add room",
+  "roomNumberField": "Room number",
+  "roomNumber": "Room {number}",
+  "@roomNumber": {
+    "placeholders": { "number": { "type": "String" } }
+  },
+  "roomNumberType": "Room {number} - {type}",
+  "@roomNumberType": {
+    "placeholders": {
+      "number": { "type": "String" },
+      "type": { "type": "String" }
+    }
+  },
+  "roomPriceAndFloor": "{price} / night - floor {floor}",
+  "@roomPriceAndFloor": {
+    "placeholders": {
+      "price": { "type": "String" },
+      "floor": { "type": "String" }
+    }
+  },
+  "roomSemanticSummary": "Room {number}, {type}, {status}, {price} per night, floor {floor}",
+  "@roomSemanticSummary": {
+    "placeholders": {
+      "number": { "type": "String" },
+      "type": { "type": "String" },
+      "status": { "type": "String" },
+      "price": { "type": "String" },
+      "floor": { "type": "String" }
+    }
+  },
+  "roomTypeField": "Room type",
+  "roomStatusField": "Status",
+  "roomPriceField": "Price per night (DZD)",
+  "roomFloorField": "Floor",
+  "roomDescriptionOptional": "Description (optional)",
+  "newRoom": "New room",
+  "editRoom": "Edit room",
+  "duplicateRoomNumber": "A room with this number already exists",
+  "roomLoadError": "Unable to load rooms",
+  "roomSaveError": "Unable to save the room",
+  "roomUpdateError": "Unable to update the room",
+  "roomDeleteError": "Unable to delete the room",
+  "filterRooms": "Filter rooms",
+  "allRoomTypes": "All types",
+  "allRoomStatuses": "All statuses",
+  "priceRange": "Price: {start} - {end} DZD",
+  "@priceRange": {
+    "placeholders": {
+      "start": { "type": "String" },
+      "end": { "type": "String" }
+    }
+  },
+  "roomTypeSingle": "Single",
+  "roomTypeDouble": "Double",
+  "roomTypeSuite": "Suite",
+  "roomStatusAvailable": "Available",
+  "roomStatusOccupied": "Occupied",
+  "roomStatusMaintenance": "Maintenance",
+  "requiredField": "{field} is required",
+  "@requiredField": {
+    "placeholders": { "field": { "type": "String" } }
+  },
+  "positiveNumberField": "{field} must be a positive number",
+  "@positiveNumberField": {
+    "placeholders": { "field": { "type": "String" } }
+  },
+  "clientSearch": "Search by name, phone, or email",
+  "noClientsFound": "No guests found",
+  "deleteClientTitle": "Delete guest",
+  "deleteClientConfirmation": "Delete {name}? This action cannot be undone.",
+  "@deleteClientConfirmation": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "deleteClientTooltip": "Delete guest {name}",
+  "@deleteClientTooltip": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "clientSemanticSummary": "Guest {name}, phone {phone}, nationality {nationality}",
+  "@clientSemanticSummary": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "phone": { "type": "String" },
+      "nationality": { "type": "String" }
+    }
+  },
+  "clientSubtitle": "{phone} - {nationality}",
+  "@clientSubtitle": {
+    "placeholders": {
+      "phone": { "type": "String" },
+      "nationality": { "type": "String" }
+    }
+  },
+  "addClient": "Add guest",
+  "newClient": "New guest",
+  "editClient": "Edit guest",
+  "firstName": "First name",
+  "lastName": "Last name",
+  "phone": "Phone",
+  "phoneInvalid": "Invalid phone format",
+  "cinPassportOptional": "ID / Passport (optional)",
+  "nationality": "Nationality",
+  "selectNationality": "Please select a nationality",
+  "loadingNationalities": "Loading nationalities...",
+  "nationalitiesOffline": "Offline list (service unavailable): limited options",
+  "clientLoadError": "Unable to load guests",
+  "clientSaveError": "Unable to save the guest",
+  "clientUpdateError": "Unable to update the guest",
+  "clientDeleteError": "Unable to delete the guest: they may have reservations",
+  "unknownError": "Unknown error"
 }

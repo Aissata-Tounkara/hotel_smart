@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../models/chambre.dart';
 import '../../providers/room_provider.dart';
-import '../../utils/validators.dart';
 import '../../widgets/app_text_field.dart';
 import '../../widgets/gradient_button.dart';
 import '../../widgets/ornamental_divider.dart';
@@ -53,6 +53,7 @@ class _RoomFormScreenState extends State<RoomFormScreen> {
 
   Future<void> _enregistrer() async {
     if (!_formKey.currentState!.validate()) return;
+    final l10n = AppLocalizations.of(context)!;
     setState(() => _enEnregistrement = true);
 
     final roomProvider = context.read<RoomProvider>();
@@ -77,7 +78,7 @@ class _RoomFormScreenState extends State<RoomFormScreen> {
       Navigator.of(context).pop();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(roomProvider.erreur ?? 'Erreur inconnue')),
+        SnackBar(content: Text(_messageErreurRoom(roomProvider.erreur, l10n))),
       );
       roomProvider.effacerErreur();
     }
@@ -85,8 +86,9 @@ class _RoomFormScreenState extends State<RoomFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: PremiumAppBar(title: _estEdition ? 'Modifier la chambre' : 'Nouvelle chambre'),
+      appBar: PremiumAppBar(title: _estEdition ? l10n.editRoom : l10n.newRoom),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -94,53 +96,75 @@ class _RoomFormScreenState extends State<RoomFormScreen> {
           children: [
             AppTextField(
               controller: _numeroController,
-              label: 'Numero de chambre',
+              label: l10n.roomNumberField,
               icon: Icons.tag,
-              validator: (v) => Validators.required(v, champ: 'Le numero'),
+              validator: (v) => v == null || v.trim().isEmpty
+                  ? l10n.requiredField(l10n.roomNumberField)
+                  : null,
             ),
             const SizedBox(height: 20),
             DropdownButtonFormField<TypeChambre>(
               initialValue: _type,
-              decoration: const InputDecoration(labelText: 'Type de chambre', prefixIcon: Icon(Icons.category_outlined)),
+              decoration: InputDecoration(
+                labelText: l10n.roomTypeField,
+                prefixIcon: const Icon(Icons.category_outlined),
+              ),
               items: TypeChambre.values
-                  .map((t) => DropdownMenuItem(value: t, child: Text(t.libelle)))
+                  .map((t) => DropdownMenuItem(
+                    value: t,
+                    child: Text(_libelleTypeChambre(t, l10n)),
+                  ))
                   .toList(),
               onChanged: (v) => setState(() => _type = v!),
             ),
             const SizedBox(height: 20),
             AppTextField(
               controller: _prixController,
-              label: 'Prix par nuit (DA)',
+              label: l10n.roomPriceField,
               icon: Icons.payments_outlined,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              validator: (v) => Validators.positiveNumber(v, champ: 'Le prix'),
+              validator: (v) => _validerNombrePositif(
+                v,
+                l10n,
+                l10n.roomPriceField,
+              ),
             ),
             const SizedBox(height: 20),
             AppTextField(
               controller: _etageController,
-              label: 'Etage',
+              label: l10n.roomFloorField,
               icon: Icons.stairs_outlined,
               keyboardType: TextInputType.number,
-              validator: (v) => Validators.positiveNumber(v, champ: 'L\'etage'),
+              validator: (v) => _validerNombrePositif(
+                v,
+                l10n,
+                l10n.roomFloorField,
+              ),
             ),
             const SizedBox(height: 20),
             DropdownButtonFormField<StatutChambre>(
               initialValue: _statut,
-              decoration: const InputDecoration(labelText: 'Statut', prefixIcon: Icon(Icons.info_outline)),
+              decoration: InputDecoration(
+                labelText: l10n.roomStatusField,
+                prefixIcon: const Icon(Icons.info_outline),
+              ),
               items: StatutChambre.values
-                  .map((s) => DropdownMenuItem(value: s, child: Text(s.libelle)))
+                  .map((s) => DropdownMenuItem(
+                    value: s,
+                    child: Text(_libelleStatutChambre(s, l10n)),
+                  ))
                   .toList(),
               onChanged: (v) => setState(() => _statut = v!),
             ),
             const OrnamentalDivider(),
             AppTextField(
               controller: _descriptionController,
-              label: 'Description (optionnel)',
+              label: l10n.roomDescriptionOptional,
               maxLines: 3,
             ),
             const SizedBox(height: 28),
             GradientButton(
-              label: 'ENREGISTRER',
+              label: l10n.save.toUpperCase(),
               loading: _enEnregistrement,
               onPressed: _enregistrer,
             ),
@@ -150,3 +174,41 @@ class _RoomFormScreenState extends State<RoomFormScreen> {
     );
   }
 }
+
+String? _validerNombrePositif(
+  String? value,
+  AppLocalizations l10n,
+  String field,
+) {
+  if (value == null || value.trim().isEmpty) {
+    return l10n.requiredField(field);
+  }
+  final number = num.tryParse(value.trim());
+  if (number == null || number <= 0) {
+    return l10n.positiveNumberField(field);
+  }
+  return null;
+}
+
+String _libelleTypeChambre(TypeChambre type, AppLocalizations l10n) =>
+    switch (type) {
+      TypeChambre.simple => l10n.roomTypeSingle,
+      TypeChambre.double_ => l10n.roomTypeDouble,
+      TypeChambre.suite => l10n.roomTypeSuite,
+    };
+
+String _libelleStatutChambre(StatutChambre statut, AppLocalizations l10n) =>
+    switch (statut) {
+      StatutChambre.disponible => l10n.roomStatusAvailable,
+      StatutChambre.occupee => l10n.roomStatusOccupied,
+      StatutChambre.maintenance => l10n.roomStatusMaintenance,
+    };
+
+String _messageErreurRoom(String? erreur, AppLocalizations l10n) =>
+    switch (erreur) {
+      'Une chambre avec ce numero existe deja' => l10n.duplicateRoomNumber,
+      "Impossible d'ajouter la chambre" => l10n.roomSaveError,
+      'Impossible de modifier la chambre' => l10n.roomUpdateError,
+      'Impossible de supprimer la chambre' => l10n.roomDeleteError,
+      _ => erreur ?? l10n.unknownError,
+    };

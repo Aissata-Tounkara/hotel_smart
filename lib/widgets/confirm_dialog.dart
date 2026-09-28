@@ -11,6 +11,7 @@ Future<bool> afficherConfirmation(
   required String titre,
   required String message,
   String texteConfirmer = 'Confirmer',
+  String texteAnnuler = 'Annuler',
   bool destructif = false,
 }) async {
   final resultat = await showDialog<bool>(
@@ -21,7 +22,7 @@ Future<bool> afficherConfirmation(
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('Annuler'),
+          child: Text(texteAnnuler),
         ),
         FilledButton(
           style: destructif

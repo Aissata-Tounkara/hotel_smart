@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../models/chambre.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/room_provider.dart';
@@ -36,11 +37,13 @@ class _RoomListScreenState extends State<RoomListScreen> {
   }
 
   Future<void> _supprimer(BuildContext context, Chambre chambre) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirme = await afficherConfirmation(
       context,
-      titre: 'Supprimer la chambre',
-      message:
-          'Supprimer la chambre ${chambre.numero} ? Cette action est irreversible.',
+      titre: l10n.deleteRoomTitle,
+      message: l10n.deleteRoomConfirmation(chambre.numero),
+      texteConfirmer: l10n.delete,
+      texteAnnuler: l10n.cancel,
       destructif: true,
     );
     if (!confirme || !context.mounted) return;
@@ -60,26 +63,28 @@ class _RoomListScreenState extends State<RoomListScreen> {
   Widget build(BuildContext context) {
     final roomProvider = context.watch<RoomProvider>();
     final authProvider = context.watch<AuthProvider>();
+    final l10n = AppLocalizations.of(context)!;
     final chambres = roomProvider.chambres;
 
     return Scaffold(
       appBar: PremiumAppBar(
-        title: 'Chambres',
+        title: l10n.rooms,
         actions: [
           IconButton(
             icon: Icon(_vueCarte ? Icons.view_list : Icons.grid_view),
-            tooltip: _vueCarte ? 'Vue liste' : 'Vue carte',
+            tooltip: _vueCarte ? l10n.viewList : l10n.viewCards,
             onPressed: () => setState(() => _vueCarte = !_vueCarte),
           ),
           IconButton(
             icon: const Icon(Icons.tune),
-            tooltip: 'Filtres',
+            tooltip: l10n.filters,
             onPressed: () => _ouvrirFiltres(context),
           ),
         ],
       ),
       floatingActionButton: authProvider.peutGererOperations
           ? FloatingActionButton(
+              tooltip: l10n.addRoom,
               onPressed: () => Navigator.of(
                 context,
               ).push(MaterialPageRoute(builder: (_) => const RoomFormScreen())),
@@ -92,18 +97,30 @@ class _RoomListScreenState extends State<RoomListScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
               child: AppTextField(
-                label: 'Rechercher par numero ou type',
+                label: l10n.searchRooms,
                 icon: Icons.search,
-                onChanged: roomProvider.rechercher,
+                onChanged: (value) {
+                  var recherche = value;
+                  for (final type in TypeChambre.values) {
+                    final libelleTraduit = _libelleTypeChambre(type, l10n);
+                    if (libelleTraduit != type.libelle) {
+                      recherche = recherche.replaceAll(
+                        RegExp(RegExp.escape(libelleTraduit), caseSensitive: false),
+                        type.libelle,
+                      );
+                    }
+                  }
+                  roomProvider.rechercher(recherche);
+                },
               ),
             ),
             Expanded(
               child: roomProvider.enChargement
                   ? const Center(child: CircularProgressIndicator())
                   : chambres.isEmpty
-                  ? const EmptyState(
+                  ? EmptyState(
                       icone: Icons.bed_outlined,
-                      message: 'Aucune chambre trouvee',
+                      message: l10n.noRoomsFound,
                     )
                   : RefreshIndicator(
                       onRefresh: roomProvider.charger,
@@ -128,8 +145,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
                                 peutModifier: authProvider.peutGererOperations,
                                 onModifier: () => Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (_) =>
-                                        RoomFormScreen(chambre: chambres[i]),
+                                    builder: (_) => RoomFormScreen(chambre: chambres[i]),
                                   ),
                                 ),
                                 onSupprimer: () =>
@@ -144,14 +160,23 @@ class _RoomListScreenState extends State<RoomListScreen> {
                               itemBuilder: (context, i) {
                                 final chambre = chambres[i];
                                 return Semantics(
-                                  label:
-                                      'Chambre ${chambre.numero}, type ${chambre.type.libelle}, ${chambre.statut.libelle}, ${UiHelpers.formatMontant(chambre.prixParNuit)} par nuit, étage ${chambre.etage}',
+                                  label: l10n.roomSemanticSummary(
+                                    chambre.numero,
+                                    _libelleTypeChambre(chambre.type, l10n),
+                                    _libelleStatutChambre(chambre.statut, l10n),
+                                    UiHelpers.formatMontant(chambre.prixParNuit),
+                                    chambre.etage.toString(),
+                                  ),
                                   child: PremiumListTile(
                                     icon: Icons.meeting_room_outlined,
-                                    title:
-                                        'Chambre ${chambre.numero} - ${chambre.type.libelle}',
-                                    subtitle:
-                                        '${UiHelpers.formatMontant(chambre.prixParNuit)} / nuit - Etage ${chambre.etage}',
+                                    title: l10n.roomNumberType(
+                                      chambre.numero,
+                                      _libelleTypeChambre(chambre.type, l10n),
+                                    ),
+                                    subtitle: l10n.roomPriceAndFloor(
+                                      UiHelpers.formatMontant(chambre.prixParNuit),
+                                      chambre.etage.toString(),
+                                    ),
                                     onTap: authProvider.peutGererOperations
                                         ? () => Navigator.of(context).push(
                                             MaterialPageRoute(
@@ -165,7 +190,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         StatusBadge(
-                                          texte: chambre.statut.libelle,
+                                          texte: _libelleStatutChambre(chambre.statut, l10n),
                                           couleur:
                                               UiHelpers.couleurStatutChambre(
                                                 chambre.statut,
@@ -183,14 +208,14 @@ class _RoomListScreenState extends State<RoomListScreen> {
                                                     ),
                                                   )
                                                 : _supprimer(context, chambre),
-                                            itemBuilder: (context) => const [
+                                            itemBuilder: (context) => [
                                               PopupMenuItem(
                                                 value: 'modifier',
-                                                child: Text('Modifier'),
+                                                child: Text(l10n.edit),
                                               ),
                                               PopupMenuItem(
                                                 value: 'supprimer',
-                                                child: Text('Supprimer'),
+                                                child: Text(l10n.delete),
                                               ),
                                             ],
                                           ),
@@ -225,9 +250,15 @@ class _CarteChambre extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final or = Theme.of(context).colorScheme.secondary;
+    final l10n = AppLocalizations.of(context)!;
     return Semantics(
-      label:
-          'Chambre ${chambre.numero}, type ${chambre.type.libelle}, ${chambre.statut.libelle}, ${UiHelpers.formatMontant(chambre.prixParNuit)} par nuit, étage ${chambre.etage}',
+      label: l10n.roomSemanticSummary(
+        chambre.numero,
+        _libelleTypeChambre(chambre.type, l10n),
+        _libelleStatutChambre(chambre.statut, l10n),
+        UiHelpers.formatMontant(chambre.prixParNuit),
+        chambre.etage.toString(),
+      ),
       child: InkWell(
         borderRadius: BorderRadius.circular(4),
         onTap: peutModifier ? onModifier : null,
@@ -248,14 +279,14 @@ class _CarteChambre extends StatelessWidget {
                     PopupMenuButton<String>(
                       onSelected: (v) =>
                           v == 'modifier' ? onModifier() : onSupprimer(),
-                      itemBuilder: (context) => const [
+                      itemBuilder: (context) => [
                         PopupMenuItem(
                           value: 'modifier',
-                          child: Text('Modifier'),
+                          child: Text(l10n.edit),
                         ),
                         PopupMenuItem(
                           value: 'supprimer',
-                          child: Text('Supprimer'),
+                          child: Text(l10n.delete),
                         ),
                       ],
                     ),
@@ -263,11 +294,11 @@ class _CarteChambre extends StatelessWidget {
               ),
               const Spacer(),
               Text(
-                'Chambre ${chambre.numero}',
+                l10n.roomNumber(chambre.numero),
                 style: AppTheme.playfair(fontSize: 17),
               ),
               Text(
-                chambre.type.libelle,
+                _libelleTypeChambre(chambre.type, l10n),
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               const SizedBox(height: 8),
@@ -280,7 +311,7 @@ class _CarteChambre extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               StatusBadge(
-                texte: chambre.statut.libelle,
+                texte: _libelleStatutChambre(chambre.statut, l10n),
                 couleur: UiHelpers.couleurStatutChambre(chambre.statut),
               ),
             ],
@@ -290,6 +321,20 @@ class _CarteChambre extends StatelessWidget {
     );
   }
 }
+
+String _libelleTypeChambre(TypeChambre type, AppLocalizations l10n) =>
+    switch (type) {
+      TypeChambre.simple => l10n.roomTypeSingle,
+      TypeChambre.double_ => l10n.roomTypeDouble,
+      TypeChambre.suite => l10n.roomTypeSuite,
+    };
+
+String _libelleStatutChambre(StatutChambre statut, AppLocalizations l10n) =>
+    switch (statut) {
+      StatutChambre.disponible => l10n.roomStatusAvailable,
+      StatutChambre.occupee => l10n.roomStatusOccupied,
+      StatutChambre.maintenance => l10n.roomStatusMaintenance,
+    };
 
 class _FiltresChambresSheet extends StatefulWidget {
   final RoomProvider roomProvider;
@@ -314,6 +359,7 @@ class _FiltresChambresSheetState extends State<_FiltresChambresSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.only(
         left: 20,
@@ -326,20 +372,23 @@ class _FiltresChambresSheetState extends State<_FiltresChambresSheet> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Filtrer les chambres',
+            l10n.filterRooms,
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 20),
           DropdownButtonFormField<TypeChambre?>(
             initialValue: _type,
-            decoration: const InputDecoration(labelText: 'Type'),
+            decoration: InputDecoration(labelText: l10n.roomTypeField),
             items: [
-              const DropdownMenuItem(
+              DropdownMenuItem(
                 value: null,
-                child: Text('Tous les types'),
+                child: Text(l10n.allRoomTypes),
               ),
               ...TypeChambre.values.map(
-                (t) => DropdownMenuItem(value: t, child: Text(t.libelle)),
+                (t) => DropdownMenuItem(
+                  value: t,
+                  child: Text(_libelleTypeChambre(t, l10n)),
+                ),
               ),
             ],
             onChanged: (v) => setState(() => _type = v),
@@ -347,21 +396,27 @@ class _FiltresChambresSheetState extends State<_FiltresChambresSheet> {
           const SizedBox(height: 16),
           DropdownButtonFormField<StatutChambre?>(
             initialValue: _statut,
-            decoration: const InputDecoration(labelText: 'Statut'),
+            decoration: InputDecoration(labelText: l10n.roomStatusField),
             items: [
-              const DropdownMenuItem(
+              DropdownMenuItem(
                 value: null,
-                child: Text('Tous les statuts'),
+                child: Text(l10n.allRoomStatuses),
               ),
               ...StatutChambre.values.map(
-                (s) => DropdownMenuItem(value: s, child: Text(s.libelle)),
+                (s) => DropdownMenuItem(
+                  value: s,
+                  child: Text(_libelleStatutChambre(s, l10n)),
+                ),
               ),
             ],
             onChanged: (v) => setState(() => _statut = v),
           ),
           const SizedBox(height: 12),
           Text(
-            'Prix : ${_prix.start.round()} - ${_prix.end.round()} DA',
+            l10n.priceRange(
+              _prix.start.round().toString(),
+              _prix.end.round().toString(),
+            ),
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           RangeSlider(
@@ -381,7 +436,7 @@ class _FiltresChambresSheetState extends State<_FiltresChambresSheet> {
                     widget.roomProvider.reinitialiserFiltres();
                     Navigator.of(context).pop();
                   },
-                  child: const Text('Reinitialiser'),
+                  child: Text(l10n.reset),
                 ),
               ),
               const SizedBox(width: 12),
@@ -393,7 +448,7 @@ class _FiltresChambresSheetState extends State<_FiltresChambresSheet> {
                     widget.roomProvider.filtrerParPrix(_prix);
                     Navigator.of(context).pop();
                   },
-                  child: const Text('Appliquer'),
+                  child: Text(l10n.apply),
                 ),
               ),
             ],

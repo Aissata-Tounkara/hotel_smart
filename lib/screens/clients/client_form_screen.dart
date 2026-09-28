@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../models/client.dart';
 import '../../providers/client_provider.dart';
 import '../../utils/app_theme.dart';
@@ -63,9 +64,10 @@ class _ClientFormScreenState extends State<ClientFormScreen> {
 
   Future<void> _enregistrer() async {
     if (!_formKey.currentState!.validate()) return;
+    final l10n = AppLocalizations.of(context)!;
     if (_nationaliteSelectionnee == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Veuillez selectionner une nationalite')),
+        SnackBar(content: Text(l10n.selectNationality)),
       );
       return;
     }
@@ -92,7 +94,7 @@ class _ClientFormScreenState extends State<ClientFormScreen> {
       Navigator.of(context).pop();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(clientProvider.erreur ?? 'Erreur inconnue')),
+        SnackBar(content: Text(_messageErreurClient(clientProvider.erreur, l10n))),
       );
       clientProvider.effacerErreur();
     }
@@ -101,9 +103,10 @@ class _ClientFormScreenState extends State<ClientFormScreen> {
   @override
   Widget build(BuildContext context) {
     final clientProvider = context.watch<ClientProvider>();
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: PremiumAppBar(title: _estEdition ? 'Modifier le client' : 'Nouveau client'),
+      appBar: PremiumAppBar(title: _estEdition ? l10n.editClient : l10n.newClient),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -111,44 +114,60 @@ class _ClientFormScreenState extends State<ClientFormScreen> {
           children: [
             AppTextField(
               controller: _prenomController,
-              label: 'Prenom',
+              label: l10n.firstName,
               icon: Icons.person_outline,
-              validator: (v) => Validators.required(v, champ: 'Le prenom'),
+              validator: (v) => v == null || v.trim().isEmpty
+                  ? l10n.requiredField(l10n.firstName)
+                  : null,
             ),
             const SizedBox(height: 20),
             AppTextField(
               controller: _nomController,
-              label: 'Nom',
+              label: l10n.lastName,
               icon: Icons.badge_outlined,
-              validator: (v) => Validators.required(v, champ: 'Le nom'),
+              validator: (v) => v == null || v.trim().isEmpty
+                  ? l10n.requiredField(l10n.lastName)
+                  : null,
             ),
             const SizedBox(height: 20),
             AppTextField(
               controller: _telephoneController,
-              label: 'Telephone',
+              label: l10n.phone,
               icon: Icons.phone_outlined,
               keyboardType: TextInputType.phone,
-              validator: Validators.phone,
+              validator: (value) {
+                final error = Validators.phone(value);
+                if (error == null) return null;
+                return error == 'Le telephone est obligatoire'
+                    ? l10n.requiredField(l10n.phone)
+                    : l10n.phoneInvalid;
+              },
             ),
             const SizedBox(height: 20),
             AppTextField(
               controller: _emailController,
-              label: 'Email',
+              label: l10n.email,
               icon: Icons.email_outlined,
               keyboardType: TextInputType.emailAddress,
-              validator: Validators.email,
+              validator: (value) {
+                final error = Validators.email(value);
+                if (error == null) return null;
+                return error == "L'email est obligatoire"
+                    ? l10n.requiredField(l10n.email)
+                    : l10n.emailInvalid;
+              },
             ),
             const OrnamentalDivider(),
             AppTextField(
               controller: _cinController,
-              label: 'CIN / Passeport (optionnel)',
+              label: l10n.cinPassportOptional,
               icon: Icons.credit_card_outlined,
             ),
             const SizedBox(height: 20),
             _buildNationaliteField(clientProvider),
             const SizedBox(height: 28),
             GradientButton(
-              label: 'ENREGISTRER',
+              label: l10n.save.toUpperCase(),
               loading: _enEnregistrement,
               onPressed: _enregistrer,
             ),
@@ -159,14 +178,15 @@ class _ClientFormScreenState extends State<ClientFormScreen> {
   }
 
   Widget _buildNationaliteField(ClientProvider clientProvider) {
+    final l10n = AppLocalizations.of(context)!;
     if (clientProvider.chargementNationalites) {
-      return const Padding(
+      return Padding(
         padding: EdgeInsets.symmetric(vertical: 8),
         child: Row(
           children: [
             SizedBox(height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2)),
-            SizedBox(width: 12),
-            Text('Chargement des nationalites...'),
+            const SizedBox(width: 12),
+            Text(l10n.loadingNationalities),
           ],
         ),
       );
@@ -191,13 +211,13 @@ class _ClientFormScreenState extends State<ClientFormScreen> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'Liste hors-ligne (service indisponible) : options limitees',
+                      l10n.nationalitiesOffline,
                       style: AppTheme.manrope(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 12),
                     ),
                   ),
                   TextButton(
                     onPressed: () => context.read<ClientProvider>().chargerNationalites(),
-                    child: const Text('Reessayer'),
+                    child: Text(l10n.retry),
                   ),
                 ],
               ),
@@ -205,15 +225,28 @@ class _ClientFormScreenState extends State<ClientFormScreen> {
           ),
         DropdownButtonFormField<String>(
           initialValue: clientProvider.nationalites.contains(_nationaliteSelectionnee) ? _nationaliteSelectionnee : null,
-          decoration: const InputDecoration(labelText: 'Nationalite', prefixIcon: Icon(Icons.public)),
+          decoration: InputDecoration(
+            labelText: l10n.nationality,
+            prefixIcon: const Icon(Icons.public),
+          ),
           isExpanded: true,
           items: clientProvider.nationalites
               .map((n) => DropdownMenuItem(value: n, child: Text(n, overflow: TextOverflow.ellipsis)))
               .toList(),
           onChanged: (v) => setState(() => _nationaliteSelectionnee = v),
-          validator: (v) => v == null ? 'Veuillez selectionner une nationalite' : null,
+          validator: (v) => v == null ? l10n.selectNationality : null,
         ),
       ],
     );
   }
 }
+
+String _messageErreurClient(String? erreur, AppLocalizations l10n) =>
+    switch (erreur) {
+      'Impossible de charger les clients' => l10n.clientLoadError,
+      "Impossible d'ajouter le client" => l10n.clientSaveError,
+      'Impossible de modifier le client' => l10n.clientUpdateError,
+      'Impossible de supprimer le client : il possede peut-etre des reservations' =>
+        l10n.clientDeleteError,
+      _ => erreur ?? l10n.unknownError,
+    };

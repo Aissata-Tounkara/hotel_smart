@@ -49,5 +49,132 @@
   "themeSystem": "Système",
   "language": "Langue",
   "languageFrench": "Français",
-  "languageEnglish": "Anglais"
+  "languageEnglish": "Anglais",
+  "save": "Enregistrer",
+  "cancel": "Annuler",
+  "confirm": "Confirmer",
+  "edit": "Modifier",
+  "delete": "Supprimer",
+  "retry": "Réessayer",
+  "apply": "Appliquer",
+  "reset": "Réinitialiser",
+  "filters": "Filtres",
+  "viewList": "Vue liste",
+  "viewCards": "Vue cartes",
+  "searchRooms": "Rechercher par numéro ou type",
+  "noRoomsFound": "Aucune chambre trouvée",
+  "deleteRoomTitle": "Supprimer la chambre",
+  "deleteRoomConfirmation": "Supprimer la chambre {number} ? Cette action est irréversible.",
+  "@deleteRoomConfirmation": {
+    "placeholders": { "number": { "type": "String" } }
+  },
+  "addRoom": "Ajouter une chambre",
+  "roomNumberField": "Numéro de chambre",
+  "roomNumber": "Chambre {number}",
+  "@roomNumber": {
+    "placeholders": { "number": { "type": "String" } }
+  },
+  "roomNumberType": "Chambre {number} - {type}",
+  "@roomNumberType": {
+    "placeholders": {
+      "number": { "type": "String" },
+      "type": { "type": "String" }
+    }
+  },
+  "roomPriceAndFloor": "{price} / nuit - étage {floor}",
+  "@roomPriceAndFloor": {
+    "placeholders": {
+      "price": { "type": "String" },
+      "floor": { "type": "String" }
+    }
+  },
+  "roomSemanticSummary": "Chambre {number}, type {type}, {status}, {price} par nuit, étage {floor}",
+  "@roomSemanticSummary": {
+    "placeholders": {
+      "number": { "type": "String" },
+      "type": { "type": "String" },
+      "status": { "type": "String" },
+      "price": { "type": "String" },
+      "floor": { "type": "String" }
+    }
+  },
+  "roomTypeField": "Type de chambre",
+  "roomStatusField": "Statut",
+  "roomPriceField": "Prix par nuit (DA)",
+  "roomFloorField": "Étage",
+  "roomDescriptionOptional": "Description (optionnel)",
+  "newRoom": "Nouvelle chambre",
+  "editRoom": "Modifier la chambre",
+  "duplicateRoomNumber": "Une chambre avec ce numéro existe déjà",
+  "roomLoadError": "Impossible de charger les chambres",
+  "roomSaveError": "Impossible d’enregistrer la chambre",
+  "roomUpdateError": "Impossible de modifier la chambre",
+  "roomDeleteError": "Impossible de supprimer la chambre",
+  "filterRooms": "Filtrer les chambres",
+  "allRoomTypes": "Tous les types",
+  "allRoomStatuses": "Tous les statuts",
+  "priceRange": "Prix : {start} - {end} DA",
+  "@priceRange": {
+    "placeholders": {
+      "start": { "type": "String" },
+      "end": { "type": "String" }
+    }
+  },
+  "roomTypeSingle": "Simple",
+  "roomTypeDouble": "Double",
+  "roomTypeSuite": "Suite",
+  "roomStatusAvailable": "Disponible",
+  "roomStatusOccupied": "Occupée",
+  "roomStatusMaintenance": "Maintenance",
+  "requiredField": "Le champ {field} est obligatoire",
+  "@requiredField": {
+    "placeholders": { "field": { "type": "String" } }
+  },
+  "positiveNumberField": "Le champ {field} doit être un nombre positif",
+  "@positiveNumberField": {
+    "placeholders": { "field": { "type": "String" } }
+  },
+  "clientSearch": "Rechercher par nom, téléphone ou email",
+  "noClientsFound": "Aucun client trouvé",
+  "deleteClientTitle": "Supprimer le client",
+  "deleteClientConfirmation": "Supprimer {name} ? Cette action est irréversible.",
+  "@deleteClientConfirmation": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "deleteClientTooltip": "Supprimer le client {name}",
+  "@deleteClientTooltip": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "clientSemanticSummary": "Client {name}, téléphone {phone}, nationalité {nationality}",
+  "@clientSemanticSummary": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "phone": { "type": "String" },
+      "nationality": { "type": "String" }
+    }
+  },
+  "clientSubtitle": "{phone} - {nationality}",
+  "@clientSubtitle": {
+    "placeholders": {
+      "phone": { "type": "String" },
+      "nationality": { "type": "String" }
+    }
+  },
+  "addClient": "Ajouter un client",
+  "newClient": "Nouveau client",
+  "editClient": "Modifier le client",
+  "firstName": "Prénom",
+  "lastName": "Nom",
+  "phone": "Téléphone",
+  "phoneInvalid": "Format de téléphone invalide",
+  "cinPassportOptional": "CIN / Passeport (optionnel)",
+  "nationality": "Nationalité",
+  "selectNationality": "Veuillez sélectionner une nationalité",
+  "loadingNationalities": "Chargement des nationalités...",
+  "nationalitiesOffline": "Liste hors ligne (service indisponible) : options limitées",
+  "clientLoadError": "Impossible de charger les clients",
+  "clientSaveError": "Impossible d’enregistrer le client",
+  "clientUpdateError": "Impossible de modifier le client",
+  "clientDeleteError": "Impossible de supprimer le client : il possède peut-être des réservations",
+  "unknownError": "Erreur inconnue"
 }

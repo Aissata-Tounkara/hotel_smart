@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../models/client.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/client_provider.dart';
@@ -30,11 +31,13 @@ class _ClientListScreenState extends State<ClientListScreen> {
   }
 
   Future<void> _supprimer(BuildContext context, Client client) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirme = await afficherConfirmation(
       context,
-      titre: 'Supprimer le client',
-      message:
-          'Supprimer ${client.nomComplet} ? Cette action est irreversible.',
+      titre: l10n.deleteClientTitle,
+      message: l10n.deleteClientConfirmation(client.nomComplet),
+      texteConfirmer: l10n.delete,
+      texteAnnuler: l10n.cancel,
       destructif: true,
     );
     if (!confirme || !context.mounted) return;
@@ -43,7 +46,9 @@ class _ClientListScreenState extends State<ClientListScreen> {
       final provider = context.read<ClientProvider>();
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(provider.erreur ?? 'Erreur')));
+      ).showSnackBar(
+        SnackBar(content: Text(_messageErreurClient(provider.erreur, l10n))),
+      );
       provider.effacerErreur();
     }
   }
@@ -52,12 +57,14 @@ class _ClientListScreenState extends State<ClientListScreen> {
   Widget build(BuildContext context) {
     final clientProvider = context.watch<ClientProvider>();
     final authProvider = context.watch<AuthProvider>();
+    final l10n = AppLocalizations.of(context)!;
     final clients = clientProvider.clients;
 
     return Scaffold(
-      appBar: const PremiumAppBar(title: 'Clients'),
+      appBar: PremiumAppBar(title: l10n.clients),
       floatingActionButton: authProvider.peutGererOperations
           ? FloatingActionButton(
+              tooltip: l10n.addClient,
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const ClientFormScreen()),
               ),
@@ -70,7 +77,7 @@ class _ClientListScreenState extends State<ClientListScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
               child: AppTextField(
-                label: 'Rechercher par nom, telephone, email',
+                label: l10n.clientSearch,
                 icon: Icons.search,
                 onChanged: clientProvider.rechercher,
               ),
@@ -79,9 +86,9 @@ class _ClientListScreenState extends State<ClientListScreen> {
               child: clientProvider.enChargement
                   ? const Center(child: CircularProgressIndicator())
                   : clients.isEmpty
-                  ? const EmptyState(
+                  ? EmptyState(
                       icone: Icons.people_outline,
-                      message: 'Aucun client trouve',
+                      message: l10n.noClientsFound,
                     )
                   : RefreshIndicator(
                       onRefresh: clientProvider.charger,
@@ -94,13 +101,18 @@ class _ClientListScreenState extends State<ClientListScreen> {
                         itemBuilder: (context, i) {
                           final client = clients[i];
                           return Semantics(
-                            label:
-                                'Client ${client.nomComplet}, téléphone ${client.telephone}, nationalité ${client.nationalite}',
+                            label: l10n.clientSemanticSummary(
+                              client.nomComplet,
+                              client.telephone,
+                              client.nationalite,
+                            ),
                             child: PremiumListTile(
                               icon: Icons.person_outline,
                               title: client.nomComplet,
-                              subtitle:
-                                  '${client.telephone} - ${client.nationalite}',
+                              subtitle: l10n.clientSubtitle(
+                                client.telephone,
+                                client.nationalite,
+                              ),
                               onTap: authProvider.peutGererOperations
                                   ? () => Navigator.of(context).push(
                                       MaterialPageRoute(
@@ -112,8 +124,9 @@ class _ClientListScreenState extends State<ClientListScreen> {
                               trailing: authProvider.peutGererOperations
                                   ? IconButton(
                                       icon: const Icon(Icons.delete_outline),
-                                      tooltip:
-                                          'Supprimer le client ${client.nomComplet}',
+                                      tooltip: l10n.deleteClientTooltip(
+                                        client.nomComplet,
+                                      ),
                                       color: Theme.of(
                                         context,
                                       ).colorScheme.error,
@@ -133,3 +146,13 @@ class _ClientListScreenState extends State<ClientListScreen> {
     );
   }
 }
+
+String _messageErreurClient(String? erreur, AppLocalizations l10n) =>
+    switch (erreur) {
+      'Impossible de charger les clients' => l10n.clientLoadError,
+      "Impossible d'ajouter le client" => l10n.clientSaveError,
+      'Impossible de modifier le client' => l10n.clientUpdateError,
+      'Impossible de supprimer le client : il possede peut-etre des reservations' =>
+        l10n.clientDeleteError,
+      _ => erreur ?? l10n.unknownError,
+    };

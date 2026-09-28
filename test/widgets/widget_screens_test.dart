@@ -53,12 +53,17 @@ void main() {
           ),
           ChangeNotifierProvider(create: (_) => AuthProvider()),
         ],
-        child: const MaterialApp(home: RoomListScreen()),
+        child: MaterialApp(
+          locale: const Locale('fr'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const RoomListScreen(),
+        ),
       ),
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Aucune chambre trouvee'), findsOneWidget);
+    expect(find.text('Aucune chambre trouvée'), findsOneWidget);
   });
 
   testWidgets('AppTextField affiche son label et son message erreur', (

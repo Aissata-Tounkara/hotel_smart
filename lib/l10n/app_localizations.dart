@@ -355,6 +355,426 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Anglais'**
   String get languageEnglish;
+
+  /// No description provided for @save.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer'**
+  String get save;
+
+  /// No description provided for @cancel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler'**
+  String get cancel;
+
+  /// No description provided for @confirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confirmer'**
+  String get confirm;
+
+  /// No description provided for @edit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier'**
+  String get edit;
+
+  /// No description provided for @delete.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer'**
+  String get delete;
+
+  /// No description provided for @retry.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réessayer'**
+  String get retry;
+
+  /// No description provided for @apply.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appliquer'**
+  String get apply;
+
+  /// No description provided for @reset.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réinitialiser'**
+  String get reset;
+
+  /// No description provided for @filters.
+  ///
+  /// In fr, this message translates to:
+  /// **'Filtres'**
+  String get filters;
+
+  /// No description provided for @viewList.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vue liste'**
+  String get viewList;
+
+  /// No description provided for @viewCards.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vue cartes'**
+  String get viewCards;
+
+  /// No description provided for @searchRooms.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher par numéro ou type'**
+  String get searchRooms;
+
+  /// No description provided for @noRoomsFound.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune chambre trouvée'**
+  String get noRoomsFound;
+
+  /// No description provided for @deleteRoomTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer la chambre'**
+  String get deleteRoomTitle;
+
+  /// No description provided for @deleteRoomConfirmation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer la chambre {number} ? Cette action est irréversible.'**
+  String deleteRoomConfirmation(String number);
+
+  /// No description provided for @addRoom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter une chambre'**
+  String get addRoom;
+
+  /// No description provided for @roomNumberField.
+  ///
+  /// In fr, this message translates to:
+  /// **'Numéro de chambre'**
+  String get roomNumberField;
+
+  /// No description provided for @roomNumber.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chambre {number}'**
+  String roomNumber(String number);
+
+  /// No description provided for @roomNumberType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chambre {number} - {type}'**
+  String roomNumberType(String number, String type);
+
+  /// No description provided for @roomPriceAndFloor.
+  ///
+  /// In fr, this message translates to:
+  /// **'{price} / nuit - étage {floor}'**
+  String roomPriceAndFloor(String price, String floor);
+
+  /// No description provided for @roomSemanticSummary.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chambre {number}, type {type}, {status}, {price} par nuit, étage {floor}'**
+  String roomSemanticSummary(
+    String number,
+    String type,
+    String status,
+    String price,
+    String floor,
+  );
+
+  /// No description provided for @roomTypeField.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type de chambre'**
+  String get roomTypeField;
+
+  /// No description provided for @roomStatusField.
+  ///
+  /// In fr, this message translates to:
+  /// **'Statut'**
+  String get roomStatusField;
+
+  /// No description provided for @roomPriceField.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix par nuit (DA)'**
+  String get roomPriceField;
+
+  /// No description provided for @roomFloorField.
+  ///
+  /// In fr, this message translates to:
+  /// **'Étage'**
+  String get roomFloorField;
+
+  /// No description provided for @roomDescriptionOptional.
+  ///
+  /// In fr, this message translates to:
+  /// **'Description (optionnel)'**
+  String get roomDescriptionOptional;
+
+  /// No description provided for @newRoom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle chambre'**
+  String get newRoom;
+
+  /// No description provided for @editRoom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier la chambre'**
+  String get editRoom;
+
+  /// No description provided for @duplicateRoomNumber.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une chambre avec ce numéro existe déjà'**
+  String get duplicateRoomNumber;
+
+  /// No description provided for @roomLoadError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de charger les chambres'**
+  String get roomLoadError;
+
+  /// No description provided for @roomSaveError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible d’enregistrer la chambre'**
+  String get roomSaveError;
+
+  /// No description provided for @roomUpdateError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de modifier la chambre'**
+  String get roomUpdateError;
+
+  /// No description provided for @roomDeleteError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de supprimer la chambre'**
+  String get roomDeleteError;
+
+  /// No description provided for @filterRooms.
+  ///
+  /// In fr, this message translates to:
+  /// **'Filtrer les chambres'**
+  String get filterRooms;
+
+  /// No description provided for @allRoomTypes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tous les types'**
+  String get allRoomTypes;
+
+  /// No description provided for @allRoomStatuses.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tous les statuts'**
+  String get allRoomStatuses;
+
+  /// No description provided for @priceRange.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix : {start} - {end} DA'**
+  String priceRange(String start, String end);
+
+  /// No description provided for @roomTypeSingle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Simple'**
+  String get roomTypeSingle;
+
+  /// No description provided for @roomTypeDouble.
+  ///
+  /// In fr, this message translates to:
+  /// **'Double'**
+  String get roomTypeDouble;
+
+  /// No description provided for @roomTypeSuite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suite'**
+  String get roomTypeSuite;
+
+  /// No description provided for @roomStatusAvailable.
+  ///
+  /// In fr, this message translates to:
+  /// **'Disponible'**
+  String get roomStatusAvailable;
+
+  /// No description provided for @roomStatusOccupied.
+  ///
+  /// In fr, this message translates to:
+  /// **'Occupée'**
+  String get roomStatusOccupied;
+
+  /// No description provided for @roomStatusMaintenance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Maintenance'**
+  String get roomStatusMaintenance;
+
+  /// No description provided for @requiredField.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le champ {field} est obligatoire'**
+  String requiredField(String field);
+
+  /// No description provided for @positiveNumberField.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le champ {field} doit être un nombre positif'**
+  String positiveNumberField(String field);
+
+  /// No description provided for @clientSearch.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher par nom, téléphone ou email'**
+  String get clientSearch;
+
+  /// No description provided for @noClientsFound.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun client trouvé'**
+  String get noClientsFound;
+
+  /// No description provided for @deleteClientTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer le client'**
+  String get deleteClientTitle;
+
+  /// No description provided for @deleteClientConfirmation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer {name} ? Cette action est irréversible.'**
+  String deleteClientConfirmation(String name);
+
+  /// No description provided for @deleteClientTooltip.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer le client {name}'**
+  String deleteClientTooltip(String name);
+
+  /// No description provided for @clientSemanticSummary.
+  ///
+  /// In fr, this message translates to:
+  /// **'Client {name}, téléphone {phone}, nationalité {nationality}'**
+  String clientSemanticSummary(String name, String phone, String nationality);
+
+  /// No description provided for @clientSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'{phone} - {nationality}'**
+  String clientSubtitle(String phone, String nationality);
+
+  /// No description provided for @addClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un client'**
+  String get addClient;
+
+  /// No description provided for @newClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau client'**
+  String get newClient;
+
+  /// No description provided for @editClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le client'**
+  String get editClient;
+
+  /// No description provided for @firstName.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prénom'**
+  String get firstName;
+
+  /// No description provided for @lastName.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom'**
+  String get lastName;
+
+  /// No description provided for @phone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Téléphone'**
+  String get phone;
+
+  /// No description provided for @phoneInvalid.
+  ///
+  /// In fr, this message translates to:
+  /// **'Format de téléphone invalide'**
+  String get phoneInvalid;
+
+  /// No description provided for @cinPassportOptional.
+  ///
+  /// In fr, this message translates to:
+  /// **'CIN / Passeport (optionnel)'**
+  String get cinPassportOptional;
+
+  /// No description provided for @nationality.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nationalité'**
+  String get nationality;
+
+  /// No description provided for @selectNationality.
+  ///
+  /// In fr, this message translates to:
+  /// **'Veuillez sélectionner une nationalité'**
+  String get selectNationality;
+
+  /// No description provided for @loadingNationalities.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chargement des nationalités...'**
+  String get loadingNationalities;
+
+  /// No description provided for @nationalitiesOffline.
+  ///
+  /// In fr, this message translates to:
+  /// **'Liste hors ligne (service indisponible) : options limitées'**
+  String get nationalitiesOffline;
+
+  /// No description provided for @clientLoadError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de charger les clients'**
+  String get clientLoadError;
+
+  /// No description provided for @clientSaveError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible d’enregistrer le client'**
+  String get clientSaveError;
+
+  /// No description provided for @clientUpdateError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de modifier le client'**
+  String get clientUpdateError;
+
+  /// No description provided for @clientDeleteError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de supprimer le client : il possède peut-être des réservations'**
+  String get clientDeleteError;
+
+  /// No description provided for @unknownError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur inconnue'**
+  String get unknownError;
 }
 
 class _AppLocalizationsDelegate
