@@ -9,7 +9,7 @@ class RoomProvider extends ChangeNotifier {
   final RoomRepository _roomRepository;
 
   RoomProvider({RoomRepository? roomRepository})
-      : _roomRepository = roomRepository ?? RoomRepository();
+    : _roomRepository = roomRepository ?? RoomRepository();
 
   List<Chambre> _chambres = [];
   bool _enChargement = false;
@@ -28,14 +28,21 @@ class RoomProvider extends ChangeNotifier {
 
   List<Chambre> get chambres {
     return _chambres.where((chambre) {
-      final correspondRecherche = _recherche.isEmpty ||
+      final correspondRecherche =
+          _recherche.isEmpty ||
           chambre.numero.toLowerCase().contains(_recherche.toLowerCase()) ||
           chambre.type.libelle.toLowerCase().contains(_recherche.toLowerCase());
       final correspondType = _filtreType == null || chambre.type == _filtreType;
-      final correspondStatut = _filtreStatut == null || chambre.statut == _filtreStatut;
-      final correspondPrix = _filtrePrix == null ||
-          (chambre.prixParNuit >= _filtrePrix!.start && chambre.prixParNuit <= _filtrePrix!.end);
-      return correspondRecherche && correspondType && correspondStatut && correspondPrix;
+      final correspondStatut =
+          _filtreStatut == null || chambre.statut == _filtreStatut;
+      final correspondPrix =
+          _filtrePrix == null ||
+          (chambre.prixParNuit >= _filtrePrix!.start &&
+              chambre.prixParNuit <= _filtrePrix!.end);
+      return correspondRecherche &&
+          correspondType &&
+          correspondStatut &&
+          correspondPrix;
     }).toList();
   }
 
@@ -100,7 +107,10 @@ class RoomProvider extends ChangeNotifier {
 
   Future<bool> modifier(Chambre chambre) async {
     try {
-      if (await _roomRepository.numeroExists(chambre.numero, excludeId: chambre.id)) {
+      if (await _roomRepository.numeroExists(
+        chambre.numero,
+        excludeId: chambre.id,
+      )) {
         _erreur = 'Une chambre avec ce numero existe deja';
         notifyListeners();
         return false;

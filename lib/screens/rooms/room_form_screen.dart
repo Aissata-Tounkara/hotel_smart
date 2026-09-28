@@ -8,6 +8,7 @@ import '../../widgets/app_text_field.dart';
 import '../../widgets/gradient_button.dart';
 import '../../widgets/ornamental_divider.dart';
 import '../../widgets/premium_app_bar.dart';
+import '../../widgets/app_image.dart';
 
 /// Formulaire de creation/edition d'une chambre (points 17, 18).
 class RoomFormScreen extends StatefulWidget {
@@ -35,8 +36,12 @@ class _RoomFormScreenState extends State<RoomFormScreen> {
     super.initState();
     final c = widget.chambre;
     _numeroController = TextEditingController(text: c?.numero ?? '');
-    _prixController = TextEditingController(text: c != null ? c.prixParNuit.toStringAsFixed(0) : '');
-    _etageController = TextEditingController(text: c != null ? c.etage.toString() : '');
+    _prixController = TextEditingController(
+      text: c != null ? c.prixParNuit.toStringAsFixed(0) : '',
+    );
+    _etageController = TextEditingController(
+      text: c != null ? c.etage.toString() : '',
+    );
     _descriptionController = TextEditingController(text: c?.description ?? '');
     _type = c?.type ?? TypeChambre.simple;
     _statut = c?.statut ?? StatutChambre.disponible;
@@ -63,7 +68,9 @@ class _RoomFormScreenState extends State<RoomFormScreen> {
       type: _type,
       prixParNuit: double.parse(_prixController.text.trim()),
       statut: _statut,
-      description: _descriptionController.text.trim().isEmpty ? null : _descriptionController.text.trim(),
+      description: _descriptionController.text.trim().isEmpty
+          ? null
+          : _descriptionController.text.trim(),
       etage: int.parse(_etageController.text.trim()),
     );
 
@@ -94,6 +101,19 @@ class _RoomFormScreenState extends State<RoomFormScreen> {
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
+            Center(
+              child: AppImage(
+                assetName: switch (_type) {
+                  TypeChambre.simple => 'assets/images/rooms/simple.webp',
+                  TypeChambre.double_ => 'assets/images/rooms/double.webp',
+                  TypeChambre.suite => 'assets/images/rooms/suite.webp',
+                },
+                semanticLabel: _roomTypeLabel(_type, l10n),
+                width: 320,
+                height: 180,
+              ),
+            ),
+            const SizedBox(height: 20),
             AppTextField(
               controller: _numeroController,
               label: l10n.roomNumberField,
@@ -110,10 +130,12 @@ class _RoomFormScreenState extends State<RoomFormScreen> {
                 prefixIcon: const Icon(Icons.category_outlined),
               ),
               items: TypeChambre.values
-                  .map((t) => DropdownMenuItem(
-                    value: t,
-                    child: Text(_libelleTypeChambre(t, l10n)),
-                  ))
+                  .map(
+                    (t) => DropdownMenuItem(
+                      value: t,
+                      child: Text(_libelleTypeChambre(t, l10n)),
+                    ),
+                  )
                   .toList(),
               onChanged: (v) => setState(() => _type = v!),
             ),
@@ -122,12 +144,11 @@ class _RoomFormScreenState extends State<RoomFormScreen> {
               controller: _prixController,
               label: l10n.roomPriceField,
               icon: Icons.payments_outlined,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              validator: (v) => _validerNombrePositif(
-                v,
-                l10n,
-                l10n.roomPriceField,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
               ),
+              validator: (v) =>
+                  _validerNombrePositif(v, l10n, l10n.roomPriceField),
             ),
             const SizedBox(height: 20),
             AppTextField(
@@ -135,11 +156,8 @@ class _RoomFormScreenState extends State<RoomFormScreen> {
               label: l10n.roomFloorField,
               icon: Icons.stairs_outlined,
               keyboardType: TextInputType.number,
-              validator: (v) => _validerNombrePositif(
-                v,
-                l10n,
-                l10n.roomFloorField,
-              ),
+              validator: (v) =>
+                  _validerNombrePositif(v, l10n, l10n.roomFloorField),
             ),
             const SizedBox(height: 20),
             DropdownButtonFormField<StatutChambre>(
@@ -149,10 +167,12 @@ class _RoomFormScreenState extends State<RoomFormScreen> {
                 prefixIcon: const Icon(Icons.info_outline),
               ),
               items: StatutChambre.values
-                  .map((s) => DropdownMenuItem(
-                    value: s,
-                    child: Text(_libelleStatutChambre(s, l10n)),
-                  ))
+                  .map(
+                    (s) => DropdownMenuItem(
+                      value: s,
+                      child: Text(_libelleStatutChambre(s, l10n)),
+                    ),
+                  )
                   .toList(),
               onChanged: (v) => setState(() => _statut = v!),
             ),
@@ -189,6 +209,13 @@ String? _validerNombrePositif(
   }
   return null;
 }
+
+String _roomTypeLabel(TypeChambre type, AppLocalizations l10n) =>
+    switch (type) {
+      TypeChambre.simple => l10n.roomTypeSingle,
+      TypeChambre.double_ => l10n.roomTypeDouble,
+      TypeChambre.suite => l10n.roomTypeSuite,
+    };
 
 String _libelleTypeChambre(TypeChambre type, AppLocalizations l10n) =>
     switch (type) {

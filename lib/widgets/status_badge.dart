@@ -33,7 +33,11 @@ class StatusBadge extends StatelessWidget {
           const SizedBox(width: 6),
           Text(
             texte,
-            style: AppTheme.manrope(color: couleurTexte, fontWeight: FontWeight.w700, fontSize: 11.5),
+            style: AppTheme.manrope(
+              color: couleurTexte,
+              fontWeight: FontWeight.w700,
+              fontSize: 11.5,
+            ),
           ),
         ],
       ),

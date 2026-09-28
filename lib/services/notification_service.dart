@@ -23,19 +23,25 @@ class NotificationService {
     NotificationRepository? notificationRepository,
     ReservationRepository? reservationRepository,
     FlutterLocalNotificationsPlugin? plugin,
-  })  : _notificationRepository = notificationRepository ?? NotificationRepository(),
-        _reservationRepository = reservationRepository ?? ReservationRepository(),
-        _plugin = plugin ?? FlutterLocalNotificationsPlugin();
+  }) : _notificationRepository =
+           notificationRepository ?? NotificationRepository(),
+       _reservationRepository =
+           reservationRepository ?? ReservationRepository(),
+       _plugin = plugin ?? FlutterLocalNotificationsPlugin();
 
   bool _initialise = false;
 
   Future<void> initialiser() async {
     if (_initialise) return;
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
     const settings = InitializationSettings(android: androidSettings);
     await _plugin.initialize(settings);
     await _plugin
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.requestNotificationsPermission();
     _initialise = true;
   }
@@ -51,12 +57,18 @@ class NotificationService {
     final l10n = lookupAppLocalizations(Locale(localeCode));
 
     final maintenant = DateTime.now();
-    final aujourdhui = DateTime(maintenant.year, maintenant.month, maintenant.day);
+    final aujourdhui = DateTime(
+      maintenant.year,
+      maintenant.month,
+      maintenant.day,
+    );
     final reservations = await _reservationRepository.getAll();
     final alertesExistantes = await _notificationRepository.getAll();
 
     bool dejaAlerte(int reservationId, TypeNotification type) {
-      return alertesExistantes.any((a) => a.reservationId == reservationId && a.type == type);
+      return alertesExistantes.any(
+        (a) => a.reservationId == reservationId && a.type == type,
+      );
     }
 
     final nouvellesAlertes = <NotificationAlerte>[];
@@ -64,8 +76,14 @@ class NotificationService {
     for (final reservation in reservations) {
       if (reservation.statut == StatutReservation.annulee) continue;
 
-      final estArriveeAujourdhui = _estMemeJour(reservation.dateArrivee, aujourdhui);
-      final estDepartAujourdhui = _estMemeJour(reservation.dateDepart, aujourdhui);
+      final estArriveeAujourdhui = _estMemeJour(
+        reservation.dateArrivee,
+        aujourdhui,
+      );
+      final estDepartAujourdhui = _estMemeJour(
+        reservation.dateDepart,
+        aujourdhui,
+      );
 
       if (estArriveeAujourdhui &&
           reservation.statut == StatutReservation.enAttente &&
@@ -101,7 +119,10 @@ class NotificationService {
     return nouvellesAlertes;
   }
 
-  Future<void> _afficherNotificationSysteme(int id, NotificationAlerte alerte) async {
+  Future<void> _afficherNotificationSysteme(
+    int id,
+    NotificationAlerte alerte,
+  ) async {
     const androidDetails = AndroidNotificationDetails(
       'hotel_smart_checkin_checkout',
       'Check-in / Check-out',
@@ -120,11 +141,15 @@ class NotificationService {
     }
   }
 
-  Future<List<NotificationAlerte>> getAlertesNonLues() => _notificationRepository.getUnread();
+  Future<List<NotificationAlerte>> getAlertesNonLues() =>
+      _notificationRepository.getUnread();
 
-  Future<void> marquerCommeLue(int id) => _notificationRepository.markAsRead(id);
+  Future<void> marquerCommeLue(int id) =>
+      _notificationRepository.markAsRead(id);
 
   bool _estMemeJour(DateTime date, DateTime reference) {
-    return date.year == reference.year && date.month == reference.month && date.day == reference.day;
+    return date.year == reference.year &&
+        date.month == reference.month &&
+        date.day == reference.day;
   }
 }

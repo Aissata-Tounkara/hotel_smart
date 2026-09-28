@@ -28,5 +28,6 @@ class AppConstants {
   // hors service (redirige vers une v5 qui exige une cle API, inadaptee a
   // une app mobile ou toute cle embarquee est visible par decompilation).
   // Remplacee par countries.dev, gratuite et sans authentification.
-  static const String countriesApiUrl = 'https://countries.dev/countries?fields=name';
+  static const String countriesApiUrl =
+      'https://countries.dev/countries?fields=name';
 }

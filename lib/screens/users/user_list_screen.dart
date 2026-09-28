@@ -51,8 +51,13 @@ class _UserListScreenState extends State<UserListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = context.watch<UserProvider>();
-    final utilisateurs = userProvider.utilisateurs;
+    final userProvider = context.read<UserProvider>();
+    final utilisateurs = context.select<UserProvider, List<Utilisateur>>(
+      (provider) => provider.utilisateurs,
+    );
+    final enChargement = context.select<UserProvider, bool>(
+      (provider) => provider.enChargement,
+    );
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -65,7 +70,7 @@ class _UserListScreenState extends State<UserListScreen> {
         child: const Icon(Icons.person_add),
       ),
       body: FadeSlideIn(
-        child: userProvider.enChargement
+        child: enChargement
             ? const Center(child: CircularProgressIndicator())
             : utilisateurs.isEmpty
             ? EmptyState(
@@ -83,6 +88,9 @@ class _UserListScreenState extends State<UserListScreen> {
                   itemBuilder: (context, i) {
                     final utilisateur = utilisateurs[i];
                     return PremiumListTile(
+                      key: ValueKey(
+                        'user-${utilisateur.id ?? utilisateur.email}',
+                      ),
                       icon: Icons.person_outline,
                       title: utilisateur.nom,
                       subtitle:

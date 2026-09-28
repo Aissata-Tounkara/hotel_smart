@@ -13,7 +13,13 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final settingsProvider = context.watch<SettingsProvider>();
+    final settingsProvider = context.read<SettingsProvider>();
+    final themeMode = context.select<SettingsProvider, ThemeMode>(
+      (provider) => provider.themeMode,
+    );
+    final languageCode = context.select<SettingsProvider, String>(
+      (provider) => provider.locale.languageCode,
+    );
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -42,7 +48,7 @@ class SettingsScreen extends StatelessWidget {
                   icon: const Icon(Icons.settings_suggest_outlined),
                 ),
               ],
-              selected: {settingsProvider.themeMode},
+              selected: {themeMode},
               onSelectionChanged: (selection) =>
                   settingsProvider.changerTheme(selection.first),
             ),
@@ -54,7 +60,7 @@ class SettingsScreen extends StatelessWidget {
                 ButtonSegment(value: 'fr', label: Text(l10n.languageFrench)),
                 ButtonSegment(value: 'en', label: Text(l10n.languageEnglish)),
               ],
-              selected: {settingsProvider.locale.languageCode},
+              selected: {languageCode},
               onSelectionChanged: (selection) =>
                   settingsProvider.changerLangue(selection.first),
             ),

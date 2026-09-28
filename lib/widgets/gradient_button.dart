@@ -43,7 +43,10 @@ class GradientButton extends StatelessWidget {
                   ? const SizedBox(
                       height: 20,
                       width: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.bleuNuitProfond),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: AppTheme.bleuNuitProfond,
+                      ),
                     )
                   : Row(
                       mainAxisSize: MainAxisSize.min,

@@ -14,6 +14,8 @@ import '../../widgets/fade_slide_in.dart';
 import '../../widgets/premium_app_bar.dart';
 import '../../widgets/premium_list_tile.dart';
 import '../../widgets/status_badge.dart';
+import '../../widgets/app_image.dart';
+import '../../widgets/lazy_room_list.dart';
 import 'room_form_screen.dart';
 
 /// Liste des chambres avec recherche temps reel, filtres (type, statut,
@@ -151,6 +153,9 @@ class _RoomListScreenState extends State<RoomListScreen> {
                                   ),
                               itemCount: chambres.length,
                               itemBuilder: (context, i) => _CarteChambre(
+                                key: ValueKey(
+                                  'room-card-${chambres[i].id ?? chambres[i].numero}',
+                                ),
                                 chambre: chambres[i],
                                 peutModifier: peutGerer,
                                 onModifier: () => Navigator.of(context).push(
@@ -163,13 +168,12 @@ class _RoomListScreenState extends State<RoomListScreen> {
                                     _supprimer(context, chambres[i]),
                               ),
                             )
-                          : ListView.builder(
+                          : LazyRoomList(
+                              rooms: chambres,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 20,
                               ),
-                              itemCount: chambres.length,
-                              itemBuilder: (context, i) {
-                                final chambre = chambres[i];
+                              itemBuilder: (context, chambre) {
                                 return Semantics(
                                   label: l10n.roomSemanticSummary(
                                     chambre.numero,
@@ -182,6 +186,18 @@ class _RoomListScreenState extends State<RoomListScreen> {
                                   ),
                                   child: PremiumListTile(
                                     icon: Icons.meeting_room_outlined,
+                                    leading: ClipRRect(
+                                      borderRadius: BorderRadius.circular(4),
+                                      child: AppImage(
+                                        assetName: _roomImage(chambre.type),
+                                        semanticLabel: _libelleTypeChambre(
+                                          chambre.type,
+                                          l10n,
+                                        ),
+                                        width: 36,
+                                        height: 36,
+                                      ),
+                                    ),
                                     title: l10n.roomNumberType(
                                       chambre.numero,
                                       _libelleTypeChambre(chambre.type, l10n),
@@ -259,6 +275,7 @@ class _CarteChambre extends StatelessWidget {
   final VoidCallback onSupprimer;
 
   const _CarteChambre({
+    super.key,
     required this.chambre,
     required this.peutModifier,
     required this.onModifier,
@@ -292,7 +309,15 @@ class _CarteChambre extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Icon(Icons.meeting_room_outlined, color: or),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: AppImage(
+                      assetName: _roomImage(chambre.type),
+                      semanticLabel: _libelleTypeChambre(chambre.type, l10n),
+                      width: 116,
+                      height: 72,
+                    ),
+                  ),
                   if (peutModifier)
                     PopupMenuButton<String>(
                       onSelected: (v) =>
@@ -339,6 +364,12 @@ class _CarteChambre extends StatelessWidget {
     );
   }
 }
+
+String _roomImage(TypeChambre type) => switch (type) {
+  TypeChambre.simple => 'assets/images/rooms/simple.webp',
+  TypeChambre.double_ => 'assets/images/rooms/double.webp',
+  TypeChambre.suite => 'assets/images/rooms/suite.webp',
+};
 
 String _libelleTypeChambre(TypeChambre type, AppLocalizations l10n) =>
     switch (type) {

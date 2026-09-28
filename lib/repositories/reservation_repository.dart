@@ -8,19 +8,29 @@ class ReservationRepository {
 
   Future<int> create(Reservation reservation) async {
     final db = await _dbHelper.database;
-    return db.insert(AppConstants.tableReservations, reservation.toMap()..remove('id'));
+    return db.insert(
+      AppConstants.tableReservations,
+      reservation.toMap()..remove('id'),
+    );
   }
 
   Future<Reservation?> getById(int id) async {
     final db = await _dbHelper.database;
-    final rows = await db.query(AppConstants.tableReservations, where: 'id = ?', whereArgs: [id]);
+    final rows = await db.query(
+      AppConstants.tableReservations,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
     if (rows.isEmpty) return null;
     return Reservation.fromMap(rows.first);
   }
 
   Future<List<Reservation>> getAll() async {
     final db = await _dbHelper.database;
-    final rows = await db.query(AppConstants.tableReservations, orderBy: 'date_arrivee DESC');
+    final rows = await db.query(
+      AppConstants.tableReservations,
+      orderBy: 'date_arrivee DESC',
+    );
     return rows.map(Reservation.fromMap).toList();
   }
 
@@ -37,7 +47,10 @@ class ReservationRepository {
 
   /// Reservations actives (non annulees) d'une chambre, utilisees pour la
   /// verification de conflit de dates.
-  Future<List<Reservation>> getByRoom(int roomId, {int? excludeReservationId}) async {
+  Future<List<Reservation>> getByRoom(
+    int roomId, {
+    int? excludeReservationId,
+  }) async {
     final db = await _dbHelper.database;
     final where = excludeReservationId != null
         ? 'room_id = ? AND statut != ? AND id != ?'
@@ -45,7 +58,11 @@ class ReservationRepository {
     final args = excludeReservationId != null
         ? [roomId, 'annulee', excludeReservationId]
         : [roomId, 'annulee'];
-    final rows = await db.query(AppConstants.tableReservations, where: where, whereArgs: args);
+    final rows = await db.query(
+      AppConstants.tableReservations,
+      where: where,
+      whereArgs: args,
+    );
     return rows.map(Reservation.fromMap).toList();
   }
 
@@ -61,6 +78,10 @@ class ReservationRepository {
 
   Future<int> delete(int id) async {
     final db = await _dbHelper.database;
-    return db.delete(AppConstants.tableReservations, where: 'id = ?', whereArgs: [id]);
+    return db.delete(
+      AppConstants.tableReservations,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
 }

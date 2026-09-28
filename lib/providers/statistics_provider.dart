@@ -8,7 +8,7 @@ class StatisticsProvider extends ChangeNotifier {
   final StatisticsService _statisticsService;
 
   StatisticsProvider({StatisticsService? statisticsService})
-      : _statisticsService = statisticsService ?? StatisticsService();
+    : _statisticsService = statisticsService ?? StatisticsService();
 
   Statistique? _statistiques;
   List<RevenuParType> _revenuParType = [];

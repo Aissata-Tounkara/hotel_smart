@@ -11,6 +11,7 @@ class PremiumListTile extends StatelessWidget {
   final String title;
   final String? subtitle;
   final Widget? trailing;
+  final Widget? leading;
   final VoidCallback? onTap;
 
   const PremiumListTile({
@@ -19,13 +20,15 @@ class PremiumListTile extends StatelessWidget {
     required this.title,
     this.subtitle,
     this.trailing,
+    this.leading,
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final couleurTexte = theme.textTheme.bodyLarge?.color ?? theme.colorScheme.onSurface;
+    final couleurTexte =
+        theme.textTheme.bodyLarge?.color ?? theme.colorScheme.onSurface;
     final or = theme.colorScheme.secondary;
 
     return InkWell(
@@ -33,7 +36,9 @@ class PremiumListTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: couleurTexte.withValues(alpha: 0.08))),
+          border: Border(
+            bottom: BorderSide(color: couleurTexte.withValues(alpha: 0.08)),
+          ),
         ),
         child: Row(
           children: [
@@ -45,7 +50,7 @@ class PremiumListTile extends StatelessWidget {
                 border: Border.all(color: or.withValues(alpha: 0.4)),
                 borderRadius: BorderRadius.circular(4),
               ),
-              child: Icon(icon, color: or, size: 18),
+              child: leading ?? Icon(icon, color: or, size: 18),
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -54,7 +59,11 @@ class PremiumListTile extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: AppTheme.manrope(fontWeight: FontWeight.w700, fontSize: 15, color: couleurTexte),
+                    style: AppTheme.manrope(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 15,
+                      color: couleurTexte,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -62,7 +71,10 @@ class PremiumListTile extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       subtitle!,
-                      style: AppTheme.manrope(fontSize: 12.5, color: couleurTexte.withValues(alpha: 0.62)),
+                      style: AppTheme.manrope(
+                        fontSize: 12.5,
+                        color: couleurTexte.withValues(alpha: 0.62),
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

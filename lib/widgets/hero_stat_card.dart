@@ -11,7 +11,12 @@ class HeroStatCard extends StatelessWidget {
   final String value;
   final IconData icon;
 
-  const HeroStatCard({super.key, required this.label, required this.value, required this.icon});
+  const HeroStatCard({
+    super.key,
+    required this.label,
+    required this.value,
+    required this.icon,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +31,10 @@ class HeroStatCard extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(gradient: AppTheme.degradeOr, borderRadius: BorderRadius.circular(4)),
+            decoration: BoxDecoration(
+              gradient: AppTheme.degradeOr,
+              borderRadius: BorderRadius.circular(4),
+            ),
             child: Icon(icon, color: AppTheme.bleuNuitProfond, size: 26),
           ),
           const SizedBox(width: 18),
@@ -47,7 +55,10 @@ class HeroStatCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   label,
-                  style: AppTheme.manrope(color: AppTheme.ivoire.withValues(alpha: 0.72), fontSize: 13),
+                  style: AppTheme.manrope(
+                    color: AppTheme.ivoire.withValues(alpha: 0.72),
+                    fontSize: 13,
+                  ),
                 ),
               ],
             ),
@@ -65,11 +76,17 @@ class MiniStat extends StatelessWidget {
   final String value;
   final IconData icon;
 
-  const MiniStat({super.key, required this.label, required this.value, required this.icon});
+  const MiniStat({
+    super.key,
+    required this.label,
+    required this.value,
+    required this.icon,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final couleurTexte = Theme.of(context).textTheme.bodyLarge?.color ?? AppTheme.encre;
+    final couleurTexte =
+        Theme.of(context).textTheme.bodyLarge?.color ?? AppTheme.encre;
     final or = Theme.of(context).colorScheme.secondary;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -86,8 +103,21 @@ class MiniStat extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(value, style: AppTheme.manrope(fontWeight: FontWeight.w700, fontSize: 14, color: couleurTexte)),
-              Text(label, style: AppTheme.manrope(fontSize: 11, color: couleurTexte.withValues(alpha: 0.6))),
+              Text(
+                value,
+                style: AppTheme.manrope(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                  color: couleurTexte,
+                ),
+              ),
+              Text(
+                label,
+                style: AppTheme.manrope(
+                  fontSize: 11,
+                  color: couleurTexte.withValues(alpha: 0.6),
+                ),
+              ),
             ],
           ),
         ],

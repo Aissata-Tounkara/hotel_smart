@@ -13,7 +13,11 @@ class ClientRepository {
 
   Future<Client?> getById(int id) async {
     final db = await _dbHelper.database;
-    final rows = await db.query(AppConstants.tableClients, where: 'id = ?', whereArgs: [id]);
+    final rows = await db.query(
+      AppConstants.tableClients,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
     if (rows.isEmpty) return null;
     return Client.fromMap(rows.first);
   }
@@ -48,6 +52,10 @@ class ClientRepository {
 
   Future<int> delete(int id) async {
     final db = await _dbHelper.database;
-    return db.delete(AppConstants.tableClients, where: 'id = ?', whereArgs: [id]);
+    return db.delete(
+      AppConstants.tableClients,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
 }

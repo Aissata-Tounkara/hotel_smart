@@ -116,6 +116,7 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
                         ? clientsParId[reservation.clientId]
                         : null;
                     return Semantics(
+                      key: ValueKey('payment-${paiement.id}'),
                       label: l10n.paymentSemanticSummary(
                         client?.nomComplet ??
                             l10n.reservationNumber(

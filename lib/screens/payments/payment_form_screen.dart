@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../models/paiement.dart';
+import '../../models/client.dart';
 import '../../models/reservation.dart';
 import '../../providers/client_provider.dart';
 import '../../providers/payment_provider.dart';
@@ -87,9 +88,13 @@ class _PaymentFormScreenState extends State<PaymentFormScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final reservationProvider = context.watch<ReservationProvider>();
-    final clientProvider = context.watch<ClientProvider>();
-    final clientsParId = {for (final c in clientProvider.clients) c.id: c};
+    final reservations = context.select<ReservationProvider, List<Reservation>>(
+      (provider) => provider.reservations,
+    );
+    final clients = context.select<ClientProvider, List<Client>>(
+      (provider) => provider.clients,
+    );
+    final clientsParId = {for (final c in clients) c.id: c};
 
     return Scaffold(
       appBar: PremiumAppBar(title: l10n.newPayment),
@@ -105,7 +110,7 @@ class _PaymentFormScreenState extends State<PaymentFormScreen> {
                 labelText: l10n.reservation,
                 prefixIcon: const Icon(Icons.event_note),
               ),
-              items: reservationProvider.reservations.map((r) {
+              items: reservations.map((r) {
                 final client = clientsParId[r.clientId];
                 return DropdownMenuItem(
                   value: r,

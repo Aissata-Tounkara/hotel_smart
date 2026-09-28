@@ -35,8 +35,14 @@ class AppStrings {
     'langue': {'fr': 'Langue', 'ar': 'اللغة'},
     'deconnexion': {'fr': 'Deconnexion', 'ar': 'تسجيل الخروج'},
     'nom': {'fr': 'Nom', 'ar': 'الاسم'},
-    'nouveau_mot_de_passe': {'fr': 'Nouveau mot de passe', 'ar': 'كلمة مرور جديدة'},
-    'confirmer_mot_de_passe': {'fr': 'Confirmer le mot de passe', 'ar': 'تأكيد كلمة المرور'},
+    'nouveau_mot_de_passe': {
+      'fr': 'Nouveau mot de passe',
+      'ar': 'كلمة مرور جديدة',
+    },
+    'confirmer_mot_de_passe': {
+      'fr': 'Confirmer le mot de passe',
+      'ar': 'تأكيد كلمة المرور',
+    },
     'enregistrer': {'fr': 'Enregistrer', 'ar': 'حفظ'},
   };
 

@@ -91,13 +91,18 @@ class AppTheme {
   /// Construit la typographie : Playfair Display pour les titres (display*,
   /// headline*, titleLarge), Manrope pour le reste (texte courant, labels,
   /// boutons).
-  static TextTheme _texteAvecCouleurs(Brightness brightness, Color couleurTitre, Color couleurCorps) {
+  static TextTheme _texteAvecCouleurs(
+    Brightness brightness,
+    Color couleurTitre,
+    Color couleurCorps,
+  ) {
     final corps = ThemeData(brightness: brightness).textTheme.apply(
-          fontFamily: policeCorps,
-          bodyColor: couleurCorps,
-          displayColor: couleurTitre,
-        );
-    TextStyle? titre(TextStyle? style) => style?.copyWith(fontFamily: policeTitres, fontWeight: FontWeight.w600);
+      fontFamily: policeCorps,
+      bodyColor: couleurCorps,
+      displayColor: couleurTitre,
+    );
+    TextStyle? titre(TextStyle? style) =>
+        style?.copyWith(fontFamily: policeTitres, fontWeight: FontWeight.w600);
     return corps.copyWith(
       displayLarge: titre(corps.displayLarge),
       displayMedium: titre(corps.displayMedium),
@@ -112,7 +117,7 @@ class AppTheme {
   /// Theme "clair" : fond ivoire, textes encre, app bars et accents bleu
   /// nuit/or - l'identite de marque de jour.
   static ThemeData get lightTheme {
-    final colorScheme = const ColorScheme.light(
+    const colorScheme = ColorScheme.light(
       brightness: Brightness.light,
       primary: bleuNuitProfond,
       onPrimary: ivoire,
@@ -134,14 +139,21 @@ class AppTheme {
         foregroundColor: ivoire,
         elevation: 0,
         centerTitle: true,
-        titleTextStyle: AppTheme.playfair(color: ivoire, fontSize: 20, fontWeight: FontWeight.w600),
+        titleTextStyle: AppTheme.playfair(
+          color: ivoire,
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        ),
         iconTheme: const IconThemeData(color: orLumineux),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: or,
           foregroundColor: bleuNuitProfond,
-          textStyle: AppTheme.manrope(fontWeight: FontWeight.w700, letterSpacing: 0.3),
+          textStyle: AppTheme.manrope(
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.3,
+          ),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
           elevation: 0,
@@ -165,15 +177,27 @@ class AppTheme {
         backgroundColor: or,
         foregroundColor: bleuNuitProfond,
         elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(4)),
+        ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         labelStyle: AppTheme.manrope(color: encre.withValues(alpha: 0.65)),
-        border: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0x3316223A))),
-        enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0x3316223A))),
-        focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: or, width: 2)),
-        errorBorder: const UnderlineInputBorder(borderSide: BorderSide(color: bordeaux)),
-        focusedErrorBorder: const UnderlineInputBorder(borderSide: BorderSide(color: bordeaux, width: 2)),
+        border: const UnderlineInputBorder(
+          borderSide: BorderSide(color: Color(0x3316223A)),
+        ),
+        enabledBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: Color(0x3316223A)),
+        ),
+        focusedBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: or, width: 2),
+        ),
+        errorBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: bordeaux),
+        ),
+        focusedErrorBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: bordeaux, width: 2),
+        ),
         filled: false,
       ),
       cardTheme: CardThemeData(
@@ -185,18 +209,29 @@ class AppTheme {
           side: BorderSide(color: encre.withValues(alpha: 0.08)),
         ),
       ),
-      dividerTheme: DividerThemeData(color: encre.withValues(alpha: 0.1), space: 32),
+      dividerTheme: DividerThemeData(
+        color: encre.withValues(alpha: 0.1),
+        space: 32,
+      ),
       dialogTheme: DialogThemeData(
         backgroundColor: ivoire,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-        titleTextStyle: AppTheme.playfair(color: encre, fontSize: 20, fontWeight: FontWeight.w600),
+        titleTextStyle: AppTheme.playfair(
+          color: encre,
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        ),
         contentTextStyle: AppTheme.manrope(color: encre),
       ),
       chipTheme: ChipThemeData(
         backgroundColor: encre.withValues(alpha: 0.05),
         selectedColor: or.withValues(alpha: 0.18),
-        labelStyle: AppTheme.manrope(color: encre, fontWeight: FontWeight.w600, fontSize: 12),
+        labelStyle: AppTheme.manrope(
+          color: encre,
+          fontWeight: FontWeight.w600,
+          fontSize: 12,
+        ),
         side: BorderSide(color: encre.withValues(alpha: 0.12)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       ),
@@ -207,7 +242,7 @@ class AppTheme {
   /// Theme "sombre" : reprend l'identite bleu nuit de l'ecran de connexion
   /// sur toute l'application, plutot qu'un mode sombre Material generique.
   static ThemeData get darkTheme {
-    final colorScheme = const ColorScheme.dark(
+    const colorScheme = ColorScheme.dark(
       brightness: Brightness.dark,
       primary: or,
       onPrimary: bleuNuitProfond,
@@ -223,20 +258,31 @@ class AppTheme {
       useMaterial3: true,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: bleuNuitProfond,
-      textTheme: _texteAvecCouleurs(Brightness.dark, ivoire, ivoire.withValues(alpha: 0.92)),
+      textTheme: _texteAvecCouleurs(
+        Brightness.dark,
+        ivoire,
+        ivoire.withValues(alpha: 0.92),
+      ),
       appBarTheme: AppBarTheme(
         backgroundColor: bleuNuitProfond,
         foregroundColor: ivoire,
         elevation: 0,
         centerTitle: true,
-        titleTextStyle: AppTheme.playfair(color: ivoire, fontSize: 20, fontWeight: FontWeight.w600),
+        titleTextStyle: AppTheme.playfair(
+          color: ivoire,
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        ),
         iconTheme: const IconThemeData(color: orLumineux),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: or,
           foregroundColor: bleuNuitProfond,
-          textStyle: AppTheme.manrope(fontWeight: FontWeight.w700, letterSpacing: 0.3),
+          textStyle: AppTheme.manrope(
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.3,
+          ),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
           elevation: 0,
@@ -260,15 +306,27 @@ class AppTheme {
         backgroundColor: or,
         foregroundColor: bleuNuitProfond,
         elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(4)),
+        ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         labelStyle: AppTheme.manrope(color: ivoire.withValues(alpha: 0.65)),
-        border: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0x33F7F3EA))),
-        enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0x33F7F3EA))),
-        focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: or, width: 2)),
-        errorBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppTheme.dangerClair)),
-        focusedErrorBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppTheme.dangerClair, width: 2)),
+        border: const UnderlineInputBorder(
+          borderSide: BorderSide(color: Color(0x33F7F3EA)),
+        ),
+        enabledBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: Color(0x33F7F3EA)),
+        ),
+        focusedBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: or, width: 2),
+        ),
+        errorBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: AppTheme.dangerClair),
+        ),
+        focusedErrorBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: AppTheme.dangerClair, width: 2),
+        ),
         filled: false,
       ),
       cardTheme: CardThemeData(
@@ -280,18 +338,29 @@ class AppTheme {
           side: BorderSide(color: or.withValues(alpha: 0.15)),
         ),
       ),
-      dividerTheme: DividerThemeData(color: ivoire.withValues(alpha: 0.12), space: 32),
+      dividerTheme: DividerThemeData(
+        color: ivoire.withValues(alpha: 0.12),
+        space: 32,
+      ),
       dialogTheme: DialogThemeData(
         backgroundColor: bleuNuitSurface,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-        titleTextStyle: AppTheme.playfair(color: ivoire, fontSize: 20, fontWeight: FontWeight.w600),
+        titleTextStyle: AppTheme.playfair(
+          color: ivoire,
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        ),
         contentTextStyle: AppTheme.manrope(color: ivoire),
       ),
       chipTheme: ChipThemeData(
         backgroundColor: ivoire.withValues(alpha: 0.06),
         selectedColor: or.withValues(alpha: 0.22),
-        labelStyle: AppTheme.manrope(color: ivoire, fontWeight: FontWeight.w600, fontSize: 12),
+        labelStyle: AppTheme.manrope(
+          color: ivoire,
+          fontWeight: FontWeight.w600,
+          fontSize: 12,
+        ),
         side: BorderSide(color: ivoire.withValues(alpha: 0.14)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       ),

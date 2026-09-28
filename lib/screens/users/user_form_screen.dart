@@ -113,7 +113,9 @@ class _UserFormScreenState extends State<UserFormScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final clientProvider = context.watch<ClientProvider>();
+    final clients = context.select<ClientProvider, List<Client>>(
+      (provider) => provider.clients,
+    );
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -185,10 +187,10 @@ class _UserFormScreenState extends State<UserFormScreen> {
                 isExpanded: true,
                 decoration: InputDecoration(
                   labelText: l10n.clientRecordToLink,
-                  prefixIcon: Icon(Icons.link),
+                  prefixIcon: const Icon(Icons.link),
                   helperText: l10n.clientLinkHelp,
                 ),
-                items: clientProvider.clients
+                items: clients
                     .map(
                       (c) => DropdownMenuItem(
                         value: c,

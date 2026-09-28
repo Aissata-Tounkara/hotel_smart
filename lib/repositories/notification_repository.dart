@@ -8,12 +8,18 @@ class NotificationRepository {
 
   Future<int> create(NotificationAlerte notification) async {
     final db = await _dbHelper.database;
-    return db.insert(AppConstants.tableNotifications, notification.toMap()..remove('id'));
+    return db.insert(
+      AppConstants.tableNotifications,
+      notification.toMap()..remove('id'),
+    );
   }
 
   Future<List<NotificationAlerte>> getAll() async {
     final db = await _dbHelper.database;
-    final rows = await db.query(AppConstants.tableNotifications, orderBy: 'date_alerte DESC');
+    final rows = await db.query(
+      AppConstants.tableNotifications,
+      orderBy: 'date_alerte DESC',
+    );
     return rows.map(NotificationAlerte.fromMap).toList();
   }
 
@@ -39,6 +45,10 @@ class NotificationRepository {
 
   Future<int> delete(int id) async {
     final db = await _dbHelper.database;
-    return db.delete(AppConstants.tableNotifications, where: 'id = ?', whereArgs: [id]);
+    return db.delete(
+      AppConstants.tableNotifications,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
 }

@@ -27,7 +27,10 @@ void main() {
         dateCreation: DateTime(2026, 1, 1),
       );
       // Une nouvelle demande du 12 au 20 chevauche la reservation existante.
-      expect(reservation.chevauche(DateTime(2026, 1, 12), DateTime(2026, 1, 20)), isTrue);
+      expect(
+        reservation.chevauche(DateTime(2026, 1, 12), DateTime(2026, 1, 20)),
+        isTrue,
+      );
     });
 
     test('chevauche renvoie false pour des periodes disjointes', () {
@@ -41,7 +44,10 @@ void main() {
         dateCreation: DateTime(2026, 1, 1),
       );
       // Une reservation du 15 au 20 commence exactement au depart de la premiere : pas de conflit.
-      expect(reservation.chevauche(DateTime(2026, 1, 15), DateTime(2026, 1, 20)), isFalse);
+      expect(
+        reservation.chevauche(DateTime(2026, 1, 15), DateTime(2026, 1, 20)),
+        isFalse,
+      );
     });
 
     test('toMap puis fromMap redonne une reservation equivalente', () {

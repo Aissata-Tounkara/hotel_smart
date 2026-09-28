@@ -9,7 +9,7 @@ class PaymentProvider extends ChangeNotifier {
   final PaymentRepository _paymentRepository;
 
   PaymentProvider({PaymentRepository? paymentRepository})
-      : _paymentRepository = paymentRepository ?? PaymentRepository();
+    : _paymentRepository = paymentRepository ?? PaymentRepository();
 
   List<Paiement> _paiements = [];
   bool _enChargement = false;

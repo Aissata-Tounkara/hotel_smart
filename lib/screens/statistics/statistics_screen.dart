@@ -47,13 +47,26 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final statisticsProvider = context.watch<StatisticsProvider>();
-    final stats = statisticsProvider.statistiques;
+    final stats = context.select<StatisticsProvider, Statistique?>(
+      (provider) => provider.statistiques,
+    );
+    final enChargement = context.select<StatisticsProvider, bool>(
+      (provider) => provider.enChargement,
+    );
+    final occupationParMois = context
+        .select<StatisticsProvider, List<OccupationMensuelle>>(
+          (provider) => provider.occupationParMois,
+        );
+    final revenuParType = context
+        .select<StatisticsProvider, List<RevenuParType>>(
+          (provider) => provider.revenuParType,
+        );
+    final statisticsProvider = context.read<StatisticsProvider>();
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: PremiumAppBar(title: l10n.statisticsTitle),
-      body: statisticsProvider.enChargement && stats == null
+      body: enChargement && stats == null
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
               onRefresh: statisticsProvider.charger,
@@ -84,8 +97,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                     const SizedBox(height: 16),
                     SizedBox(
                       height: 220,
-                      child: _GraphiqueOccupation(
-                        donnees: statisticsProvider.occupationParMois,
+                      child: RepaintBoundary(
+                        child: _GraphiqueOccupation(donnees: occupationParMois),
                       ),
                     ),
                     const OrnamentalDivider(),
@@ -96,8 +109,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                     const SizedBox(height: 16),
                     SizedBox(
                       height: 220,
-                      child: _GraphiqueRevenu(
-                        donnees: statisticsProvider.revenuParType,
+                      child: RepaintBoundary(
+                        child: _GraphiqueRevenu(donnees: revenuParType),
                       ),
                     ),
                   ],
@@ -132,7 +145,7 @@ class _GraphiqueOccupation extends StatelessWidget {
           maxY: 100,
           barTouchData: BarTouchData(enabled: true),
           titlesData: FlTitlesData(
-            leftTitles: AxisTitles(
+            leftTitles: const AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
                 reservedSize: 32,
@@ -211,7 +224,7 @@ class _GraphiqueRevenu extends StatelessWidget {
           maxY: maxY == 0 ? 100 : maxY * 1.2,
           barTouchData: BarTouchData(enabled: true),
           titlesData: FlTitlesData(
-            leftTitles: AxisTitles(
+            leftTitles: const AxisTitles(
               sideTitles: SideTitles(showTitles: true, reservedSize: 56),
             ),
             topTitles: const AxisTitles(

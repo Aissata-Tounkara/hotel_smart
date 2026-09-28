@@ -26,7 +26,10 @@ Future<bool> afficherConfirmation(
         ),
         FilledButton(
           style: destructif
-              ? FilledButton.styleFrom(backgroundColor: AppTheme.bordeaux, foregroundColor: AppTheme.ivoire)
+              ? FilledButton.styleFrom(
+                  backgroundColor: AppTheme.bordeaux,
+                  foregroundColor: AppTheme.ivoire,
+                )
               : null,
           onPressed: () => Navigator.of(context).pop(true),
           child: Text(texteConfirmer),

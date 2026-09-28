@@ -83,3 +83,5 @@ flutter:
           weight: 600
         - asset: assets/fonts/Manrope-Variable.ttf
           weight: 700
+  assets:
+    - assets/images/

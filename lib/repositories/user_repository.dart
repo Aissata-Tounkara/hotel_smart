@@ -15,7 +15,11 @@ class UserRepository {
 
   Future<Utilisateur?> getById(int id) async {
     final db = await _dbHelper.database;
-    final rows = await db.query(AppConstants.tableUsers, where: 'id = ?', whereArgs: [id]);
+    final rows = await db.query(
+      AppConstants.tableUsers,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
     if (rows.isEmpty) return null;
     return Utilisateur.fromMap(rows.first);
   }
@@ -57,7 +61,9 @@ class UserRepository {
     final rows = await db.query(
       AppConstants.tableUsers,
       where: excludeId != null ? 'email = ? AND id != ?' : 'email = ?',
-      whereArgs: excludeId != null ? [email.trim().toLowerCase(), excludeId] : [email.trim().toLowerCase()],
+      whereArgs: excludeId != null
+          ? [email.trim().toLowerCase(), excludeId]
+          : [email.trim().toLowerCase()],
     );
     return rows.isNotEmpty;
   }

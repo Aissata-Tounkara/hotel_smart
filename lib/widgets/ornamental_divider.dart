@@ -19,7 +19,12 @@ class OrnamentalDivider extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Row(
         children: [
-          Expanded(child: Divider(color: couleur.withValues(alpha: 0.35), thickness: 1)),
+          Expanded(
+            child: Divider(
+              color: couleur.withValues(alpha: 0.35),
+              thickness: 1,
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14),
             child: Transform.rotate(
@@ -34,7 +39,12 @@ class OrnamentalDivider extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(child: Divider(color: couleur.withValues(alpha: 0.35), thickness: 1)),
+          Expanded(
+            child: Divider(
+              color: couleur.withValues(alpha: 0.35),
+              thickness: 1,
+            ),
+          ),
         ],
       ),
     );

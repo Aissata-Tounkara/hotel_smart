@@ -122,15 +122,26 @@ fournissent des résumés sémantiques aux lecteurs d'écran.
 
 ## Performance
 
-- Les composants réutilisables et une grande partie de l'interface utilisent
-  des constructeurs `const` lorsque leurs paramètres sont constants.
-- Les longues listes de données utilisent `ListView.builder` ou
-  `ListView.separated` pour construire les éléments au besoin.
-- Les écrans de chambres, clients, réservations, paiements et tableau de bord
-  utilisent `context.select` pour écouter les champs pertinents des providers
-  et limiter les reconstructions.
-- Les graphiques ne recalculent leurs widgets que lorsque les données de
-  statistiques sélectionnées changent.
+- Activation des règles `prefer_const_constructors`,
+  `prefer_const_literals_to_create_immutables`, `prefer_const_declarations`,
+  `prefer_final_locals`, `avoid_print` et `use_build_context_synchronously`.
+- Remplacement des écoutes globales `context.watch` par des sélections ciblées
+  `context.select` dans les écrans concernés.
+- Les listes de données utilisent `ListView.builder`, `ListView.separated` ou
+  `GridView.builder`, avec des clés stables ; les chambres sont construites à
+  la demande.
+- Les deux graphiques statistiques sont dans des `RepaintBoundary`.
+- `AppImage` calcule `cacheWidth` et `cacheHeight` depuis la taille d'affichage
+  et le `devicePixelRatio`. Trois illustrations locales compressées montrent
+  les types de chambres.
+
+### Mesurer les performances
+
+Lancer `flutter run --profile`, ouvrir DevTools > Performance, puis faire
+défiler la liste des chambres. Critère de vérification : aucune frame ne
+dépasse 16 ms pendant ce défilement.
+
+Capture DevTools à ajouter.
 
 ## Journal des modifications
 

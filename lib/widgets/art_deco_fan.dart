@@ -25,7 +25,10 @@ class ArtDecoFan extends StatelessWidget {
         width: size,
         height: size,
         child: CustomPaint(
-          painter: _ArtDecoFanPainter(color: color, nombreDeRayons: nombreDeRayons),
+          painter: _ArtDecoFanPainter(
+            color: color,
+            nombreDeRayons: nombreDeRayons,
+          ),
         ),
       ),
     );
@@ -54,7 +57,11 @@ class _ArtDecoFanPainter extends CustomPainter {
         centre.dy + rayon * sin(angle),
       );
       final opacite = i.isEven ? 0.28 : 0.14;
-      canvas.drawLine(centre, extremite, traitFin..color = color.withValues(alpha: opacite));
+      canvas.drawLine(
+        centre,
+        extremite,
+        traitFin..color = color.withValues(alpha: opacite),
+      );
     }
 
     for (int anneau = 1; anneau <= 3; anneau++) {
@@ -72,6 +79,7 @@ class _ArtDecoFanPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _ArtDecoFanPainter oldDelegate) {
-    return oldDelegate.color != color || oldDelegate.nombreDeRayons != nombreDeRayons;
+    return oldDelegate.color != color ||
+        oldDelegate.nombreDeRayons != nombreDeRayons;
   }
 }

@@ -12,8 +12,8 @@ class UserProvider extends ChangeNotifier {
   final AuthService _authService;
 
   UserProvider({UserRepository? userRepository, AuthService? authService})
-      : _userRepository = userRepository ?? UserRepository(),
-        _authService = authService ?? AuthService();
+    : _userRepository = userRepository ?? UserRepository(),
+      _authService = authService ?? AuthService();
 
   List<Utilisateur> _utilisateurs = [];
   bool _enChargement = false;
@@ -79,7 +79,10 @@ class UserProvider extends ChangeNotifier {
   }) async {
     try {
       final emailNormalise = email.trim().toLowerCase();
-      if (await _userRepository.emailExists(emailNormalise, excludeId: utilisateur.id)) {
+      if (await _userRepository.emailExists(
+        emailNormalise,
+        excludeId: utilisateur.id,
+      )) {
         _erreur = 'Cet email est deja utilise';
         notifyListeners();
         return false;
@@ -87,7 +90,8 @@ class UserProvider extends ChangeNotifier {
       final miseAJour = utilisateur.copyWith(
         nom: nom.trim(),
         email: emailNormalise,
-        motDePasseHache: (nouveauMotDePasse != null && nouveauMotDePasse.isNotEmpty)
+        motDePasseHache:
+            (nouveauMotDePasse != null && nouveauMotDePasse.isNotEmpty)
             ? _authService.hashPassword(nouveauMotDePasse)
             : utilisateur.motDePasseHache,
         role: role,

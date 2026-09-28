@@ -10,7 +10,8 @@ enum AuthStatus { inconnu, connecte, deconnecte }
 class AuthProvider extends ChangeNotifier {
   final AuthService _authService;
 
-  AuthProvider({AuthService? authService}) : _authService = authService ?? AuthService();
+  AuthProvider({AuthService? authService})
+    : _authService = authService ?? AuthService();
 
   Utilisateur? _utilisateurCourant;
   AuthStatus _status = AuthStatus.inconnu;
@@ -31,7 +32,9 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> tenterRestaurationSession() async {
     _utilisateurCourant = await _authService.restoreSession();
-    _status = _utilisateurCourant != null ? AuthStatus.connecte : AuthStatus.deconnecte;
+    _status = _utilisateurCourant != null
+        ? AuthStatus.connecte
+        : AuthStatus.deconnecte;
     notifyListeners();
   }
 

@@ -15,8 +15,9 @@ class ReservationProvider extends ChangeNotifier {
   ReservationProvider({
     ReservationRepository? reservationRepository,
     ReservationService? reservationService,
-  })  : _reservationRepository = reservationRepository ?? ReservationRepository(),
-        _reservationService = reservationService ?? ReservationService();
+  }) : _reservationRepository =
+           reservationRepository ?? ReservationRepository(),
+       _reservationService = reservationService ?? ReservationService();
 
   List<Reservation> _reservations = [];
   List<Chambre> _chambresDisponibles = [];
@@ -33,7 +34,8 @@ class ReservationProvider extends ChangeNotifier {
 
   List<Reservation> get reservations {
     return _reservations.where((r) {
-      final correspondStatut = _filtreStatut == null || r.statut == _filtreStatut;
+      final correspondStatut =
+          _filtreStatut == null || r.statut == _filtreStatut;
       return correspondStatut;
     }).toList();
   }
@@ -61,13 +63,19 @@ class ReservationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> chercherChambresDisponibles(DateTime arrivee, DateTime depart) async {
+  Future<void> chercherChambresDisponibles(
+    DateTime arrivee,
+    DateTime depart,
+  ) async {
     _rechercheChambresEnCours = true;
     _erreur = null;
     _chambresDisponibles = [];
     notifyListeners();
     try {
-      _chambresDisponibles = await _reservationService.getChambresDisponibles(arrivee, depart);
+      _chambresDisponibles = await _reservationService.getChambresDisponibles(
+        arrivee,
+        depart,
+      );
     } on ReservationException catch (e) {
       _erreur = e.message;
     } finally {

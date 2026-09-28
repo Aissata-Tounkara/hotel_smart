@@ -8,7 +8,7 @@ class NotificationProvider extends ChangeNotifier {
   final NotificationService _notificationService;
 
   NotificationProvider({NotificationService? notificationService})
-      : _notificationService = notificationService ?? NotificationService();
+    : _notificationService = notificationService ?? NotificationService();
 
   List<NotificationAlerte> _alertesNonLues = [];
   bool _enChargement = false;

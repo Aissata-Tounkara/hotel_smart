@@ -26,11 +26,11 @@ void main() {
     await tester.pumpWidget(
       ChangeNotifierProvider(
         create: (_) => AuthProvider(),
-        child: MaterialApp(
-          locale: const Locale('fr'),
+        child: const MaterialApp(
+          locale: Locale('fr'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: const LoginScreen(),
+          home: LoginScreen(),
         ),
       ),
     );
@@ -53,11 +53,11 @@ void main() {
           ),
           ChangeNotifierProvider(create: (_) => AuthProvider()),
         ],
-        child: MaterialApp(
-          locale: const Locale('fr'),
+        child: const MaterialApp(
+          locale: Locale('fr'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: const RoomListScreen(),
+          home: RoomListScreen(),
         ),
       ),
     );
@@ -105,11 +105,11 @@ void main() {
     await tester.pumpWidget(
       ChangeNotifierProvider(
         create: (_) => SettingsProvider(),
-        child: MaterialApp(
-          locale: const Locale('fr'),
+        child: const MaterialApp(
+          locale: Locale('fr'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: const SettingsScreen(),
+          home: SettingsScreen(),
         ),
       ),
     );

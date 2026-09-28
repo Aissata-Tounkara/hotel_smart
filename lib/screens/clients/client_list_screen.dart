@@ -106,6 +106,9 @@ class _ClientListScreenState extends State<ClientListScreen> {
                         itemBuilder: (context, i) {
                           final client = clients[i];
                           return Semantics(
+                            key: ValueKey(
+                              'client-${client.id ?? client.telephone}',
+                            ),
                             label: l10n.clientSemanticSummary(
                               client.nomComplet,
                               client.telephone,

@@ -44,8 +44,15 @@ class _SplashScreenState extends State<SplashScreen> {
             children: [
               Container(
                 padding: const EdgeInsets.all(18),
-                decoration: const BoxDecoration(gradient: AppTheme.degradeOr, shape: BoxShape.circle),
-                child: const Icon(Icons.hotel, color: AppTheme.bleuNuitProfond, size: 40),
+                decoration: const BoxDecoration(
+                  gradient: AppTheme.degradeOr,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.hotel,
+                  color: AppTheme.bleuNuitProfond,
+                  size: 40,
+                ),
               ),
               const SizedBox(height: 18),
               Text(

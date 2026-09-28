@@ -89,8 +89,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.watch<AuthProvider>();
-    final utilisateur = authProvider.utilisateurCourant;
+    final utilisateur = context.select<AuthProvider, Utilisateur?>(
+      (provider) => provider.utilisateurCourant,
+    );
     final or = Theme.of(context).colorScheme.secondary;
     final l10n = AppLocalizations.of(context)!;
 

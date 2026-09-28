@@ -129,17 +129,23 @@ class DatabaseHelper {
 
     // Index sur les cles etrangeres pour optimiser les jointures/filtrages.
     await db.execute(
-        'CREATE INDEX idx_users_client_id ON ${AppConstants.tableUsers} (client_id)');
+      'CREATE INDEX idx_users_client_id ON ${AppConstants.tableUsers} (client_id)',
+    );
     await db.execute(
-        'CREATE INDEX idx_reservations_client_id ON ${AppConstants.tableReservations} (client_id)');
+      'CREATE INDEX idx_reservations_client_id ON ${AppConstants.tableReservations} (client_id)',
+    );
     await db.execute(
-        'CREATE INDEX idx_reservations_room_id ON ${AppConstants.tableReservations} (room_id)');
+      'CREATE INDEX idx_reservations_room_id ON ${AppConstants.tableReservations} (room_id)',
+    );
     await db.execute(
-        'CREATE INDEX idx_reservations_dates ON ${AppConstants.tableReservations} (date_arrivee, date_depart)');
+      'CREATE INDEX idx_reservations_dates ON ${AppConstants.tableReservations} (date_arrivee, date_depart)',
+    );
     await db.execute(
-        'CREATE INDEX idx_payments_reservation_id ON ${AppConstants.tablePayments} (reservation_id)');
+      'CREATE INDEX idx_payments_reservation_id ON ${AppConstants.tablePayments} (reservation_id)',
+    );
     await db.execute(
-        'CREATE INDEX idx_notifications_reservation_id ON ${AppConstants.tableNotifications} (reservation_id)');
+      'CREATE INDEX idx_notifications_reservation_id ON ${AppConstants.tableNotifications} (reservation_id)',
+    );
 
     await _insertDefaultAdmin(db);
   }
@@ -148,7 +154,9 @@ class DatabaseHelper {
   /// creee avec un compte Admin par defaut afin de ne jamais bloquer
   /// l'acces a l'application.
   Future<void> _insertDefaultAdmin(Database db) async {
-    final hache = sha256.convert(utf8.encode(AppConstants.defaultAdminPassword)).toString();
+    final hache = sha256
+        .convert(utf8.encode(AppConstants.defaultAdminPassword))
+        .toString();
     await db.insert(AppConstants.tableUsers, {
       'nom': AppConstants.defaultAdminName,
       'email': AppConstants.defaultAdminEmail,

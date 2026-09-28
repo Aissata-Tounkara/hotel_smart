@@ -13,7 +13,8 @@ class EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final or = Theme.of(context).colorScheme.secondary;
-    final couleurTexte = Theme.of(context).textTheme.bodyMedium?.color ?? Colors.grey;
+    final couleurTexte =
+        Theme.of(context).textTheme.bodyMedium?.color ?? Colors.grey;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -25,7 +26,9 @@ class EmptyState extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: AppTheme.manrope(color: couleurTexte.withValues(alpha: 0.7)),
+              style: AppTheme.manrope(
+                color: couleurTexte.withValues(alpha: 0.7),
+              ),
             ),
           ],
         ),

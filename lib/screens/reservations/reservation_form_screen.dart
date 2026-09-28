@@ -106,8 +106,17 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final clientProvider = context.watch<ClientProvider>();
-    final reservationProvider = context.watch<ReservationProvider>();
+    final reservationProvider = context.read<ReservationProvider>();
+    final clients = context.select<ClientProvider, List<Client>>(
+      (provider) => provider.clients,
+    );
+    final rechercheChambresEnCours = context.select<ReservationProvider, bool>(
+      (provider) => provider.rechercheChambresEnCours,
+    );
+    final chambresDisponibles = context
+        .select<ReservationProvider, List<Chambre>>(
+          (provider) => provider.chambresDisponibles,
+        );
     final or = Theme.of(context).colorScheme.secondary;
     final l10n = AppLocalizations.of(context)!;
     final montant =
@@ -133,7 +142,7 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
               labelText: l10n.clients,
               prefixIcon: const Icon(Icons.person_outline),
             ),
-            items: clientProvider.clients
+            items: clients
                 .map(
                   (c) => DropdownMenuItem(
                     value: c,
@@ -180,9 +189,9 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
-            if (reservationProvider.rechercheChambresEnCours)
+            if (rechercheChambresEnCours)
               const Center(child: CircularProgressIndicator())
-            else if (reservationProvider.chambresDisponibles.isEmpty)
+            else if (chambresDisponibles.isEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Text(
@@ -195,7 +204,7 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                 groupValue: _chambreSelectionnee,
                 onChanged: (v) => setState(() => _chambreSelectionnee = v),
                 child: Column(
-                  children: reservationProvider.chambresDisponibles
+                  children: chambresDisponibles
                       .map(
                         (chambre) => RadioListTile<Chambre>(
                           value: chambre,

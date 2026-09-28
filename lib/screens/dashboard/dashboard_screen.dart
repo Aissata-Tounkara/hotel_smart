@@ -157,6 +157,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   itemBuilder: (context, i) {
                     final alerte = alertes[i];
                     return ListTile(
+                      key: ValueKey(
+                        'notification-${alerte.id ?? '${alerte.type.name}-${alerte.reservationId}'}',
+                      ),
                       leading: Icon(
                         alerte.type.name == 'checkIn'
                             ? Icons.login

@@ -22,11 +22,16 @@ class ReservationService {
   ReservationService({
     ReservationRepository? reservationRepository,
     RoomRepository? roomRepository,
-  })  : _reservationRepository = reservationRepository ?? ReservationRepository(),
-        _roomRepository = roomRepository ?? RoomRepository();
+  }) : _reservationRepository =
+           reservationRepository ?? ReservationRepository(),
+       _roomRepository = roomRepository ?? RoomRepository();
 
   /// Calcule le montant total : tarif journalier x duree du sejour.
-  double calculerMontantTotal(Chambre chambre, DateTime arrivee, DateTime depart) {
+  double calculerMontantTotal(
+    Chambre chambre,
+    DateTime arrivee,
+    DateTime depart,
+  ) {
     final duree = depart.difference(arrivee).inDays;
     return chambre.prixParNuit * duree;
   }
@@ -39,7 +44,9 @@ class ReservationService {
     int? excludeReservationId,
   }) async {
     if (!depart.isAfter(arrivee)) {
-      throw ReservationException('La date de depart doit etre posterieure a la date d\'arrivee');
+      throw ReservationException(
+        'La date de depart doit etre posterieure a la date d\'arrivee',
+      );
     }
 
     final toutesLesChambres = await _roomRepository.getAll();
@@ -51,7 +58,9 @@ class ReservationService {
         chambre.id!,
         excludeReservationId: excludeReservationId,
       );
-      final enConflit = reservationsChambre.any((r) => r.chevauche(arrivee, depart));
+      final enConflit = reservationsChambre.any(
+        (r) => r.chevauche(arrivee, depart),
+      );
       if (!enConflit) {
         chambresDisponibles.add(chambre);
       }
@@ -67,13 +76,21 @@ class ReservationService {
     required DateTime depart,
   }) async {
     if (!depart.isAfter(arrivee)) {
-      throw ReservationException('La date de depart doit etre posterieure a la date d\'arrivee');
+      throw ReservationException(
+        'La date de depart doit etre posterieure a la date d\'arrivee',
+      );
     }
 
-    final reservationsChambre = await _reservationRepository.getByRoom(chambre.id!);
-    final enConflit = reservationsChambre.any((r) => r.chevauche(arrivee, depart));
+    final reservationsChambre = await _reservationRepository.getByRoom(
+      chambre.id!,
+    );
+    final enConflit = reservationsChambre.any(
+      (r) => r.chevauche(arrivee, depart),
+    );
     if (enConflit) {
-      throw ReservationException('Cette chambre est deja reservee sur une periode qui chevauche ces dates');
+      throw ReservationException(
+        'Cette chambre est deja reservee sur une periode qui chevauche ces dates',
+      );
     }
 
     final montant = calculerMontantTotal(chambre, arrivee, depart);
@@ -93,30 +110,42 @@ class ReservationService {
   /// Check-in : confirme la reservation et passe la chambre en "occupee"
   /// (point 25).
   Future<void> effectuerCheckIn(Reservation reservation) async {
-    await _reservationRepository.update(reservation.copyWith(statut: StatutReservation.confirmee));
+    await _reservationRepository.update(
+      reservation.copyWith(statut: StatutReservation.confirmee),
+    );
     final chambre = await _roomRepository.getById(reservation.chambreId);
     if (chambre != null) {
-      await _roomRepository.update(chambre.copyWith(statut: StatutChambre.occupee));
+      await _roomRepository.update(
+        chambre.copyWith(statut: StatutChambre.occupee),
+      );
     }
   }
 
   /// Check-out : termine la reservation et remet la chambre "disponible"
   /// (point 25).
   Future<void> effectuerCheckOut(Reservation reservation) async {
-    await _reservationRepository.update(reservation.copyWith(statut: StatutReservation.terminee));
+    await _reservationRepository.update(
+      reservation.copyWith(statut: StatutReservation.terminee),
+    );
     final chambre = await _roomRepository.getById(reservation.chambreId);
     if (chambre != null) {
-      await _roomRepository.update(chambre.copyWith(statut: StatutChambre.disponible));
+      await _roomRepository.update(
+        chambre.copyWith(statut: StatutChambre.disponible),
+      );
     }
   }
 
   /// Annule une reservation en attente ou confirmee.
   Future<void> annuler(Reservation reservation) async {
-    await _reservationRepository.update(reservation.copyWith(statut: StatutReservation.annulee));
+    await _reservationRepository.update(
+      reservation.copyWith(statut: StatutReservation.annulee),
+    );
     if (reservation.statut == StatutReservation.confirmee) {
       final chambre = await _roomRepository.getById(reservation.chambreId);
       if (chambre != null) {
-        await _roomRepository.update(chambre.copyWith(statut: StatutChambre.disponible));
+        await _roomRepository.update(
+          chambre.copyWith(statut: StatutChambre.disponible),
+        );
       }
     }
   }

@@ -11,8 +11,8 @@ class ClientProvider extends ChangeNotifier {
   final ApiService _apiService;
 
   ClientProvider({ClientRepository? clientRepository, ApiService? apiService})
-      : _clientRepository = clientRepository ?? ClientRepository(),
-        _apiService = apiService ?? ApiService();
+    : _clientRepository = clientRepository ?? ClientRepository(),
+      _apiService = apiService ?? ApiService();
 
   List<Client> _clients = [];
   List<String> _nationalites = [];
@@ -98,7 +98,8 @@ class ClientProvider extends ChangeNotifier {
       await charger();
       return true;
     } catch (e) {
-      _erreur = 'Impossible de supprimer le client : il possede peut-etre des reservations';
+      _erreur =
+          'Impossible de supprimer le client : il possede peut-etre des reservations';
       notifyListeners();
       return false;
     }

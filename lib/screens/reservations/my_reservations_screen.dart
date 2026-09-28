@@ -90,6 +90,7 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
                     final reservation = _reservations![i];
                     final chambre = chambresParId[reservation.chambreId];
                     return Semantics(
+                      key: ValueKey('my-reservation-${reservation.id}'),
                       label: l10n.reservationSemanticSummary(
                         l10n.unknownClient,
                         chambre?.numero ?? '-',

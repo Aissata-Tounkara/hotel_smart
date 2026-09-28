@@ -13,7 +13,11 @@ class RoomRepository {
 
   Future<Chambre?> getById(int id) async {
     final db = await _dbHelper.database;
-    final rows = await db.query(AppConstants.tableRooms, where: 'id = ?', whereArgs: [id]);
+    final rows = await db.query(
+      AppConstants.tableRooms,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
     if (rows.isEmpty) return null;
     return Chambre.fromMap(rows.first);
   }

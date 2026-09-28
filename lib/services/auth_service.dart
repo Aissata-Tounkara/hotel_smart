@@ -22,14 +22,16 @@ class AuthService {
   final UserRepository _userRepository;
 
   AuthService({UserRepository? userRepository})
-      : _userRepository = userRepository ?? UserRepository();
+    : _userRepository = userRepository ?? UserRepository();
 
   String hashPassword(String motDePasse) {
     return sha256.convert(utf8.encode(motDePasse)).toString();
   }
 
   Future<Utilisateur> login(String email, String motDePasse) async {
-    final utilisateur = await _userRepository.getByEmail(email.trim().toLowerCase());
+    final utilisateur = await _userRepository.getByEmail(
+      email.trim().toLowerCase(),
+    );
     if (utilisateur == null) {
       throw AuthException('Aucun compte ne correspond a cet email');
     }

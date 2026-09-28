@@ -38,7 +38,8 @@ class AppTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final couleurTexte = theme.textTheme.bodyLarge?.color ?? theme.colorScheme.onSurface;
+    final couleurTexte =
+        theme.textTheme.bodyLarge?.color ?? theme.colorScheme.onSurface;
     final or = theme.colorScheme.secondary;
 
     return TextFormField(

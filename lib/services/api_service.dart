@@ -19,7 +19,10 @@ class ApiException implements Exception {
 class NationalitesResultat {
   final List<String> nationalites;
   final bool depuisListeDeSecours;
-  const NationalitesResultat({required this.nationalites, required this.depuisListeDeSecours});
+  const NationalitesResultat({
+    required this.nationalites,
+    required this.depuisListeDeSecours,
+  });
 }
 
 /// Integration de l'API REST publique countries.dev pour peupler la liste
@@ -78,7 +81,9 @@ class ApiService {
           .timeout(const Duration(seconds: 15));
 
       if (reponse.statusCode != 200) {
-        throw ApiException('Le serveur des nationalites a repondu avec une erreur (${reponse.statusCode})');
+        throw ApiException(
+          'Le serveur des nationalites a repondu avec une erreur (${reponse.statusCode})',
+        );
       }
 
       final data = jsonDecode(reponse.body) as List<dynamic>;
@@ -94,13 +99,19 @@ class ApiService {
         throw ApiException('Aucune nationalite recue depuis le serveur');
       }
       nationalites.sort();
-      return NationalitesResultat(nationalites: nationalites, depuisListeDeSecours: false);
+      return NationalitesResultat(
+        nationalites: nationalites,
+        depuisListeDeSecours: false,
+      );
     } catch (_) {
       // Quelle que soit la cause (pas de connexion, timeout, erreur
       // serveur, reponse invalide), on retombe sur la liste de secours
       // plutot que de bloquer le formulaire client.
       final secours = List<String>.from(_nationalitesSecours)..sort();
-      return NationalitesResultat(nationalites: secours, depuisListeDeSecours: true);
+      return NationalitesResultat(
+        nationalites: secours,
+        depuisListeDeSecours: true,
+      );
     }
   }
 }

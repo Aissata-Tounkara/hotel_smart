@@ -60,9 +60,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.watch<AuthProvider>();
+    final erreur = context.select<AuthProvider, String?>(
+      (provider) => provider.erreur,
+    );
+    final enChargement = context.select<AuthProvider, bool>(
+      (provider) => provider.enChargement,
+    );
     final l10n = AppLocalizations.of(context)!;
-    final messageErreur = _messageErreur(authProvider.erreur, l10n);
+    final messageErreur = _messageErreur(erreur, l10n);
 
     return Theme(
       data: AppTheme.darkTheme,
@@ -73,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
             const DecoratedBox(
               decoration: BoxDecoration(gradient: AppTheme.degradeBleuNuit),
             ),
-            Positioned(
+            const Positioned(
               bottom: -40,
               left: 0,
               right: 0,
@@ -208,7 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             const SizedBox(height: 32),
                             GradientButton(
                               label: l10n.signIn.toUpperCase(),
-                              loading: authProvider.enChargement,
+                              loading: enChargement,
                               onPressed: _seConnecter,
                             ),
                           ],

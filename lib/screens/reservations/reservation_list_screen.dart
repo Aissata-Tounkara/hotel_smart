@@ -183,6 +183,7 @@ class _ReservationListScreenState extends State<ReservationListScreen> {
                           final client = clientsParId[reservation.clientId];
                           final chambre = chambresParId[reservation.chambreId];
                           return Semantics(
+                            key: ValueKey('reservation-${reservation.id}'),
                             label: l10n.reservationSemanticSummary(
                               client?.nomComplet ?? l10n.unknownClient,
                               chambre?.numero ?? '-',

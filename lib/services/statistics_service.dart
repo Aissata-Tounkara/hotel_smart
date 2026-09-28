@@ -52,24 +52,43 @@ class StatisticsService {
     RoomRepository? roomRepository,
     ReservationRepository? reservationRepository,
     PaymentRepository? paymentRepository,
-  })  : _roomRepository = roomRepository ?? RoomRepository(),
-        _reservationRepository = reservationRepository ?? ReservationRepository(),
-        _paymentRepository = paymentRepository ?? PaymentRepository();
+  }) : _roomRepository = roomRepository ?? RoomRepository(),
+       _reservationRepository =
+           reservationRepository ?? ReservationRepository(),
+       _paymentRepository = paymentRepository ?? PaymentRepository();
 
   Future<Statistique> calculerStatistiquesGlobales() async {
     final chambres = await _roomRepository.getAll();
     final reservations = await _reservationRepository.getAll();
     final paiements = await _paymentRepository.getAll();
 
-    final disponibles = chambres.where((c) => c.statut == StatutChambre.disponible).length;
-    final occupees = chambres.where((c) => c.statut == StatutChambre.occupee).length;
-    final maintenance = chambres.where((c) => c.statut == StatutChambre.maintenance).length;
+    final disponibles = chambres
+        .where((c) => c.statut == StatutChambre.disponible)
+        .length;
+    final occupees = chambres
+        .where((c) => c.statut == StatutChambre.occupee)
+        .length;
+    final maintenance = chambres
+        .where((c) => c.statut == StatutChambre.maintenance)
+        .length;
 
     final maintenant = DateTime.now();
-    final aujourdhui = DateTime(maintenant.year, maintenant.month, maintenant.day);
+    final aujourdhui = DateTime(
+      maintenant.year,
+      maintenant.month,
+      maintenant.day,
+    );
     final reservationsDuJour = reservations.where((r) {
-      final arrivee = DateTime(r.dateArrivee.year, r.dateArrivee.month, r.dateArrivee.day);
-      final depart = DateTime(r.dateDepart.year, r.dateDepart.month, r.dateDepart.day);
+      final arrivee = DateTime(
+        r.dateArrivee.year,
+        r.dateArrivee.month,
+        r.dateArrivee.day,
+      );
+      final depart = DateTime(
+        r.dateDepart.year,
+        r.dateDepart.month,
+        r.dateDepart.day,
+      );
       return r.statut != StatutReservation.annulee &&
           !aujourdhui.isBefore(arrivee) &&
           aujourdhui.isBefore(depart);
@@ -77,13 +96,19 @@ class StatisticsService {
 
     final debutMois = DateTime(maintenant.year, maintenant.month, 1);
     final chiffreAffairesMensuel = paiements
-        .where((p) =>
-            p.statut == StatutPaiement.paye &&
-            !p.datePaiement.isBefore(debutMois) &&
-            p.datePaiement.isBefore(DateTime(maintenant.year, maintenant.month + 1, 1)))
+        .where(
+          (p) =>
+              p.statut == StatutPaiement.paye &&
+              !p.datePaiement.isBefore(debutMois) &&
+              p.datePaiement.isBefore(
+                DateTime(maintenant.year, maintenant.month + 1, 1),
+              ),
+        )
         .fold<double>(0, (total, p) => total + p.montant);
 
-    final tauxOccupation = chambres.isEmpty ? 0.0 : (occupees / chambres.length) * 100;
+    final tauxOccupation = chambres.isEmpty
+        ? 0.0
+        : (occupees / chambres.length) * 100;
 
     return Statistique(
       chambresDisponibles: disponibles,
@@ -121,7 +146,9 @@ class StatisticsService {
   /// Taux d'occupation moyen des [nombreDeMois] derniers mois (inclus le
   /// mois courant), calcule a partir du nombre de nuits reservees par
   /// rapport a la capacite totale (nombre de chambres x jours du mois).
-  Future<List<OccupationMensuelle>> occupationParMois({int nombreDeMois = 6}) async {
+  Future<List<OccupationMensuelle>> occupationParMois({
+    int nombreDeMois = 6,
+  }) async {
     final chambres = await _roomRepository.getAll();
     final reservations = await _reservationRepository.getAll();
     final nombreChambres = chambres.isEmpty ? 1 : chambres.length;
@@ -138,15 +165,27 @@ class StatisticsService {
       int nuitsReservees = 0;
       for (final r in reservations) {
         if (r.statut == StatutReservation.annulee) continue;
-        final debutChevauchement = r.dateArrivee.isAfter(debutMois) ? r.dateArrivee : debutMois;
-        final finChevauchement = r.dateDepart.isBefore(finMois) ? r.dateDepart : finMois;
+        final debutChevauchement = r.dateArrivee.isAfter(debutMois)
+            ? r.dateArrivee
+            : debutMois;
+        final finChevauchement = r.dateDepart.isBefore(finMois)
+            ? r.dateDepart
+            : finMois;
         final nuits = finChevauchement.difference(debutChevauchement).inDays;
         if (nuits > 0) nuitsReservees += nuits;
       }
 
       final capaciteTotale = nombreChambres * joursDansLeMois;
-      final taux = capaciteTotale == 0 ? 0.0 : (nuitsReservees / capaciteTotale) * 100;
-      resultats.add(OccupationMensuelle(moisCible.year, moisCible.month, taux.clamp(0, 100)));
+      final taux = capaciteTotale == 0
+          ? 0.0
+          : (nuitsReservees / capaciteTotale) * 100;
+      resultats.add(
+        OccupationMensuelle(
+          moisCible.year,
+          moisCible.month,
+          taux.clamp(0, 100),
+        ),
+      );
     }
 
     return resultats;
