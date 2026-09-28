@@ -59,8 +59,7 @@ flutter:
   uses-material-design: true
   generate: true
 
-  assets:
-    - assets/images/
+
 
   # Typographie signature du design premium (Playfair Display / Manrope),
   # embarquee localement plutot que chargee a la volee (fiabilite hors-ligne,
