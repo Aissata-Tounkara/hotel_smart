@@ -13,6 +13,14 @@ class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._internal();
 
   static Database? _database;
+  bool _useInMemoryDatabaseForTesting = false;
+
+  /// Utilise une base en memoire pour les tests, sans changer le stockage
+  /// fichier utilise par l'application en production.
+  void configureForTesting({required bool useInMemoryDatabase}) {
+    _useInMemoryDatabaseForTesting = useInMemoryDatabase;
+    _database = null;
+  }
 
   Future<Database> get database async {
     if (_database != null) return _database!;
@@ -21,8 +29,9 @@ class DatabaseHelper {
   }
 
   Future<Database> _initDatabase() async {
-    final databasesPath = await getDatabasesPath();
-    final path = join(databasesPath, 'hotel_smart.db');
+    final path = _useInMemoryDatabaseForTesting
+        ? inMemoryDatabasePath
+        : join(await getDatabasesPath(), 'hotel_smart.db');
 
     return openDatabase(
       path,
