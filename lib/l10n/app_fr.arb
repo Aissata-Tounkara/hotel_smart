@@ -1,0 +1,53 @@
+{
+  "@@locale": "fr",
+  "email": "Email",
+  "password": "Mot de passe",
+  "signIn": "Se connecter",
+  "showPassword": "Afficher le mot de passe",
+  "hidePassword": "Masquer le mot de passe",
+  "emailRequired": "L'email est obligatoire",
+  "emailInvalid": "Format email invalide",
+  "passwordRequired": "Le mot de passe est obligatoire",
+  "authNoAccount": "Aucun compte ne correspond à cet email",
+  "authWrongPassword": "Mot de passe incorrect",
+  "authUnexpected": "Erreur inattendue : impossible de se connecter",
+  "dashboard": "Tableau de bord",
+  "logout": "Déconnexion",
+  "notifications": "Notifications",
+  "markNotificationRead": "Marquer la notification comme lue",
+  "noUnreadNotifications": "Aucune notification non lue",
+  "noUserSignedIn": "Aucun utilisateur connecté",
+  "welcomeUser": "Bienvenue, {name}",
+  "@welcomeUser": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "quickAccess": "Accès rapide",
+  "monthlyRevenue": "Chiffre d’affaires du mois",
+  "occupancyRate": "Taux d’occupation",
+  "availableRooms": "Disponibles",
+  "occupiedRooms": "Occupées",
+  "todayReservations": "Réservations du jour",
+  "rooms": "Chambres",
+  "reservations": "Réservations",
+  "clients": "Clients",
+  "payments": "Paiements",
+  "users": "Utilisateurs",
+  "statistics": "Statistiques",
+  "myReservations": "Mes réservations",
+  "myProfile": "Mon profil",
+  "roleAdmin": "Administrateur",
+  "roleReceptionist": "Réceptionniste",
+  "roleClient": "Client",
+  "settings": "Paramètres",
+  "theme": "Thème",
+  "themeLight": "Clair",
+  "themeDark": "Sombre",
+  "themeSystem": "Système",
+  "language": "Langue",
+  "languageFrench": "Français",
+  "languageEnglish": "Anglais"
+}

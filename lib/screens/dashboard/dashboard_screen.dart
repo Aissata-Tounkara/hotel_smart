@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../models/utilisateur.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/notification_provider.dart';
-import '../../providers/settings_provider.dart';
 import '../../providers/statistics_provider.dart';
 import '../../routes/app_routes.dart';
-import '../../utils/app_strings.dart';
 import '../../utils/app_theme.dart';
 import '../../utils/ui_helpers.dart';
 import '../../widgets/fade_slide_in.dart';
@@ -45,14 +44,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
-    final settingsProvider = context.watch<SettingsProvider>();
     final notificationProvider = context.watch<NotificationProvider>();
     final utilisateur = authProvider.utilisateurCourant;
-    final arabe = settingsProvider.estArabe;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: PremiumAppBar(
-        title: AppStrings.get('tableau_de_bord', arabe: arabe),
+        title: l10n.dashboard,
         actions: [
           if (authProvider.peutGererOperations)
             Stack(
@@ -60,9 +58,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.notifications_outlined),
-                  tooltip: 'Notifications',
-                  onPressed: () =>
-                      _afficherNotifications(context, notificationProvider),
+                  tooltip: l10n.notifications,
+                  onPressed: () => _afficherNotifications(
+                    context,
+                    notificationProvider,
+                    l10n,
+                  ),
                 ),
                 if (notificationProvider.alertesNonLues.isNotEmpty)
                   Positioned(
@@ -87,13 +88,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           IconButton(
             icon: const Icon(Icons.logout),
-            tooltip: AppStrings.get('deconnexion', arabe: arabe),
+            tooltip: l10n.logout,
             onPressed: () => _deconnecter(context),
           ),
         ],
       ),
       body: utilisateur == null
-          ? const Center(child: Text('Aucun utilisateur connecte'))
+          ? Center(child: Text(l10n.noUserSignedIn))
           : RefreshIndicator(
               onRefresh: () => Future.wait([
                 context.read<StatisticsProvider>().charger(),
@@ -103,18 +104,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: ListView(
                   padding: const EdgeInsets.all(20),
                   children: [
-                    _EnteteBienvenue(utilisateur: utilisateur, arabe: arabe),
+                    _EnteteBienvenue(utilisateur: utilisateur, l10n: l10n),
                     if (authProvider.peutGererOperations) ...[
                       const OrnamentalDivider(),
                       const _StatistiquesDashboard(),
                     ],
                     const OrnamentalDivider(),
                     Text(
-                      AppStrings.get('acces_rapide', arabe: arabe),
+                      l10n.quickAccess,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: 14),
-                    _MenuRole(authProvider: authProvider, arabe: arabe),
+                    _MenuRole(authProvider: authProvider, l10n: l10n),
                   ],
                 ),
               ),
@@ -125,6 +126,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void _afficherNotifications(
     BuildContext context,
     NotificationProvider notificationProvider,
+    AppLocalizations l10n,
   ) {
     showModalBottomSheet(
       context: context,
@@ -135,7 +137,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ? Padding(
                   padding: const EdgeInsets.all(24),
                   child: Text(
-                    'Aucune notification non lue',
+                    l10n.noUnreadNotifications,
                     style: AppTheme.manrope(),
                   ),
                 )
@@ -181,6 +183,7 @@ class _StatistiquesDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     final statisticsProvider = context.watch<StatisticsProvider>();
     final stats = statisticsProvider.statistiques;
+    final l10n = AppLocalizations.of(context)!;
 
     if (statisticsProvider.enChargement && stats == null) {
       return const Center(
@@ -196,7 +199,7 @@ class _StatistiquesDashboard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         HeroStatCard(
-          label: 'Chiffre d\'affaires du mois',
+          label: l10n.monthlyRevenue,
           value: UiHelpers.formatMontant(stats.chiffreAffairesMensuel),
           icon: Icons.trending_up,
         ),
@@ -206,17 +209,17 @@ class _StatistiquesDashboard extends StatelessWidget {
           runSpacing: 12,
           children: [
             MiniStat(
-              label: 'Disponibles',
+              label: l10n.availableRooms,
               value: '${stats.chambresDisponibles}',
               icon: Icons.check_circle_outline,
             ),
             MiniStat(
-              label: 'Occupees',
+              label: l10n.occupiedRooms,
               value: '${stats.chambresOccupees}',
               icon: Icons.hotel,
             ),
             MiniStat(
-              label: 'Reservations du jour',
+              label: l10n.todayReservations,
               value: '${stats.reservationsDuJour}',
               icon: Icons.event_available,
             ),
@@ -229,8 +232,8 @@ class _StatistiquesDashboard extends StatelessWidget {
 
 class _EnteteBienvenue extends StatelessWidget {
   final Utilisateur utilisateur;
-  final bool arabe;
-  const _EnteteBienvenue({required this.utilisateur, required this.arabe});
+  final AppLocalizations l10n;
+  const _EnteteBienvenue({required this.utilisateur, required this.l10n});
 
   @override
   Widget build(BuildContext context) {
@@ -261,7 +264,7 @@ class _EnteteBienvenue extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '${AppStrings.get('bienvenue', arabe: arabe)}, ${utilisateur.nom}',
+                l10n.welcomeUser(utilisateur.nom),
                 style: theme.textTheme.headlineSmall?.copyWith(fontSize: 20),
               ),
               const SizedBox(height: 6),
@@ -276,7 +279,11 @@ class _EnteteBienvenue extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
-                  utilisateur.role.libelle,
+                  switch (utilisateur.role) {
+                    RoleUtilisateur.admin => l10n.roleAdmin,
+                    RoleUtilisateur.receptionniste => l10n.roleReceptionist,
+                    RoleUtilisateur.client => l10n.roleClient,
+                  },
                   style: AppTheme.manrope(
                     color: theme.textTheme.bodyMedium?.color,
                     fontWeight: FontWeight.w700,
@@ -294,58 +301,42 @@ class _EnteteBienvenue extends StatelessWidget {
 
 class _MenuRole extends StatelessWidget {
   final AuthProvider authProvider;
-  final bool arabe;
-  const _MenuRole({required this.authProvider, required this.arabe});
+  final AppLocalizations l10n;
+  const _MenuRole({required this.authProvider, required this.l10n});
 
   @override
   Widget build(BuildContext context) {
     final items = <_MenuItem>[
       if (authProvider.peutGererOperations) ...[
+        _MenuItem(l10n.rooms, Icons.bed_outlined, AppRoutes.rooms),
         _MenuItem(
-          AppStrings.get('chambres', arabe: arabe),
-          Icons.bed_outlined,
-          AppRoutes.rooms,
-        ),
-        _MenuItem(
-          AppStrings.get('reservations', arabe: arabe),
+          l10n.reservations,
           Icons.calendar_month_outlined,
           AppRoutes.reservations,
         ),
-        _MenuItem(
-          AppStrings.get('clients', arabe: arabe),
-          Icons.people_outline,
-          AppRoutes.clients,
-        ),
-        _MenuItem(
-          AppStrings.get('paiements', arabe: arabe),
-          Icons.payments_outlined,
-          AppRoutes.payments,
-        ),
+        _MenuItem(l10n.clients, Icons.people_outline, AppRoutes.clients),
+        _MenuItem(l10n.payments, Icons.payments_outlined, AppRoutes.payments),
       ],
       if (authProvider.estAdmin) ...[
         _MenuItem(
-          AppStrings.get('utilisateurs', arabe: arabe),
+          l10n.users,
           Icons.admin_panel_settings_outlined,
           AppRoutes.users,
         ),
         _MenuItem(
-          AppStrings.get('statistiques', arabe: arabe),
+          l10n.statistics,
           Icons.bar_chart_outlined,
           AppRoutes.statistics,
         ),
       ],
       if (authProvider.estClient) ...[
         _MenuItem(
-          AppStrings.get('mes_reservations', arabe: arabe),
+          l10n.myReservations,
           Icons.event_note_outlined,
           AppRoutes.myReservations,
         ),
       ],
-      _MenuItem(
-        AppStrings.get('mon_profil', arabe: arabe),
-        Icons.person_outline,
-        AppRoutes.profile,
-      ),
+      _MenuItem(l10n.myProfile, Icons.person_outline, AppRoutes.profile),
     ];
 
     final or = Theme.of(context).colorScheme.secondary;

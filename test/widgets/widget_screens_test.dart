@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hotel_smart/l10n/app_localizations.dart';
 import 'package:hotel_smart/models/chambre.dart';
 import 'package:hotel_smart/providers/auth_provider.dart';
 import 'package:hotel_smart/providers/room_provider.dart';
@@ -19,11 +20,18 @@ class _EmptyRoomRepository extends RoomRepository {
 }
 
 void main() {
-  testWidgets('le formulaire de connexion valide les champs vides', (tester) async {
+  testWidgets('le formulaire de connexion valide les champs vides', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       ChangeNotifierProvider(
         create: (_) => AuthProvider(),
-        child: const MaterialApp(home: LoginScreen()),
+        child: MaterialApp(
+          locale: const Locale('fr'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const LoginScreen(),
+        ),
       ),
     );
 
@@ -40,7 +48,9 @@ void main() {
     await tester.pumpWidget(
       MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (_) => RoomProvider(roomRepository: _EmptyRoomRepository())),
+          ChangeNotifierProvider(
+            create: (_) => RoomProvider(roomRepository: _EmptyRoomRepository()),
+          ),
           ChangeNotifierProvider(create: (_) => AuthProvider()),
         ],
         child: const MaterialApp(home: RoomListScreen()),
@@ -51,7 +61,9 @@ void main() {
     expect(find.text('Aucune chambre trouvee'), findsOneWidget);
   });
 
-  testWidgets('AppTextField affiche son label et son message erreur', (tester) async {
+  testWidgets('AppTextField affiche son label et son message erreur', (
+    tester,
+  ) async {
     final formKey = GlobalKey<FormState>();
     await tester.pumpWidget(
       MaterialApp(
@@ -81,12 +93,19 @@ void main() {
     expect(find.text('Ce champ est invalide'), findsOneWidget);
   });
 
-  testWidgets('les parametres changent le theme quand on choisit Sombre', (tester) async {
+  testWidgets('les parametres changent le theme quand on choisit Sombre', (
+    tester,
+  ) async {
     SharedPreferences.setMockInitialValues({});
     await tester.pumpWidget(
       ChangeNotifierProvider(
         create: (_) => SettingsProvider(),
-        child: const MaterialApp(home: SettingsScreen()),
+        child: MaterialApp(
+          locale: const Locale('fr'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const SettingsScreen(),
+        ),
       ),
     );
 
@@ -94,12 +113,18 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      tester.widget<SegmentedButton<ThemeMode>>(find.byType(SegmentedButton<ThemeMode>)).selected,
+      tester
+          .widget<SegmentedButton<ThemeMode>>(
+            find.byType(SegmentedButton<ThemeMode>),
+          )
+          .selected,
       {ThemeMode.dark},
     );
   });
 
-  testWidgets('PremiumListTile affiche son titre et son sous-titre', (tester) async {
+  testWidgets('PremiumListTile affiche son titre et son sous-titre', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       const MaterialApp(
         home: Scaffold(

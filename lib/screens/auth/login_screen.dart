@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../providers/auth_provider.dart';
 import '../../routes/app_routes.dart';
 import '../../utils/app_theme.dart';
@@ -48,9 +49,20 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  String? _messageErreur(String? erreur, AppLocalizations l10n) {
+    return switch (erreur) {
+      'Aucun compte ne correspond a cet email' => l10n.authNoAccount,
+      'Mot de passe incorrect' => l10n.authWrongPassword,
+      'Erreur inattendue : impossible de se connecter' => l10n.authUnexpected,
+      _ => erreur,
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
+    final l10n = AppLocalizations.of(context)!;
+    final messageErreur = _messageErreur(authProvider.erreur, l10n);
 
     return Theme(
       data: AppTheme.darkTheme,
@@ -119,21 +131,28 @@ class _LoginScreenState extends State<LoginScreen> {
                             const OrnamentalDivider(),
                             AppTextField(
                               controller: _emailController,
-                              label: 'Email',
+                              label: l10n.email,
                               icon: Icons.email_outlined,
                               keyboardType: TextInputType.emailAddress,
-                              validator: Validators.email,
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return l10n.emailRequired;
+                                }
+                                return Validators.email(value) == null
+                                    ? null
+                                    : l10n.emailInvalid;
+                              },
                             ),
                             const SizedBox(height: 20),
                             AppTextField(
                               controller: _passwordController,
-                              label: 'Mot de passe',
+                              label: l10n.password,
                               icon: Icons.lock_outline,
                               obscureText: !_motDePasseVisible,
                               suffixIcon: IconButton(
                                 tooltip: _motDePasseVisible
-                                    ? 'Masquer le mot de passe'
-                                    : 'Afficher le mot de passe',
+                                    ? l10n.hidePassword
+                                    : l10n.showPassword,
                                 icon: Icon(
                                   _motDePasseVisible
                                       ? Icons.visibility_off
@@ -145,13 +164,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                       _motDePasseVisible = !_motDePasseVisible,
                                 ),
                               ),
-                              validator: (v) => Validators.required(
-                                v,
-                                champ: 'Le mot de passe',
-                              ),
+                              validator: (value) =>
+                                  value == null || value.trim().isEmpty
+                                  ? l10n.passwordRequired
+                                  : null,
                               onFieldSubmitted: (_) => _seConnecter(),
                             ),
-                            if (authProvider.erreur != null) ...[
+                            if (messageErreur != null) ...[
                               const SizedBox(height: 20),
                               Container(
                                 padding: const EdgeInsets.all(12),
@@ -176,7 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     const SizedBox(width: 8),
                                     Expanded(
                                       child: Text(
-                                        authProvider.erreur!,
+                                        messageErreur,
                                         style: AppTheme.manrope(
                                           color: AppTheme.dangerClair,
                                         ),
@@ -188,7 +207,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ],
                             const SizedBox(height: 32),
                             GradientButton(
-                              label: 'SE CONNECTER',
+                              label: l10n.signIn.toUpperCase(),
                               loading: authProvider.enChargement,
                               onPressed: _seConnecter,
                             ),

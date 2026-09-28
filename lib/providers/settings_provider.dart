@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/constants.dart';
 
 /// Etat global des parametres utilisateur : theme clair/sombre et langue
-/// (FR/AR), persistes via SharedPreferences (point 35).
+/// (FR/EN), persistes via SharedPreferences.
 class SettingsProvider extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.system;
   Locale _locale = const Locale('fr');
@@ -23,7 +23,7 @@ class SettingsProvider extends ChangeNotifier {
       'dark' => ThemeMode.dark,
       _ => ThemeMode.system,
     };
-    _locale = Locale(localeSauvegardee ?? 'fr');
+    _locale = Locale(localeSauvegardee == 'en' ? 'en' : 'fr');
     notifyListeners();
   }
 
@@ -35,9 +35,10 @@ class SettingsProvider extends ChangeNotifier {
   }
 
   Future<void> changerLangue(String codeLangue) async {
-    _locale = Locale(codeLangue);
+    final langue = codeLangue == 'en' ? 'en' : 'fr';
+    _locale = Locale(langue);
     notifyListeners();
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(AppConstants.prefLocale, codeLangue);
+    await prefs.setString(AppConstants.prefLocale, langue);
   }
 }

@@ -1,49 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../providers/settings_provider.dart';
-import '../../utils/app_strings.dart';
 import '../../widgets/fade_slide_in.dart';
 import '../../widgets/ornamental_divider.dart';
 import '../../widgets/premium_app_bar.dart';
 
-/// Ecran des parametres : theme clair/sombre/systeme et langue FR/AR
-/// (point 35).
+/// Ecran des parametres : theme clair/sombre/systeme et langue FR/EN.
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final settingsProvider = context.watch<SettingsProvider>();
-    final arabe = settingsProvider.estArabe;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: PremiumAppBar(title: AppStrings.get('parametres', arabe: arabe)),
+      appBar: PremiumAppBar(title: l10n.settings),
       body: FadeSlideIn(
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
-            Text(AppStrings.get('theme', arabe: arabe), style: Theme.of(context).textTheme.titleMedium),
+            Text(l10n.theme, style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 12),
             SegmentedButton<ThemeMode>(
               segments: [
-                ButtonSegment(value: ThemeMode.light, label: Text(AppStrings.get('theme_clair', arabe: arabe)), icon: const Icon(Icons.light_mode_outlined)),
-                ButtonSegment(value: ThemeMode.dark, label: Text(AppStrings.get('theme_sombre', arabe: arabe)), icon: const Icon(Icons.dark_mode_outlined)),
-                ButtonSegment(value: ThemeMode.system, label: Text(AppStrings.get('theme_systeme', arabe: arabe)), icon: const Icon(Icons.settings_suggest_outlined)),
+                ButtonSegment(
+                  value: ThemeMode.light,
+                  label: Text(l10n.themeLight),
+                  icon: const Icon(Icons.light_mode_outlined),
+                ),
+                ButtonSegment(
+                  value: ThemeMode.dark,
+                  label: Text(l10n.themeDark),
+                  icon: const Icon(Icons.dark_mode_outlined),
+                ),
+                ButtonSegment(
+                  value: ThemeMode.system,
+                  label: Text(l10n.themeSystem),
+                  icon: const Icon(Icons.settings_suggest_outlined),
+                ),
               ],
               selected: {settingsProvider.themeMode},
-              onSelectionChanged: (selection) => settingsProvider.changerTheme(selection.first),
+              onSelectionChanged: (selection) =>
+                  settingsProvider.changerTheme(selection.first),
             ),
             const OrnamentalDivider(),
-            Text(AppStrings.get('langue', arabe: arabe), style: Theme.of(context).textTheme.titleMedium),
+            Text(l10n.language, style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 12),
             SegmentedButton<String>(
-              segments: const [
-                ButtonSegment(value: 'fr', label: Text('Francais')),
-                ButtonSegment(value: 'ar', label: Text('العربية')),
+              segments: [
+                ButtonSegment(value: 'fr', label: Text(l10n.languageFrench)),
+                ButtonSegment(value: 'en', label: Text(l10n.languageEnglish)),
               ],
               selected: {settingsProvider.locale.languageCode},
-              onSelectionChanged: (selection) => settingsProvider.changerLangue(selection.first),
+              onSelectionChanged: (selection) =>
+                  settingsProvider.changerLangue(selection.first),
             ),
           ],
         ),

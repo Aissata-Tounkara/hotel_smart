@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
+import 'l10n/app_localizations.dart';
 import 'providers/auth_provider.dart';
 import 'providers/client_provider.dart';
 import 'providers/notification_provider.dart';
@@ -44,8 +45,9 @@ class HotelSmartApp extends StatelessWidget {
             darkTheme: AppTheme.darkTheme,
             themeMode: settingsProvider.themeMode,
             locale: settingsProvider.locale,
-            supportedLocales: const [Locale('fr'), Locale('ar')],
+            supportedLocales: AppLocalizations.supportedLocales,
             localizationsDelegates: const [
+              AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,

@@ -1,0 +1,53 @@
+{
+  "@@locale": "en",
+  "email": "Email",
+  "password": "Password",
+  "signIn": "Sign in",
+  "showPassword": "Show password",
+  "hidePassword": "Hide password",
+  "emailRequired": "Email is required",
+  "emailInvalid": "Invalid email format",
+  "passwordRequired": "Password is required",
+  "authNoAccount": "No account matches this email",
+  "authWrongPassword": "Incorrect password",
+  "authUnexpected": "Unexpected error: unable to sign in",
+  "dashboard": "Dashboard",
+  "logout": "Log out",
+  "notifications": "Notifications",
+  "markNotificationRead": "Mark notification as read",
+  "noUnreadNotifications": "No unread notifications",
+  "noUserSignedIn": "No user is signed in",
+  "welcomeUser": "Welcome, {name}",
+  "@welcomeUser": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "quickAccess": "Quick access",
+  "monthlyRevenue": "Revenue this month",
+  "occupancyRate": "Occupancy rate",
+  "availableRooms": "Available rooms",
+  "occupiedRooms": "Occupied rooms",
+  "todayReservations": "Today’s reservations",
+  "rooms": "Rooms",
+  "reservations": "Reservations",
+  "clients": "Guests",
+  "payments": "Payments",
+  "users": "Users",
+  "statistics": "Statistics",
+  "myReservations": "My reservations",
+  "myProfile": "My profile",
+  "roleAdmin": "Administrator",
+  "roleReceptionist": "Receptionist",
+  "roleClient": "Guest",
+  "settings": "Settings",
+  "theme": "Theme",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "themeSystem": "System",
+  "language": "Language",
+  "languageFrench": "French",
+  "languageEnglish": "English"
+}
