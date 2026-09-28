@@ -1,4 +1,4 @@
-![CI](https://github.com/Aissata-Tounkara/hotel_smart/actions/workflows/ci.yml/badge.svg)
+[![CI](https://github.com/Aissata-Tounkara/hotel_smart/actions/workflows/ci.yml/badge.svg)](https://github.com/Aissata-Tounkara/hotel_smart/actions/workflows/ci.yml)
 
 # Hotel Smart
 
@@ -108,7 +108,7 @@ DatabaseHelper (Singleton) — ouverture/creation de la base SQLite
 | --- | --- |
 | ![Liste des chambres](docs/screenshots/03-chambres-liste.png) | ![Liste des réservations](docs/screenshots/04-reservations-liste-statuts.png) |
 
-![Liste des clients](docs/screenshots/06-utilisateurs-liste.png)
+![Liste des utilisateurs](docs/screenshots/06-utilisateurs-liste.png)
 
 ## Internationalisation
 
@@ -119,6 +119,18 @@ les paramètres et le choix est conservé.
 
 Les boutons d'icône ont des infobulles, et les éléments de listes et graphiques
 fournissent des résumés sémantiques aux lecteurs d'écran.
+
+## Performance
+
+- Les composants réutilisables et une grande partie de l'interface utilisent
+  des constructeurs `const` lorsque leurs paramètres sont constants.
+- Les longues listes de données utilisent `ListView.builder` ou
+  `ListView.separated` pour construire les éléments au besoin.
+- Les écrans de chambres, clients, réservations, paiements et tableau de bord
+  utilisent `context.select` pour écouter les champs pertinents des providers
+  et limiter les reconstructions.
+- Les graphiques ne recalculent leurs widgets que lorsque les données de
+  statistiques sélectionnées changent.
 
 ## Journal des modifications
 
@@ -132,15 +144,21 @@ flutter run
 ```
 
 Au premier lancement, la base SQLite est creee automatiquement avec un
-compte Admin par defaut :
+compte Admin de démonstration par défaut, à changer en production :
 
 - email : `admin@hotelsmart.dz`
 - mot de passe : `Admin@123`
 
+## Télécharger l'APK
+
+Les APK publiés sont disponibles dans les [Releases GitHub](https://github.com/Aissata-Tounkara/hotel_smart/releases).
+
 ## Tests
 
 Le dépôt contient 21 tests unitaires, 5 tests de widgets et 2 tests
-d'intégration.
+d'intégration. `flutter test` est exécuté par la CI. La commande
+`flutter test integration_test` nécessite un émulateur ou un appareil et se
+lance en local.
 
 ```bash
 flutter test
