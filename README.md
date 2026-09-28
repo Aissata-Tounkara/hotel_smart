@@ -100,15 +100,12 @@ DatabaseHelper (Singleton) — ouverture/creation de la base SQLite
 
 ## Captures d'écran
 
-| Connexion | Tableau de bord |
-| --- | --- |
-| ![Ecran de connexion](docs/screenshots/01-connexion.png) | ![Notifications du tableau de bord](docs/screenshots/02-tableau-de-bord-notification-badge.png) |
-
-| Liste des chambres | Liste des réservations |
-| --- | --- |
-| ![Liste des chambres](docs/screenshots/03-chambres-liste.png) | ![Liste des réservations](docs/screenshots/04-reservations-liste-statuts.png) |
-
-![Liste des utilisateurs](docs/screenshots/06-utilisateurs-liste.png)
+| Capture | Capture | Capture |
+| --- | --- | --- |
+| <img src="docs/screenshots/01-connexion.webp" width="240" alt="Écran de connexion"><br>Écran de connexion | <img src="docs/screenshots/02-tableau-de-bord-notification-badge.webp" width="240" alt="Tableau de bord avec notification"><br>Tableau de bord avec notification | <img src="docs/screenshots/02-notification-systeme-checkin.webp" width="240" alt="Notification système de check-in"><br>Notification système de check-in |
+| <img src="docs/screenshots/03-chambres-liste.webp" width="240" alt="Liste des chambres"><br>Liste des chambres | <img src="docs/screenshots/03-chambre-nouveau-formulaire.webp" width="240" alt="Nouveau formulaire de chambre"><br>Nouveau formulaire de chambre | <img src="docs/screenshots/03-chambre-modifier-formulaire.webp" width="240" alt="Modification d'une chambre"><br>Modification d'une chambre |
+| <img src="docs/screenshots/04-reservations-liste-statuts.webp" width="240" alt="Liste des réservations"><br>Liste des réservations | <img src="docs/screenshots/06-utilisateurs-liste.webp" width="240" alt="Liste des utilisateurs"><br>Liste des utilisateurs | <img src="docs/screenshots/06-utilisateur-nouveau-formulaire.webp" width="240" alt="Nouveau formulaire utilisateur"><br>Nouveau formulaire utilisateur |
+| <img src="docs/screenshots/07-paiements-liste.webp" width="240" alt="Liste des paiements"><br>Liste des paiements | <img src="docs/screenshots/07-paiement-nouveau-formulaire.webp" width="240" alt="Nouveau formulaire de paiement"><br>Nouveau formulaire de paiement | <img src="docs/screenshots/08-statistiques.webp" width="240" alt="Statistiques"><br>Statistiques |
 
 ## Internationalisation
 
@@ -132,8 +129,8 @@ fournissent des résumés sémantiques aux lecteurs d'écran.
   la demande.
 - Les deux graphiques statistiques sont dans des `RepaintBoundary`.
 - `AppImage` calcule `cacheWidth` et `cacheHeight` depuis la taille d'affichage
-  et le `devicePixelRatio`. Trois illustrations locales compressées montrent
-  les types de chambres.
+  et le `devicePixelRatio`. Trois illustrations de chambre générées
+  localement et compressées montrent les différents types.
 
 ### Mesurer les performances
 
