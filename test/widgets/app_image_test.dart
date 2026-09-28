@@ -27,21 +27,25 @@ void main() {
 
   testWidgets('AppImage expose son libellé sémantique', (tester) async {
     final semantics = tester.ensureSemantics();
-    await tester.pumpWidget(
-      const MaterialApp(
-        home: Scaffold(
-          body: AppImage(
-            assetName: 'assets/images/rooms/simple.webp',
-            semanticLabel: 'Chambre simple',
-            width: 120,
-            height: 80,
+    try {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: AppImage(
+              assetName: 'assets/images/rooms/simple.webp',
+              semanticLabel: 'Chambre simple',
+              width: 120,
+              height: 80,
+            ),
           ),
         ),
-      ),
-    );
+      );
+      await tester.pumpAndSettle();
 
-    expect(find.bySemanticsLabel('Chambre simple'), findsOneWidget);
-    semantics.dispose();
+      expect(find.bySemanticsLabel('Chambre simple'), findsOneWidget);
+    } finally {
+      semantics.dispose();
+    }
   });
 
   testWidgets(

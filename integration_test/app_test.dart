@@ -40,24 +40,43 @@ void main() {
     );
     await tester.enterText(find.byType(TextFormField).at(1), 'Admin@123');
     await tester.tap(find.text('SE CONNECTER'));
+    await tester.pumpAndSettle(const Duration(seconds: 5));
+  }
+
+  // Démonte l'app pour libérer sémantique, timers et streams
+  // avant la fin du test et la fermeture de la base.
+  Future<void> demonterApp(WidgetTester tester) async {
+    await tester.pumpWidget(const SizedBox.shrink());
     await tester.pumpAndSettle();
   }
 
   testWidgets('connexion admin affiche le tableau de bord', (tester) async {
-    await seConnecterCommeAdmin(tester);
+    try {
+      await seConnecterCommeAdmin(tester);
 
-    expect(find.text('Tableau de bord'), findsOneWidget);
-    expect(find.text('Bienvenue, Administrateur'), findsOneWidget);
+      expect(find.text('Tableau de bord'), findsOneWidget);
+      expect(find.text('Bienvenue, Administrateur'), findsOneWidget);
+    } finally {
+      await demonterApp(tester);
+    }
   });
 
   testWidgets('connexion admin permet d’ouvrir la liste des chambres', (
     tester,
   ) async {
-    await seConnecterCommeAdmin(tester);
-    await tester.tap(find.text('Chambres'));
-    await tester.pumpAndSettle();
+    try {
+      await seConnecterCommeAdmin(tester);
+      await tester.drag(find.byType(ListView).first, const Offset(0, -500));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Chambres'));
+      await tester.tap(find.text('Chambres'));
+      await tester.pumpAndSettle();
 
-    expect(find.text('Chambres'), findsOneWidget);
-    expect(find.text('Aucune chambre trouvee'), findsOneWidget);
+      // "Chambres" peut apparaître dans la navigation ET dans le titre
+      expect(find.text('Chambres'), findsWidgets);
+      expect(find.text('Aucune chambre trouvée'), findsOneWidget);
+    } finally {
+      await demonterApp(tester);
+    }
   });
 }

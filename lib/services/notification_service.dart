@@ -33,16 +33,27 @@ class NotificationService {
 
   Future<void> initialiser() async {
     if (_initialise) return;
-    const androidSettings = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
-    );
-    const settings = InitializationSettings(android: androidSettings);
-    await _plugin.initialize(settings);
-    await _plugin
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >()
-        ?.requestNotificationsPermission();
+    try {
+      const androidSettings = AndroidInitializationSettings(
+        '@mipmap/ic_launcher',
+      );
+      const linuxSettings = LinuxInitializationSettings(
+        defaultActionName: 'Ouvrir',
+      );
+      const settings = InitializationSettings(
+        android: androidSettings,
+        linux: linuxSettings,
+      );
+      await _plugin.initialize(settings);
+
+      final AndroidFlutterLocalNotificationsPlugin? androidPlugin = _plugin
+          .resolvePlatformSpecificImplementation();
+      await androidPlugin?.requestNotificationsPermission();
+    } catch (e) {
+      // Les notifications sont une fonctionnalite secondaire : on ne doit
+      // jamais faire planter l'application si elles sont indisponibles.
+      debugPrint('Notifications indisponibles : $e');
+    }
     _initialise = true;
   }
 
