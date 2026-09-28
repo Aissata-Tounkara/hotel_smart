@@ -53,10 +53,13 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.watch<AuthProvider>();
-    final roomProvider = context.watch<RoomProvider>();
-    final chambresParId = {for (final c in roomProvider.chambres) c.id: c};
-    final clientId = authProvider.utilisateurCourant?.clientId;
+    final chambres = context.select<RoomProvider, List<Chambre>>(
+      (provider) => provider.chambres,
+    );
+    final chambresParId = {for (final c in chambres) c.id: c};
+    final clientId = context.select<AuthProvider, int?>(
+      (provider) => provider.utilisateurCourant?.clientId,
+    );
 
     return Scaffold(
       appBar: const PremiumAppBar(title: 'Mes reservations'),

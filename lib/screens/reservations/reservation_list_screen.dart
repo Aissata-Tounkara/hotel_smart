@@ -73,15 +73,32 @@ class _ReservationListScreenState extends State<ReservationListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final reservationProvider = context.watch<ReservationProvider>();
-    final clientProvider = context.watch<ClientProvider>();
-    final roomProvider = context.watch<RoomProvider>();
-    final authProvider = context.watch<AuthProvider>();
+    final reservationsSource = context
+        .select<ReservationProvider, List<Reservation>>(
+          (provider) => provider.reservations,
+        );
+    final enChargement = context.select<ReservationProvider, bool>(
+      (provider) => provider.enChargement,
+    );
+    final filtreStatut = context
+        .select<ReservationProvider, StatutReservation?>(
+          (provider) => provider.filtreStatut,
+        );
+    final clients = context.select<ClientProvider, List<Client>>(
+      (provider) => provider.clients,
+    );
+    final chambres = context.select<RoomProvider, List<Chambre>>(
+      (provider) => provider.chambres,
+    );
+    final peutGerer = context.select<AuthProvider, bool>(
+      (provider) => provider.peutGererOperations,
+    );
+    final reservationProvider = context.read<ReservationProvider>();
 
-    final clientsParId = {for (final c in clientProvider.clients) c.id: c};
-    final chambresParId = {for (final c in roomProvider.chambres) c.id: c};
+    final clientsParId = {for (final c in clients) c.id: c};
+    final chambresParId = {for (final c in chambres) c.id: c};
 
-    var reservations = reservationProvider.reservations;
+    var reservations = reservationsSource;
     if (_recherche.isNotEmpty) {
       final q = _recherche.toLowerCase();
       reservations = reservations.where((r) {
@@ -94,7 +111,7 @@ class _ReservationListScreenState extends State<ReservationListScreen> {
 
     return Scaffold(
       appBar: const PremiumAppBar(title: 'Reservations'),
-      floatingActionButton: authProvider.peutGererOperations
+      floatingActionButton: peutGerer
           ? FloatingActionButton(
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
@@ -124,7 +141,7 @@ class _ReservationListScreenState extends State<ReservationListScreen> {
                   children: [
                     _ChipStatut(
                       label: 'Toutes',
-                      selectionne: reservationProvider.filtreStatut == null,
+                      selectionne: filtreStatut == null,
                       onTap: () => reservationProvider.filtrerParStatut(null),
                     ),
                     ...StatutReservation.values.map(
@@ -132,7 +149,7 @@ class _ReservationListScreenState extends State<ReservationListScreen> {
                         padding: const EdgeInsets.only(left: 8),
                         child: _ChipStatut(
                           label: s.libelle,
-                          selectionne: reservationProvider.filtreStatut == s,
+                          selectionne: filtreStatut == s,
                           onTap: () => reservationProvider.filtrerParStatut(s),
                         ),
                       ),
@@ -142,7 +159,7 @@ class _ReservationListScreenState extends State<ReservationListScreen> {
               ),
             ),
             Expanded(
-              child: reservationProvider.enChargement
+              child: enChargement
                   ? const Center(child: CircularProgressIndicator())
                   : reservations.isEmpty
                   ? const EmptyState(
@@ -166,7 +183,7 @@ class _ReservationListScreenState extends State<ReservationListScreen> {
                               reservation: reservation,
                               client: client,
                               chambre: chambre,
-                              peutGerer: authProvider.peutGererOperations,
+                              peutGerer: peutGerer,
                               onCheckIn: () => _checkIn(reservation),
                               onCheckOut: () => _checkOut(reservation),
                               onAnnuler: () => _annuler(reservation),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/client.dart';
 import '../../models/paiement.dart';
+import '../../models/reservation.dart';
 import '../../providers/client_provider.dart';
 import '../../providers/payment_provider.dart';
 import '../../providers/reservation_provider.dart';
@@ -63,16 +65,21 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final paymentProvider = context.watch<PaymentProvider>();
-    final reservationProvider = context.watch<ReservationProvider>();
-    final clientProvider = context.watch<ClientProvider>();
+    final paiements = context.select<PaymentProvider, List<Paiement>>(
+      (provider) => provider.paiements,
+    );
+    final enChargement = context.select<PaymentProvider, bool>(
+      (provider) => provider.enChargement,
+    );
+    final reservations = context.select<ReservationProvider, List<Reservation>>(
+      (provider) => provider.reservations,
+    );
+    final clients = context.select<ClientProvider, List<Client>>(
+      (provider) => provider.clients,
+    );
 
-    final reservationsParId = {
-      for (final r in reservationProvider.reservations) r.id: r,
-    };
-    final clientsParId = {for (final c in clientProvider.clients) c.id: c};
-
-    final paiements = paymentProvider.paiements;
+    final reservationsParId = {for (final r in reservations) r.id: r};
+    final clientsParId = {for (final c in clients) c.id: c};
 
     return Scaffold(
       appBar: const PremiumAppBar(title: 'Paiements'),
@@ -83,7 +90,7 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
         child: const Icon(Icons.add),
       ),
       body: FadeSlideIn(
-        child: paymentProvider.enChargement
+        child: enChargement
             ? const Center(child: CircularProgressIndicator())
             : paiements.isEmpty
             ? const EmptyState(
@@ -91,7 +98,7 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
                 message: 'Aucun paiement enregistre',
               )
             : RefreshIndicator(
-                onRefresh: paymentProvider.charger,
+                onRefresh: context.read<PaymentProvider>().charger,
                 child: ListView.builder(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20,

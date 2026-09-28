@@ -1,3 +1,5 @@
+![CI](https://github.com/Aissata-Tounkara/hotel_smart/actions/workflows/ci.yml/badge.svg)
+
 # Hotel Smart
 
 Application mobile Flutter de gestion hoteliere pour l'hotel **Le Palace**
@@ -96,6 +98,32 @@ DatabaseHelper (Singleton) — ouverture/creation de la base SQLite
 - [`docs/manuel_utilisateur.md`](docs/manuel_utilisateur.md) — manuel utilisateur (Jour 3).
 - [`docs/demo.md`](docs/demo.md) — support de demonstration (Jour 3).
 
+## Captures d'écran
+
+| Connexion | Tableau de bord |
+| --- | --- |
+| ![Ecran de connexion](docs/screenshots/01-connexion.png) | ![Notifications du tableau de bord](docs/screenshots/02-tableau-de-bord-notification-badge.png) |
+
+| Liste des chambres | Liste des réservations |
+| --- | --- |
+| ![Liste des chambres](docs/screenshots/03-chambres-liste.png) | ![Liste des réservations](docs/screenshots/04-reservations-liste-statuts.png) |
+
+![Liste des clients](docs/screenshots/06-utilisateurs-liste.png)
+
+## Internationalisation
+
+L'interface est disponible en français et en anglais. La langue se choisit dans
+les paramètres et le choix est conservé.
+
+## Accessibilité
+
+Les boutons d'icône ont des infobulles, et les éléments de listes et graphiques
+fournissent des résumés sémantiques aux lecteurs d'écran.
+
+## Journal des modifications
+
+Voir [`CHANGELOG.md`](CHANGELOG.md) pour l'historique des versions.
+
 ## Lancer le projet
 
 ```bash
@@ -111,6 +139,10 @@ compte Admin par defaut :
 
 ## Tests
 
+Le dépôt contient 21 tests unitaires, 5 tests de widgets et 2 tests
+d'intégration.
+
 ```bash
 flutter test
+flutter test integration_test
 ```

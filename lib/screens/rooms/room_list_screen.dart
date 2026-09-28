@@ -61,10 +61,17 @@ class _RoomListScreenState extends State<RoomListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final roomProvider = context.watch<RoomProvider>();
-    final authProvider = context.watch<AuthProvider>();
+    final chambres = context.select<RoomProvider, List<Chambre>>(
+      (provider) => provider.chambres,
+    );
+    final enChargement = context.select<RoomProvider, bool>(
+      (provider) => provider.enChargement,
+    );
+    final peutGerer = context.select<AuthProvider, bool>(
+      (provider) => provider.peutGererOperations,
+    );
     final l10n = AppLocalizations.of(context)!;
-    final chambres = roomProvider.chambres;
+    final roomProvider = context.read<RoomProvider>();
 
     return Scaffold(
       appBar: PremiumAppBar(
@@ -82,7 +89,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
           ),
         ],
       ),
-      floatingActionButton: authProvider.peutGererOperations
+      floatingActionButton: peutGerer
           ? FloatingActionButton(
               tooltip: l10n.addRoom,
               onPressed: () => Navigator.of(
@@ -105,7 +112,10 @@ class _RoomListScreenState extends State<RoomListScreen> {
                     final libelleTraduit = _libelleTypeChambre(type, l10n);
                     if (libelleTraduit != type.libelle) {
                       recherche = recherche.replaceAll(
-                        RegExp(RegExp.escape(libelleTraduit), caseSensitive: false),
+                        RegExp(
+                          RegExp.escape(libelleTraduit),
+                          caseSensitive: false,
+                        ),
                         type.libelle,
                       );
                     }
@@ -115,7 +125,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
               ),
             ),
             Expanded(
-              child: roomProvider.enChargement
+              child: enChargement
                   ? const Center(child: CircularProgressIndicator())
                   : chambres.isEmpty
                   ? EmptyState(
@@ -142,10 +152,11 @@ class _RoomListScreenState extends State<RoomListScreen> {
                               itemCount: chambres.length,
                               itemBuilder: (context, i) => _CarteChambre(
                                 chambre: chambres[i],
-                                peutModifier: authProvider.peutGererOperations,
+                                peutModifier: peutGerer,
                                 onModifier: () => Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (_) => RoomFormScreen(chambre: chambres[i]),
+                                    builder: (_) =>
+                                        RoomFormScreen(chambre: chambres[i]),
                                   ),
                                 ),
                                 onSupprimer: () =>
@@ -164,7 +175,9 @@ class _RoomListScreenState extends State<RoomListScreen> {
                                     chambre.numero,
                                     _libelleTypeChambre(chambre.type, l10n),
                                     _libelleStatutChambre(chambre.statut, l10n),
-                                    UiHelpers.formatMontant(chambre.prixParNuit),
+                                    UiHelpers.formatMontant(
+                                      chambre.prixParNuit,
+                                    ),
                                     chambre.etage.toString(),
                                   ),
                                   child: PremiumListTile(
@@ -174,10 +187,12 @@ class _RoomListScreenState extends State<RoomListScreen> {
                                       _libelleTypeChambre(chambre.type, l10n),
                                     ),
                                     subtitle: l10n.roomPriceAndFloor(
-                                      UiHelpers.formatMontant(chambre.prixParNuit),
+                                      UiHelpers.formatMontant(
+                                        chambre.prixParNuit,
+                                      ),
                                       chambre.etage.toString(),
                                     ),
-                                    onTap: authProvider.peutGererOperations
+                                    onTap: peutGerer
                                         ? () => Navigator.of(context).push(
                                             MaterialPageRoute(
                                               builder: (_) => RoomFormScreen(
@@ -190,13 +205,16 @@ class _RoomListScreenState extends State<RoomListScreen> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         StatusBadge(
-                                          texte: _libelleStatutChambre(chambre.statut, l10n),
+                                          texte: _libelleStatutChambre(
+                                            chambre.statut,
+                                            l10n,
+                                          ),
                                           couleur:
                                               UiHelpers.couleurStatutChambre(
                                                 chambre.statut,
                                               ),
                                         ),
-                                        if (authProvider.peutGererOperations)
+                                        if (peutGerer)
                                           PopupMenuButton<String>(
                                             onSelected: (v) => v == 'modifier'
                                                 ? Navigator.of(context).push(
@@ -371,19 +389,13 @@ class _FiltresChambresSheetState extends State<_FiltresChambresSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            l10n.filterRooms,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
+          Text(l10n.filterRooms, style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 20),
           DropdownButtonFormField<TypeChambre?>(
             initialValue: _type,
             decoration: InputDecoration(labelText: l10n.roomTypeField),
             items: [
-              DropdownMenuItem(
-                value: null,
-                child: Text(l10n.allRoomTypes),
-              ),
+              DropdownMenuItem(value: null, child: Text(l10n.allRoomTypes)),
               ...TypeChambre.values.map(
                 (t) => DropdownMenuItem(
                   value: t,
@@ -398,10 +410,7 @@ class _FiltresChambresSheetState extends State<_FiltresChambresSheet> {
             initialValue: _statut,
             decoration: InputDecoration(labelText: l10n.roomStatusField),
             items: [
-              DropdownMenuItem(
-                value: null,
-                child: Text(l10n.allRoomStatuses),
-              ),
+              DropdownMenuItem(value: null, child: Text(l10n.allRoomStatuses)),
               ...StatutChambre.values.map(
                 (s) => DropdownMenuItem(
                   value: s,

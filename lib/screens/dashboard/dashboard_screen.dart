@@ -3,10 +3,12 @@ import 'package:provider/provider.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../models/utilisateur.dart';
+import '../../models/notification_alerte.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/notification_provider.dart';
 import '../../providers/statistics_provider.dart';
 import '../../routes/app_routes.dart';
+import '../../services/statistics_service.dart';
 import '../../utils/app_theme.dart';
 import '../../utils/ui_helpers.dart';
 import '../../widgets/fade_slide_in.dart';
@@ -43,16 +45,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.watch<AuthProvider>();
-    final notificationProvider = context.watch<NotificationProvider>();
-    final utilisateur = authProvider.utilisateurCourant;
+    final utilisateur = context.select<AuthProvider, Utilisateur?>(
+      (provider) => provider.utilisateurCourant,
+    );
+    final peutGerer = context.select<AuthProvider, bool>(
+      (provider) => provider.peutGererOperations,
+    );
+    final alertes = context
+        .select<NotificationProvider, List<NotificationAlerte>>(
+          (provider) => provider.alertesNonLues,
+        );
+    final notificationProvider = context.read<NotificationProvider>();
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: PremiumAppBar(
         title: l10n.dashboard,
         actions: [
-          if (authProvider.peutGererOperations)
+          if (peutGerer)
             Stack(
               alignment: Alignment.center,
               children: [
@@ -65,7 +75,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     l10n,
                   ),
                 ),
-                if (notificationProvider.alertesNonLues.isNotEmpty)
+                if (alertes.isNotEmpty)
                   Positioned(
                     top: 8,
                     right: 8,
@@ -76,7 +86,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         shape: BoxShape.circle,
                       ),
                       child: Text(
-                        '${notificationProvider.alertesNonLues.length}',
+                        '${alertes.length}',
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 10,
@@ -105,7 +115,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   padding: const EdgeInsets.all(20),
                   children: [
                     _EnteteBienvenue(utilisateur: utilisateur, l10n: l10n),
-                    if (authProvider.peutGererOperations) ...[
+                    if (peutGerer) ...[
                       const OrnamentalDivider(),
                       const _StatistiquesDashboard(),
                     ],
@@ -115,7 +125,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: 14),
-                    _MenuRole(authProvider: authProvider, l10n: l10n),
+                    _MenuRole(l10n: l10n),
                   ],
                 ),
               ),
@@ -181,11 +191,15 @@ class _StatistiquesDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statisticsProvider = context.watch<StatisticsProvider>();
-    final stats = statisticsProvider.statistiques;
+    final stats = context.select<StatisticsProvider, Statistique?>(
+      (provider) => provider.statistiques,
+    );
+    final enChargement = context.select<StatisticsProvider, bool>(
+      (provider) => provider.enChargement,
+    );
     final l10n = AppLocalizations.of(context)!;
 
-    if (statisticsProvider.enChargement && stats == null) {
+    if (enChargement && stats == null) {
       return const Center(
         child: Padding(
           padding: EdgeInsets.all(16),
@@ -300,14 +314,22 @@ class _EnteteBienvenue extends StatelessWidget {
 }
 
 class _MenuRole extends StatelessWidget {
-  final AuthProvider authProvider;
   final AppLocalizations l10n;
-  const _MenuRole({required this.authProvider, required this.l10n});
+  const _MenuRole({required this.l10n});
 
   @override
   Widget build(BuildContext context) {
+    final peutGerer = context.select<AuthProvider, bool>(
+      (provider) => provider.peutGererOperations,
+    );
+    final estAdmin = context.select<AuthProvider, bool>(
+      (provider) => provider.estAdmin,
+    );
+    final estClient = context.select<AuthProvider, bool>(
+      (provider) => provider.estClient,
+    );
     final items = <_MenuItem>[
-      if (authProvider.peutGererOperations) ...[
+      if (peutGerer) ...[
         _MenuItem(l10n.rooms, Icons.bed_outlined, AppRoutes.rooms),
         _MenuItem(
           l10n.reservations,
@@ -317,7 +339,7 @@ class _MenuRole extends StatelessWidget {
         _MenuItem(l10n.clients, Icons.people_outline, AppRoutes.clients),
         _MenuItem(l10n.payments, Icons.payments_outlined, AppRoutes.payments),
       ],
-      if (authProvider.estAdmin) ...[
+      if (estAdmin) ...[
         _MenuItem(
           l10n.users,
           Icons.admin_panel_settings_outlined,
@@ -329,7 +351,7 @@ class _MenuRole extends StatelessWidget {
           AppRoutes.statistics,
         ),
       ],
-      if (authProvider.estClient) ...[
+      if (estClient) ...[
         _MenuItem(
           l10n.myReservations,
           Icons.event_note_outlined,

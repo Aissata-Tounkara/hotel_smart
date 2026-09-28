@@ -44,9 +44,7 @@ class _ClientListScreenState extends State<ClientListScreen> {
     final succes = await context.read<ClientProvider>().supprimer(client.id!);
     if (!succes && context.mounted) {
       final provider = context.read<ClientProvider>();
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(_messageErreurClient(provider.erreur, l10n))),
       );
       provider.effacerErreur();
@@ -55,14 +53,21 @@ class _ClientListScreenState extends State<ClientListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final clientProvider = context.watch<ClientProvider>();
-    final authProvider = context.watch<AuthProvider>();
+    final clients = context.select<ClientProvider, List<Client>>(
+      (provider) => provider.clients,
+    );
+    final enChargement = context.select<ClientProvider, bool>(
+      (provider) => provider.enChargement,
+    );
+    final clientProvider = context.read<ClientProvider>();
+    final peutGerer = context.select<AuthProvider, bool>(
+      (provider) => provider.peutGererOperations,
+    );
     final l10n = AppLocalizations.of(context)!;
-    final clients = clientProvider.clients;
 
     return Scaffold(
       appBar: PremiumAppBar(title: l10n.clients),
-      floatingActionButton: authProvider.peutGererOperations
+      floatingActionButton: peutGerer
           ? FloatingActionButton(
               tooltip: l10n.addClient,
               onPressed: () => Navigator.of(context).push(
@@ -83,7 +88,7 @@ class _ClientListScreenState extends State<ClientListScreen> {
               ),
             ),
             Expanded(
-              child: clientProvider.enChargement
+              child: enChargement
                   ? const Center(child: CircularProgressIndicator())
                   : clients.isEmpty
                   ? EmptyState(
@@ -113,7 +118,7 @@ class _ClientListScreenState extends State<ClientListScreen> {
                                 client.telephone,
                                 client.nationalite,
                               ),
-                              onTap: authProvider.peutGererOperations
+                              onTap: peutGerer
                                   ? () => Navigator.of(context).push(
                                       MaterialPageRoute(
                                         builder: (_) =>
@@ -121,7 +126,7 @@ class _ClientListScreenState extends State<ClientListScreen> {
                                       ),
                                     )
                                   : null,
-                              trailing: authProvider.peutGererOperations
+                              trailing: peutGerer
                                   ? IconButton(
                                       icon: const Icon(Icons.delete_outline),
                                       tooltip: l10n.deleteClientTooltip(
@@ -147,12 +152,14 @@ class _ClientListScreenState extends State<ClientListScreen> {
   }
 }
 
-String _messageErreurClient(String? erreur, AppLocalizations l10n) =>
-    switch (erreur) {
-      'Impossible de charger les clients' => l10n.clientLoadError,
-      "Impossible d'ajouter le client" => l10n.clientSaveError,
-      'Impossible de modifier le client' => l10n.clientUpdateError,
-      'Impossible de supprimer le client : il possede peut-etre des reservations' =>
-        l10n.clientDeleteError,
-      _ => erreur ?? l10n.unknownError,
-    };
+String _messageErreurClient(
+  String? erreur,
+  AppLocalizations l10n,
+) => switch (erreur) {
+  'Impossible de charger les clients' => l10n.clientLoadError,
+  "Impossible d'ajouter le client" => l10n.clientSaveError,
+  'Impossible de modifier le client' => l10n.clientUpdateError,
+  'Impossible de supprimer le client : il possede peut-etre des reservations' =>
+    l10n.clientDeleteError,
+  _ => erreur ?? l10n.unknownError,
+};
