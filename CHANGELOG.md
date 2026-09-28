@@ -6,11 +6,12 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
-### Ajouté
+### Modifié
 
-- À compléter.
+- Réduction des reconstructions d’écrans avec `context.select`.
+- Configuration de la CI limitée à l’analyse et aux tests exécutables sans émulateur.
 
-## [1.2.0]
+## [1.2.0] - 2026-09-28
 
 ### Ajouté
 
@@ -20,7 +21,7 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 - Optimisations des performances de l’application.
 
-## [1.1.0]
+## [1.1.0] - 2026-09-28
 
 ### Ajouté
 
@@ -28,7 +29,7 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 - Tests de widgets et tests d’intégration.
 - Prise en charge de l’accessibilité avec `Semantics`.
 
-## [1.0.0]
+## [1.0.0] - 2026-09-16
 
 ### Ajouté
 
