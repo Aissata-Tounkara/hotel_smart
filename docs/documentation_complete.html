@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Hotel Smart — Guide complet</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #1c2430;
+    line-height: 1.55;
+    font-size: 13px;
+  }
+  h1, h2, h3 { color: #16233a; font-family: Georgia, 'Times New Roman', serif; }
+  h1 { font-size: 22px; border-bottom: 2px solid #b8935a; padding-bottom: 6px; margin-top: 0; }
+  h2 { font-size: 17px; margin-top: 28px; border-left: 4px solid #b8935a; padding-left: 8px; }
+  h3 { font-size: 14px; margin-top: 18px; color: #3a4a63; }
+  section.page { page-break-before: always; }
+  section.page:first-of-type { page-break-before: avoid; }
+  .kicker {
+    display: inline-block; font-size: 10.5px; letter-spacing: 1.5px;
+    text-transform: uppercase; color: #a07b42; font-weight: 700;
+    margin-bottom: 4px;
+  }
+  code, pre {
+    font-family: 'Courier New', monospace;
+    background: #f2f4f7;
+    border-radius: 4px;
+  }
+  code { padding: 1px 5px; font-size: 12px; }
+  pre { padding: 10px 14px; font-size: 11.5px; overflow-x: auto; border: 1px solid #dfe3ea; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0 16px; font-size: 12px; }
+  th, td { border: 1px solid #d7dce3; padding: 6px 9px; text-align: left; vertical-align: top; }
+  th { background: #16233a; color: #fff; }
+  tr:nth-child(even) { background: #f7f8fa; }
+  ul, ol { margin: 6px 0; padding-left: 22px; }
+  li { margin-bottom: 3px; }
+
+  .cover {
+    height: 100%;
+    min-height: 250mm;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .cover .badge {
+    width: 84px; height: 84px; border-radius: 16px;
+    background: linear-gradient(135deg,#b8935a,#8a6a38);
+    color: #fff; font-family: Georgia, serif; font-size: 40px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 22px;
+  }
+  .cover .ribbon {
+    background: #16233a; color: #f0d9ad; font-size: 12px; letter-spacing: 2px;
+    text-transform: uppercase; padding: 5px 16px; border-radius: 20px; margin-bottom: 18px;
+  }
+  .cover h1 { border: none; font-size: 32px; margin-bottom: 4px; }
+  .cover .subtitle { font-size: 15px; color: #556; margin-bottom: 40px; }
+  .cover .meta { font-size: 12px; color: #667; margin-top: 60px; }
+  .cover .meta div { margin: 3px 0; }
+
+  .toc-part { font-family: Georgia, serif; font-size: 13.5px; color: #a07b42; margin: 18px 0 6px; text-transform: uppercase; letter-spacing: 1px; }
+  .toc { font-size: 13px; }
+  .toc ol { padding-left: 20px; }
+  .toc li { margin-bottom: 6px; }
+
+  /* Step-by-step guide styling */
+  .steps { counter-reset: step; margin: 14px 0 10px; padding: 0; list-style: none; }
+  .steps li {
+    counter-increment: step;
+    position: relative;
+    padding: 2px 0 10px 34px;
+    margin-bottom: 4px;
+  }
+  .steps li::before {
+    content: counter(step);
+    position: absolute; left: 0; top: 0;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: #16233a; color: #f0d9ad;
+    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .shot {
+    display: inline-block;
+    width: 30%;
+    margin: 0 1.5% 14px 0;
+    vertical-align: top;
+  }
+  .shot img {
+    width: 100%;
+    border: 1px solid #cfd5de;
+    border-radius: 6px;
+  }
+  .shot p {
+    font-size: 10.5px;
+    color: #445;
+    margin: 5px 2px 0;
+  }
+  .shot.wide { width: 62%; }
+  .diagram { text-align: center; margin: 14px 0; }
+  .diagram img { max-width: 92%; border: 1px solid #dfe3ea; border-radius: 6px; }
+
+  .missing-shot {
+    width: 62%; margin: 14px auto; padding: 34px 16px;
+    border: 2px dashed #c9a15a; border-radius: 8px;
+    background: #fdf8ee; text-align: center; color: #8a6a38; font-size: 12px;
+  }
+  .missing-shot strong { display: block; font-size: 13px; margin-bottom: 4px; }
+
+  .note {
+    background: #fbf3e6; border-left: 4px solid #b8935a;
+    padding: 8px 12px; font-size: 12px; margin: 12px 0;
+  }
+  .credentials {
+    background: #eef3ee; border-left: 4px solid #4a7a55;
+    padding: 8px 12px; font-size: 12px; margin: 12px 0;
+  }
+</style>
+</head>
+<body>
+
+<section class="page cover">
+  <div class="ribbon">Guide complet</div>
+  <div class="badge">HS</div>
+  <h1>Hotel Smart</h1>
+  <div class="subtitle">Guide d'utilisation pas à pas et documentation technique — Application Flutter de gestion hôtelière</div>
+  <table style="width:70%; font-size:12px;">
+    <tr><th>Établissement simulé</th><td>Le Palace — Alger (4 étoiles)</td></tr>
+    <tr><th>Plateforme</th><td>Flutter / Dart, base SQLite embarquée</td></tr>
+    <tr><th>Profils utilisateurs</th><td>Administrateur, Réceptionniste, Client</td></tr>
+    <tr><th>Contexte</th><td>Projet WorldSkills Algérie</td></tr>
+  </table>
+  <div class="meta">
+    <div>Document généré le 16 septembre 2026</div>
+    <div>Partie I : guide d'utilisation illustré — Partie II : documentation technique</div>
+  </div>
+</section>
+
+<section class="page">
+<h1>Sommaire</h1>
+<div class="toc">
+  <div class="toc-part">Présentation du projet</div>
+  <ol style="list-style:none; padding-left:4px;">
+    <li>Le cahier des charges</li>
+    <li>L'architecture choisie</li>
+    <li>Les fonctionnalités clés</li>
+  </ol>
+  <div class="toc-part">Partie I — Guide d'utilisation</div>
+  <ol>
+    <li>Premiers pas : se connecter</li>
+    <li>Le tableau de bord et les notifications</li>
+    <li>Gérer les chambres</li>
+    <li>Gérer les réservations</li>
+    <li>Gérer les clients</li>
+    <li>Gérer les utilisateurs (Admin)</li>
+    <li>Gérer les paiements</li>
+    <li>Consulter les statistiques</li>
+    <li>Espace Client : mes réservations</li>
+    <li>Profil et paramètres</li>
+    <li>Questions fréquentes</li>
+  </ol>
+  <div class="toc-part">Partie II — Documentation technique (annexe)</div>
+  <ol start="12">
+    <li>Présentation et stack technique</li>
+    <li>Architecture logicielle</li>
+    <li>Diagramme de classes</li>
+    <li>Diagramme de cas d'utilisation</li>
+    <li>Schéma de la base de données</li>
+    <li>Rôles, gestion des erreurs et cas limites</li>
+    <li>Tests, qualité et build</li>
+    <li>Annexe — Scénario de démonstration</li>
+  </ol>
+</div>
+</section>
+
+<section class="page">
+<span class="kicker">Présentation du projet</span>
+<h1>Le cahier des charges</h1>
+<p><strong>Hotel Smart</strong> a été développée dans le cadre d'une épreuve
+de l'<strong>Olympiade WorldSkills Algérie</strong>, avec pour mission de
+concevoir en trois jours une application mobile Flutter complète de gestion
+hôtelière pour un établissement fictif, <em>Le Palace</em> (4 étoiles,
+Alger).</p>
+
+<h3>Trois profils aux permissions distinctes</h3>
+<table>
+<tr><th>Profil</th><th>Accès</th></tr>
+<tr><td><strong>Administrateur</strong></td><td>Gestion complète : utilisateurs, chambres, statistiques, tableau de bord</td></tr>
+<tr><td><strong>Réceptionniste</strong></td><td>Gestion opérationnelle : chambres, réservations, clients, paiements, check-in/out</td></tr>
+<tr><td><strong>Client</strong></td><td>Consultation uniquement : ses propres réservations et son profil</td></tr>
+</table>
+
+<h3>Stack technique imposée</h3>
+<p>Dart / Flutter, base de données locale SQLite (<code>sqflite</code>),
+intégration d'une API REST externe (nationalités), gestion d'état avec
+<code>provider</code>, Material Design&nbsp;3, versioning Git avec un commit
+par partie terminée.</p>
+
+<h3>Déroulé de la mission</h3>
+<ol class="steps">
+  <li><strong>Jour 1</strong> — Conception (diagrammes UML, wireframes),
+  initialisation du projet, base SQLite et première version fonctionnelle
+  (connexion + tableau de bord basique).</li>
+  <li><strong>Jour 2</strong> — Authentification par rôles, CRUD complet
+  chambres / réservations / clients, intégration de l'API externe.</li>
+  <li><strong>Jour 3</strong> — Statistiques, notifications locales,
+  paiements, profil et paramètres, tests unitaires, documentation et build
+  de l'APK final.</li>
+</ol>
+<div class="note">
+Livrables attendus et fournis : diagrammes de classes et de cas
+d'utilisation, application entièrement fonctionnelle (CRUD, rôles,
+notifications, statistiques), suite de tests unitaires, documentation
+technique, manuel utilisateur et APK de release.
+</div>
+</section>
+
+<section class="page">
+<span class="kicker">Présentation du projet</span>
+<h1>L'architecture choisie</h1>
+<p>L'application suit une <strong>architecture en couches</strong> stricte,
+qui sépare l'interface, l'état observable et l'accès aux données : chaque
+couche ne connaît que celle immédiatement en dessous, ce qui permet de
+tester la logique métier indépendamment de l'UI et de faire évoluer une
+couche sans toucher aux autres.</p>
+<pre>UI (screens/widgets)
+   -&gt; Providers (ChangeNotifier) : état observable par l'UI
+      -&gt; Services : logique métier (peut combiner plusieurs repositories)
+         -&gt; Repositories : un par table SQLite, CRUD brut
+            -&gt; DatabaseHelper : Singleton, ouverture/création de la base</pre>
+
+<h3>Pourquoi ce choix</h3>
+<ul>
+  <li><strong>Providers</strong> (<code>provider</code>/<code>ChangeNotifier</code>)
+  imposés par le cahier des charges : état simple à observer depuis les
+  écrans, sans boilerplate excessif pour la taille du projet.</li>
+  <li><strong>Services</strong> isolent la logique métier réutilisable
+  (hachage de mot de passe, détection de conflits de dates, calculs
+  statistiques) des repositories, qui restent de simples exécutants CRUD.</li>
+  <li><strong>Repositories</strong> centralisent tout accès SQLite : un
+  changement de source de données (ex. API distante) n'impacterait que
+  cette couche.</li>
+  <li><strong>DatabaseHelper</strong> en Singleton garantit une connexion
+  SQLite unique et cohérente pour toute l'application.</li>
+</ul>
+<p>Cette structure se retrouve à l'identique dans l'arborescence du code
+(<code>models/</code>, <code>services/</code>, <code>repositories/</code>,
+<code>providers/</code>, <code>screens/</code>...) — voir le chapitre 13
+pour le détail complet.</p>
+</section>
+
+<section class="page">
+<span class="kicker">Présentation du projet</span>
+<h1>Les fonctionnalités clés</h1>
+<p>Aperçu visuel des fonctionnalités les plus représentatives de
+l'application — le détail de chacune est couvert dans le guide
+d'utilisation (Partie I).</p>
+
+<div class="shot">
+  <img src="screenshots/01-connexion.png">
+  <p><strong>Identité de marque premium</strong> — thème bleu nuit / or,
+  typographie Playfair Display / Manrope et motif Art Déco, cohérents sur
+  tout l'écran de connexion.</p>
+</div>
+<div class="shot">
+  <img src="screenshots/02-tableau-de-bord-notification-badge.png">
+  <p><strong>Tableau de bord dynamique</strong> — statistiques calculées en
+  temps réel et notifications de check-in/check-out du jour, sans quitter
+  l'écran d'accueil.</p>
+</div>
+<div class="shot">
+  <img src="screenshots/03-chambres-liste.png">
+  <p><strong>Gestion des chambres</strong> — recherche instantanée, filtres
+  combinés (type, statut, prix) et bascule entre vue Carte et vue Liste.</p>
+</div>
+<div class="shot">
+  <img src="screenshots/04-reservations-liste-statuts.png">
+  <p><strong>Réservations sans conflit</strong> — détection automatique des
+  chambres disponibles pour une période donnée et calcul du montant total.</p>
+</div>
+<div class="shot">
+  <img src="screenshots/08-statistiques.png">
+  <p><strong>Statistiques visuelles</strong> — taux d'occupation mensuel et
+  revenus par type de chambre, calculés à la volée depuis les données
+  réelles (sans table dédiée).</p>
+</div>
+<div class="shot">
+  <img src="screenshots/06-utilisateurs-liste.png">
+  <p><strong>Gestion multi-rôles</strong> — création de comptes Admin /
+  Réceptionniste / Client, avec liaison manuelle et contrôlée à une fiche
+  client existante.</p>
+</div>
+</section>
+
+<section class="page">
+<span class="kicker">Partie I · Guide d'utilisation</span>
+<h1>1. Premiers pas : se connecter</h1>
+<p>Ce chapitre vous accompagne pour votre toute première connexion à
+l'application, que vous soyez Administrateur, Réceptionniste ou Client.</p>
+<ol class="steps">
+  <li>Lancez l'application Hotel Smart sur votre téléphone.</li>
+  <li>Sur l'écran de connexion, saisissez votre <strong>email</strong> et votre
+  <strong>mot de passe</strong>.</li>
+  <li>Appuyez sur <strong>Se connecter</strong>. Vous êtes redirigé vers le
+  tableau de bord adapté à votre rôle.</li>
+</ol>
+
+<div class="shot">
+  <img src="screenshots/01-connexion.png">
+  <p>Écran de connexion : identité bleu nuit / or, champs soulignés et
+  motif Art Déco en arrière-plan.</p>
+</div>
+
+<div class="credentials">
+Compte Administrateur fourni par défaut au premier lancement :<br>
+Email : <code>admin@hotelsmart.dz</code> — Mot de passe : <code>Admin@123</code>
+</div>
+<p>Un compte Réceptionniste ou Client doit être créé par un Admin depuis
+l'écran <strong>Utilisateurs</strong> (voir chapitre 6).</p>
+</section>
+
+<section class="page">
+<span class="kicker">Partie I · Guide d'utilisation</span>
+<h1>2. Le tableau de bord et les notifications</h1>
+<p>Après connexion, le tableau de bord affiche un message de bienvenue, des
+cartes de statistiques (Admin/Réceptionniste), une grille d'accès rapide
+adaptée à votre rôle, et une cloche de notifications.</p>
+<ol class="steps">
+  <li>Consultez en un coup d'œil les chambres disponibles/occupées, les
+  réservations du jour et le chiffre d'affaires du mois.</li>
+  <li>Surveillez la cloche en haut à droite : un badge rouge apparaît dès
+  qu'une réservation arrive ou part aujourd'hui.</li>
+  <li>Appuyez sur la cloche pour afficher la liste des alertes non lues, et
+  marquez-les comme lues une fois traitées.</li>
+  <li>Tirez l'écran vers le bas (pull-to-refresh) pour rafraîchir
+  statistiques et notifications à tout moment.</li>
+</ol>
+
+<div class="shot wide">
+  <img src="screenshots/02-tableau-de-bord-notification-badge.png">
+  <p>Le badge sur la cloche et le panneau des alertes non lues, ouvert
+  directement depuis le tableau de bord.</p>
+</div>
+<div class="shot wide">
+  <img src="screenshots/02-notification-systeme-checkin.png">
+  <p>En complément, une notification système Android s'affiche
+  automatiquement pour chaque check-in/check-out du jour, même en
+  arrière-plan.</p>
+</div>
+</section>
+
+<section class="page">
+<span class="kicker">Partie I · Guide d'utilisation</span>
+<h1>3. Gérer les chambres</h1>
+<p style="font-size:11.5px; color:#667;">Accessible aux profils Administrateur et Réceptionniste.</p>
+<ol class="steps">
+  <li>Ouvrez <strong>Chambres</strong> depuis l'accès rapide du tableau de bord.</li>
+  <li>Basculez entre vue Carte et vue Liste via l'icône en haut à droite.</li>
+  <li>Recherchez une chambre par numéro ou type (mise à jour en temps réel), ou
+  filtrez par type, statut et/ou plage de prix.</li>
+  <li>Appuyez sur <strong>+</strong> pour ajouter une chambre : renseignez
+  numéro, type, prix par nuit, étage, statut initial (description optionnelle).</li>
+  <li>Pour modifier ou supprimer une chambre existante, utilisez le menu sur
+  sa carte (ou le menu ⋮ en vue liste).</li>
+</ol>
+
+<div class="shot">
+  <img src="screenshots/03-chambres-liste.png">
+  <p>Chaque carte affiche le numéro, le type, le prix par nuit et le statut
+  courant (Disponible, Occupée ou Maintenance).</p>
+</div>
+<div class="shot">
+  <img src="screenshots/03-chambre-nouveau-formulaire.png">
+  <p>Formulaire d'ajout : numéro, type, prix, étage et statut initial sont
+  obligatoires ; la description est optionnelle.</p>
+</div>
+<div class="shot">
+  <img src="screenshots/03-chambre-modifier-formulaire.png">
+  <p>Le même formulaire, pré-rempli, permet de corriger le prix ou de changer
+  le statut (par exemple repasser une chambre en Maintenance).</p>
+</div>
+</section>
+
+<section class="page">
+<span class="kicker">Partie I · Guide d'utilisation</span>
+<h1>4. Gérer les réservations</h1>
+<p style="font-size:11.5px; color:#667;">Accessible aux profils Administrateur et Réceptionniste.</p>
+<ol class="steps">
+  <li>Ouvrez <strong>Réservations</strong>, puis appuyez sur <strong>+</strong>
+  pour en créer une nouvelle.</li>
+  <li>Choisissez un client, une date d'arrivée puis une date de départ : les
+  chambres disponibles pour cette période s'affichent automatiquement (les
+  chambres en conflit de dates ou en maintenance sont exclues).</li>
+  <li>Sélectionnez une chambre : le montant total se calcule automatiquement
+  (prix par nuit × durée du séjour), puis confirmez.</li>
+  <li>Filtrez la liste par statut grâce aux chips en haut de l'écran : Toutes,
+  En attente, Confirmée, Annulée, Terminée.</li>
+  <li>Sur une réservation <strong>En attente</strong> le jour de l'arrivée,
+  appuyez sur <strong>Check-in</strong> : la réservation passe « Confirmée »
+  et la chambre « Occupée ».</li>
+  <li>Sur une réservation <strong>Confirmée</strong> le jour du départ,
+  appuyez sur <strong>Check-out</strong> : la réservation passe « Terminée »
+  et la chambre redevient « Disponible ».</li>
+  <li><strong>Annuler</strong> est disponible tant que la réservation est En attente.</li>
+</ol>
+
+<div class="diagram">
+  <img src="screenshots/04-reservations-liste-statuts.png" style="max-width:58%;">
+</div>
+<p style="text-align:center; font-size:11px; color:#445;">Le filtre « Toutes »
+montre chaque réservation avec son statut coloré ; le bouton d'action affiché
+(Check-in ou Check-out) dépend du statut courant.</p>
+</section>
+
+<section class="page">
+<span class="kicker">Partie I · Guide d'utilisation</span>
+<h1>5. Gérer les clients</h1>
+<p style="font-size:11.5px; color:#667;">Accessible aux profils Administrateur et Réceptionniste.</p>
+<ol class="steps">
+  <li>Ouvrez <strong>Clients</strong>, puis appuyez sur <strong>+</strong> pour
+  ajouter une fiche (ou sélectionnez un client existant pour la modifier).</li>
+  <li>Renseignez nom, prénom, téléphone, email et nationalité. Le CIN/passeport
+  est optionnel.</li>
+  <li>La liste des nationalités se charge depuis internet ; si vous êtes hors
+  connexion ou que le service est indisponible, une liste de secours locale
+  s'affiche automatiquement avec un bouton <strong>Réessayer</strong> — le
+  formulaire n'est jamais bloqué.</li>
+  <li>Retrouvez rapidement une fiche via la recherche par nom, téléphone ou email.</li>
+</ol>
+
+<h1 style="margin-top:34px;">6. Gérer les utilisateurs (Admin)</h1>
+<p style="font-size:11.5px; color:#667;">Réservé au profil Administrateur.</p>
+<ol class="steps">
+  <li>Ouvrez <strong>Utilisateurs</strong> puis appuyez sur <strong>+</strong>
+  pour créer un compte : nom, email, mot de passe et rôle (Admin,
+  Réceptionniste ou Client).</li>
+  <li>Si le rôle choisi est <strong>Client</strong>, liez le compte à une
+  fiche client déjà créée (chapitre 5) — c'est cette liaison qui permet au
+  client de se connecter et de ne voir que <em>ses</em> réservations.</li>
+  <li>Modifiez ou supprimez un compte directement depuis la liste (icône
+  corbeille).</li>
+</ol>
+<div class="shot">
+  <img src="screenshots/06-utilisateurs-liste.png">
+  <p>Liste des comptes utilisateurs, avec leur rôle et l'action de
+  suppression.</p>
+</div>
+<div class="shot">
+  <img src="screenshots/06-utilisateur-nouveau-formulaire.png">
+  <p>Formulaire de création : nom, email, mot de passe (avec confirmation)
+  et rôle.</p>
+</div>
+</section>
+
+<section class="page">
+<span class="kicker">Partie I · Guide d'utilisation</span>
+<h1>7. Gérer les paiements</h1>
+<p style="font-size:11.5px; color:#667;">Accessible aux profils Administrateur et Réceptionniste.</p>
+<ol class="steps">
+  <li>Ouvrez <strong>Paiements</strong>, puis appuyez sur <strong>+</strong>.</li>
+  <li>Sélectionnez la réservation concernée : le montant se pré-remplit
+  automatiquement avec le montant total de la réservation.</li>
+  <li>Choisissez la méthode (Espèces, Carte...) et le statut, puis enregistrez.</li>
+  <li>Pour changer le statut d'un paiement existant (Payé / En attente /
+  Remboursé), appuyez dessus dans la liste.</li>
+</ol>
+
+<div class="shot wide">
+  <img src="screenshots/07-paiement-nouveau-formulaire.png">
+  <p>Le montant se pré-remplit avec le montant total de la réservation
+  sélectionnée ; méthode et statut restent modifiables.</p>
+</div>
+<div class="shot wide">
+  <img src="screenshots/07-paiements-liste.png">
+  <p>Chaque paiement affiche le client, la méthode, la date et le montant,
+  avec un badge de statut.</p>
+</div>
+</section>
+
+<section class="page">
+<span class="kicker">Partie I · Guide d'utilisation</span>
+<h1>8. Consulter les statistiques</h1>
+<p style="font-size:11.5px; color:#667;">Réservé au profil Administrateur.</p>
+<ol class="steps">
+  <li>Ouvrez <strong>Statistiques</strong> depuis l'accès rapide.</li>
+  <li>Consultez le chiffre d'affaires du mois et le taux d'occupation moyen
+  en cartes de résumé.</li>
+  <li>Faites défiler pour voir le graphique du taux d'occupation des 6
+  derniers mois, puis celui des revenus cumulés par type de chambre (Simple,
+  Double, Suite).</li>
+</ol>
+<div class="diagram">
+  <img src="screenshots/08-statistiques.png" style="max-width:52%;">
+</div>
+
+<h1 style="margin-top:34px;">9. Espace Client : mes réservations</h1>
+<p style="font-size:11.5px; color:#667;">Vue réservée au profil Client.</p>
+<ol class="steps">
+  <li>Connectez-vous avec votre compte Client.</li>
+  <li>Ouvrez <strong>Mes réservations</strong> : seules vos propres
+  réservations (chambre, dates, montant, statut) s'affichent.</li>
+  <li>Si l'écran reste vide alors que vous avez réservé, votre compte n'est
+  probablement pas encore lié à une fiche client — contactez la réception.</li>
+</ol>
+</section>
+
+<section class="page">
+<span class="kicker">Partie I · Guide d'utilisation</span>
+<h1>10. Profil et paramètres</h1>
+<ol class="steps">
+  <li>Ouvrez <strong>Mon profil</strong> depuis l'accès rapide (disponible
+  pour tous les rôles).</li>
+  <li>Modifiez votre nom, votre email ou votre mot de passe (une confirmation
+  est demandée), ou déconnectez-vous.</li>
+  <li>Appuyez sur l'icône engrenage pour ouvrir <strong>Paramètres</strong> :
+  choisissez le thème (Clair / Sombre / Système) et la langue
+  (Français / العربية).</li>
+  <li>Le changement de langue applique automatiquement le sens de lecture
+  (RTL en arabe) et traduit les écrans principaux.</li>
+</ol>
+
+<h1 style="margin-top:34px;">11. Questions fréquentes</h1>
+<p><strong>J'ai oublié mon mot de passe.</strong> Un Admin peut modifier
+votre compte depuis l'écran Utilisateurs.</p>
+<p><strong>Je ne peux pas supprimer une chambre ou un client.</strong>
+Vérifiez qu'aucune réservation active n'y est liée ; en cas de doute,
+contactez un Admin.</p>
+<p><strong>Un message « liste hors-ligne » s'affiche sur le champ
+nationalité.</strong> C'est normal sans connexion internet ou si le service
+est momentanément indisponible : une liste de secours locale (30
+nationalités courantes) est utilisée automatiquement pour ne jamais bloquer
+la création d'un client. Appuyez sur <strong>Réessayer</strong> une fois la
+connexion rétablie.</p>
+<p><strong>Je ne reçois pas de notification de check-in/check-out.</strong>
+Vérifiez que la réservation concernée a bien une date d'arrivée (ou de
+départ) égale à aujourd'hui et que son statut est encore « En attente »
+(check-in) ou « Confirmée » (check-out) : une fois l'action déjà effectuée,
+l'alerte correspondante ne se déclenche plus.</p>
+</section>
+
+<section class="page">
+<span class="kicker">Partie II · Documentation technique</span>
+<h1>12. Présentation et stack technique</h1>
+<p><strong>Hotel Smart</strong> est une application mobile Flutter de gestion
+hôtelière conçue pour l'hôtel fictif <em>Le Palace</em> (4 étoiles, Alger).
+Elle couvre l'ensemble du cycle d'exploitation d'un établissement : chambres,
+clients, réservations, paiements, statistiques et utilisateurs, avec trois
+profils aux permissions distinctes (Administrateur, Réceptionniste, Client).
+L'application fonctionne intégralement hors-ligne grâce à une base de
+données SQLite embarquée ; seule la récupération de la liste des
+nationalités s'appuie sur un service externe, avec repli automatique sur une
+liste locale en cas d'indisponibilité réseau.</p>
+
+<table>
+<tr><th>Besoin</th><th>Choix</th><th>Justification</th></tr>
+<tr><td>Base de données locale</td><td><code>sqflite</code></td><td>Standard Flutter pour SQLite embarqué, sans dépendance réseau</td></tr>
+<tr><td>API externe</td><td><code>http</code> + countries.dev</td><td>Peuple la liste des nationalités, avec liste de secours locale si indisponible</td></tr>
+<tr><td>Gestion d'état</td><td><code>provider</code> (ChangeNotifier)</td><td>Simple, largement adopté, suffisant pour la taille du projet</td></tr>
+<tr><td>Design</td><td>Material Design 3</td><td>Imposé par le cahier des charges</td></tr>
+<tr><td>Hachage mot de passe</td><td><code>crypto</code> (SHA-256)</td><td>Ne jamais stocker de mot de passe en clair</td></tr>
+<tr><td>Session</td><td><code>shared_preferences</code></td><td>Persistance légère de l'utilisateur connecté</td></tr>
+<tr><td>Notifications</td><td><code>flutter_local_notifications</code></td><td>Alertes check-in/check-out locales, sans backend</td></tr>
+<tr><td>Graphiques</td><td><code>fl_chart</code></td><td>Graphiques en barres pour l'écran Statistiques</td></tr>
+<tr><td>i18n système</td><td><code>flutter_localizations</code></td><td>Localise les widgets Material et active le RTL en arabe</td></tr>
+</table>
+</section>
+
+<section class="page">
+<span class="kicker">Partie II · Documentation technique</span>
+<h1>13. Architecture logicielle</h1>
+<p>L'application suit une architecture en couches strictes :</p>
+<pre>UI (screens/widgets)
+   -&gt; Providers (ChangeNotifier) : état observable par l'UI
+      -&gt; Services : logique métier (peut combiner plusieurs repositories)
+         -&gt; Repositories : un par table SQLite, CRUD brut
+            -&gt; DatabaseHelper : Singleton, ouverture/création de la base</pre>
+<p>Cette séparation permet de tester les services et les modèles
+indépendamment de l'UI, et de changer la source de données sans réécrire
+les écrans.</p>
+
+<h3>Structure des dossiers</h3>
+<pre>lib/
+├── models/        Utilisateur, Client, Chambre, Reservation, Paiement, NotificationAlerte
+├── services/      AuthService, ApiService, ReservationService, StatisticsService, NotificationService
+├── repositories/  UserRepository, ClientRepository, RoomRepository, ReservationRepository, PaymentRepository, NotificationRepository
+├── providers/     AuthProvider, RoomProvider, ClientProvider, ReservationProvider, PaymentProvider,
+│                  UserProvider, StatisticsProvider, NotificationProvider, SettingsProvider
+├── database/      DatabaseHelper (Singleton SQLite)
+├── screens/       auth/, dashboard/, rooms/, reservations/, clients/, users/, payments/, profile/, settings/, statistics/
+├── widgets/       StatusBadge, EmptyState, confirm_dialog...
+├── utils/         app_theme, constants, validators, ui_helpers, app_strings
+└── routes/        app_routes.dart (navigation nommée)</pre>
+
+<h3>Décisions de conception notables</h3>
+<ul>
+  <li><strong>Utilisateur vs Client</strong> : le compte de connexion (<code>Utilisateur</code>) est volontairement séparé de la fiche hôtel (<code>Client</code>) ; leur liaison est manuelle, effectuée par un Admin, jamais automatique.</li>
+  <li><strong>Statistiques calculées à la volée</strong>, sans table dédiée, pour éviter toute désynchronisation avec les données sources.</li>
+  <li><strong>Compte Admin par défaut</strong> créé automatiquement au premier lancement pour ne jamais bloquer l'accès à l'application.</li>
+</ul>
+</section>
+
+<section class="page">
+<span class="kicker">Partie II · Documentation technique</span>
+<h1>14. Diagramme de classes</h1>
+<div class="diagram">
+  <img src="screenshots/diagramme_classes.png" alt="Diagramme de classes">
+</div>
+</section>
+
+<section class="page">
+<span class="kicker">Partie II · Documentation technique</span>
+<h1>15. Diagramme de cas d'utilisation</h1>
+<div class="diagram">
+  <img src="screenshots/diagramme_cas_utilisation.png" alt="Diagramme de cas d'utilisation">
+</div>
+</section>
+
+<section class="page">
+<span class="kicker">Partie II · Documentation technique</span>
+<h1>16. Schéma de la base de données</h1>
+<p>6 tables SQLite, clés étrangères actives via <code>PRAGMA foreign_keys = ON</code> :</p>
+<pre>users (id, nom, email UNIQUE, mot_de_passe_hache, role, client_id -&gt; clients.id, date_creation)
+clients (id, nom, prenom, telephone, email, nationalite, cin, date_creation)
+rooms (id, numero UNIQUE, type, prix_par_nuit, statut, description, etage)
+reservations (id, client_id -&gt; clients.id, room_id -&gt; rooms.id, date_arrivee,
+              date_depart, statut, montant_total, date_creation)
+payments (id, reservation_id -&gt; reservations.id, montant, statut, methode, date_paiement)
+notifications (id, reservation_id -&gt; reservations.id, type, titre, message, date_alerte, lue)</pre>
+<p><strong>Suppressions en cascade</strong> : supprimer un client ou une chambre
+supprime les réservations liées (et donc paiements/notifications liées). Ce
+choix simplifie la cohérence des données pour une application de gestion
+mono-établissement.</p>
+<p><strong>Optimisation des requêtes</strong> : des index sont créés sur toutes
+les clés étrangères ainsi que sur les dates de réservation
+(<code>idx_reservations_dates</code>) afin d'accélérer les recherches de
+conflits de dates et les jointures/filtrages les plus fréquents.</p>
+</section>
+
+<section class="page">
+<span class="kicker">Partie II · Documentation technique</span>
+<h1>17. Rôles, gestion des erreurs et cas limites</h1>
+<h3>Rôles et permissions</h3>
+<p><code>AuthProvider</code> expose des getters dérivés du rôle de
+l'utilisateur connecté (<code>estAdmin</code>, <code>estReceptionniste</code>,
+<code>estClient</code>, <code>peutGererOperations</code>). Les écrans
+utilisent ces getters pour masquer/afficher les actions, restreindre la
+navigation et filtrer les données visibles.</p>
+
+<h3>Gestion des erreurs et cas limites</h3>
+<ul>
+  <li><strong>Réseau</strong> : en cas d'échec de l'appel à l'API de nationalités,
+  une liste de secours locale de 30 nationalités est utilisée automatiquement,
+  avec un bouton « Réessayer ». Le formulaire client n'est jamais bloqué.</li>
+  <li><strong>Métier</strong> : les erreurs (<code>AuthException</code>,
+  <code>ReservationException</code>) sont affichées via des messages clairs.</li>
+  <li><strong>Formulaires et données incohérentes</strong> : validation côté
+  client (champs obligatoires, format email/téléphone, mot de passe, valeurs
+  numériques positives) avant tout appel à la base de données.</li>
+  <li><strong>Base vide au premier lancement</strong> : un compte Admin par
+  défaut est inséré automatiquement à la création de la base.</li>
+</ul>
+<div class="credentials">
+Compte Admin fourni par défaut : <code>admin@hotelsmart.dz</code> / <code>Admin@123</code>
+</div>
+</section>
+
+<section class="page">
+<span class="kicker">Partie II · Documentation technique</span>
+<h1>18. Tests, qualité et build</h1>
+<p><code>flutter test</code> exécute les tests unitaires (modèles, services,
+validateurs) situés dans <code>test/</code>.</p>
+<pre>flutter analyze        # 0 warning attendu
+flutter test            # tous les tests doivent passer
+flutter build apk --release</pre>
+
+<h1 style="margin-top:34px;">19. Annexe — Scénario de démonstration (5 minutes)</h1>
+<ol>
+  <li><strong>Connexion Admin</strong> (<code>admin@hotelsmart.dz</code> / <code>Admin@123</code>) → tableau de bord avec statistiques dynamiques.</li>
+  <li><strong>Chambres</strong> : recherche temps réel, filtres, bascule Carte/Liste, création d'une chambre.</li>
+  <li><strong>Clients</strong> : création d'un client, liste des nationalités en ligne avec repli local en mode avion.</li>
+  <li><strong>Réservation</strong> : détection automatique des chambres disponibles et calcul automatique du montant.</li>
+  <li><strong>Check-in / Check-out</strong> : la chambre passe « Occupée » puis « Disponible » ; notification générée.</li>
+  <li><strong>Paiement</strong> : enregistrement d'un paiement pour la réservation.</li>
+  <li><strong>Statistiques</strong> : graphiques taux d'occupation et revenus par type de chambre.</li>
+  <li><strong>Utilisateurs</strong> : création d'un compte Client lié à la fiche créée plus tôt, puis connexion avec ce compte pour vérifier la restriction d'accès.</li>
+  <li><strong>Paramètres</strong> : bascule thème clair/sombre et langue FR/AR (RTL).</li>
+</ol>
+<div class="note">
+Points forts à mentionner : compte Admin par défaut au premier lancement,
+gestion explicite des erreurs réseau, vérification des conflits de dates,
+index SQLite sur toutes les clés étrangères, suite de tests unitaires
+passante, <code>flutter analyze</code> sans avertissement.
+</div>
+</section>
+
+</body>
+</html>

@@ -12,6 +12,11 @@ Compte Admin fourni par defaut (premier lancement) :
 Un compte Receptionniste ou Client doit vous etre cree par un Admin
 (ecran **Utilisateurs**).
 
+![Ecran de connexion](screenshots/01-connexion.png)
+
+*Identite bleu nuit / or, champs soulignes et motif Art Deco en
+arriere-plan.*
+
 ## 2. Tableau de bord
 
 Apres connexion, le tableau de bord affiche :
@@ -108,6 +113,10 @@ description.*
 
 *Chaque ligne affiche le nom, l'email et le role du compte. L'icone
 corbeille permet de le supprimer directement depuis la liste.*
+
+![Formulaire de nouvel utilisateur](screenshots/06-utilisateur-nouveau-formulaire.png)
+
+*Nom, email, mot de passe (avec confirmation) et role.*
 
 ## 7. Paiements (Admin, Receptionniste)
 
