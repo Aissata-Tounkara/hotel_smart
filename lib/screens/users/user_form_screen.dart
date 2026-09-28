@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../models/client.dart';
 import '../../models/utilisateur.dart';
 import '../../providers/client_provider.dart';
@@ -48,7 +49,9 @@ class _UserFormScreenState extends State<UserFormScreen> {
       final clientProvider = context.read<ClientProvider>();
       await clientProvider.charger();
       if (u?.clientId != null && mounted) {
-        final correspondances = clientProvider.clients.where((c) => c.id == u!.clientId);
+        final correspondances = clientProvider.clients.where(
+          (c) => c.id == u!.clientId,
+        );
         setState(() {
           _clientLie = correspondances.isEmpty ? null : correspondances.first;
         });
@@ -77,7 +80,9 @@ class _UserFormScreenState extends State<UserFormScreen> {
             utilisateur: widget.utilisateur!,
             nom: _nomController.text,
             email: _emailController.text,
-            nouveauMotDePasse: _motDePasseController.text.isEmpty ? null : _motDePasseController.text,
+            nouveauMotDePasse: _motDePasseController.text.isEmpty
+                ? null
+                : _motDePasseController.text,
             role: _role,
             clientId: clientId,
           )
@@ -96,7 +101,11 @@ class _UserFormScreenState extends State<UserFormScreen> {
       Navigator.of(context).pop();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(userProvider.erreur ?? 'Erreur inconnue')),
+        SnackBar(
+          content: Text(
+            userProvider.erreur ?? AppLocalizations.of(context)!.unknownError,
+          ),
+        ),
       );
       userProvider.effacerErreur();
     }
@@ -105,9 +114,10 @@ class _UserFormScreenState extends State<UserFormScreen> {
   @override
   Widget build(BuildContext context) {
     final clientProvider = context.watch<ClientProvider>();
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: PremiumAppBar(title: _estEdition ? 'Modifier l\'utilisateur' : 'Nouvel utilisateur'),
+      appBar: PremiumAppBar(title: _estEdition ? l10n.editUser : l10n.newUser),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -115,14 +125,14 @@ class _UserFormScreenState extends State<UserFormScreen> {
           children: [
             AppTextField(
               controller: _nomController,
-              label: 'Nom complet',
+              label: l10n.fullName,
               icon: Icons.person_outline,
-              validator: (v) => Validators.required(v, champ: 'Le nom'),
+              validator: (v) => Validators.required(v, champ: l10n.name),
             ),
             const SizedBox(height: 20),
             AppTextField(
               controller: _emailController,
-              label: 'Email',
+              label: l10n.email,
               icon: Icons.email_outlined,
               keyboardType: TextInputType.emailAddress,
               validator: Validators.email,
@@ -130,7 +140,9 @@ class _UserFormScreenState extends State<UserFormScreen> {
             const OrnamentalDivider(),
             AppTextField(
               controller: _motDePasseController,
-              label: _estEdition ? 'Nouveau mot de passe (optionnel)' : 'Mot de passe',
+              label: _estEdition
+                  ? l10n.profileNewPasswordOptional
+                  : l10n.password,
               icon: Icons.lock_outline,
               obscureText: true,
               validator: (v) {
@@ -141,20 +153,28 @@ class _UserFormScreenState extends State<UserFormScreen> {
             const SizedBox(height: 20),
             AppTextField(
               controller: _confirmationController,
-              label: 'Confirmer le mot de passe',
+              label: l10n.confirmPassword,
               icon: Icons.lock_outline,
               obscureText: true,
               validator: (v) {
                 if (_motDePasseController.text.isEmpty) return null;
-                return Validators.confirmPassword(v, _motDePasseController.text);
+                return Validators.confirmPassword(
+                  v,
+                  _motDePasseController.text,
+                );
               },
             ),
             const SizedBox(height: 20),
             DropdownButtonFormField<RoleUtilisateur>(
               initialValue: _role,
-              decoration: const InputDecoration(labelText: 'Role', prefixIcon: Icon(Icons.admin_panel_settings_outlined)),
+              decoration: InputDecoration(
+                labelText: l10n.role,
+                prefixIcon: const Icon(Icons.admin_panel_settings_outlined),
+              ),
               items: RoleUtilisateur.values
-                  .map((r) => DropdownMenuItem(value: r, child: Text(r.libelle)))
+                  .map(
+                    (r) => DropdownMenuItem(value: r, child: Text(r.libelle)),
+                  )
                   .toList(),
               onChanged: (v) => setState(() => _role = v!),
             ),
@@ -163,21 +183,29 @@ class _UserFormScreenState extends State<UserFormScreen> {
               DropdownButtonFormField<Client>(
                 initialValue: _clientLie,
                 isExpanded: true,
-                decoration: const InputDecoration(
-                  labelText: 'Fiche client a lier',
+                decoration: InputDecoration(
+                  labelText: l10n.clientRecordToLink,
                   prefixIcon: Icon(Icons.link),
-                  helperText: 'La fiche client doit deja exister (creee par le receptionniste)',
+                  helperText: l10n.clientLinkHelp,
                 ),
                 items: clientProvider.clients
-                    .map((c) => DropdownMenuItem(value: c, child: Text(c.nomComplet, overflow: TextOverflow.ellipsis)))
+                    .map(
+                      (c) => DropdownMenuItem(
+                        value: c,
+                        child: Text(
+                          c.nomComplet,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    )
                     .toList(),
                 onChanged: (v) => setState(() => _clientLie = v),
-                validator: (v) => v == null ? 'Veuillez selectionner une fiche client' : null,
+                validator: (v) => v == null ? l10n.selectClientRecord : null,
               ),
             ],
             const SizedBox(height: 28),
             GradientButton(
-              label: 'ENREGISTRER',
+              label: l10n.save.toUpperCase(),
               loading: _enEnregistrement,
               onPressed: _enregistrer,
             ),

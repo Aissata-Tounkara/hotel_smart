@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../models/paiement.dart';
 import '../../models/reservation.dart';
 import '../../providers/client_provider.dart';
@@ -50,7 +51,9 @@ class _PaymentFormScreenState extends State<PaymentFormScreen> {
     if (!_formKey.currentState!.validate()) return;
     if (_reservationSelectionnee == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Veuillez selectionner une reservation')),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.selectReservation),
+        ),
       );
       return;
     }
@@ -70,7 +73,12 @@ class _PaymentFormScreenState extends State<PaymentFormScreen> {
       Navigator.of(context).pop();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(paymentProvider.erreur ?? 'Erreur inconnue')),
+        SnackBar(
+          content: Text(
+            paymentProvider.erreur ??
+                AppLocalizations.of(context)!.unknownError,
+          ),
+        ),
       );
       paymentProvider.effacerErreur();
     }
@@ -78,12 +86,13 @@ class _PaymentFormScreenState extends State<PaymentFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final reservationProvider = context.watch<ReservationProvider>();
     final clientProvider = context.watch<ClientProvider>();
     final clientsParId = {for (final c in clientProvider.clients) c.id: c};
 
     return Scaffold(
-      appBar: const PremiumAppBar(title: 'Nouveau paiement'),
+      appBar: PremiumAppBar(title: l10n.newPayment),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -92,7 +101,10 @@ class _PaymentFormScreenState extends State<PaymentFormScreen> {
             DropdownButtonFormField<Reservation>(
               initialValue: _reservationSelectionnee,
               isExpanded: true,
-              decoration: const InputDecoration(labelText: 'Reservation', prefixIcon: Icon(Icons.event_note)),
+              decoration: InputDecoration(
+                labelText: l10n.reservation,
+                prefixIcon: const Icon(Icons.event_note),
+              ),
               items: reservationProvider.reservations.map((r) {
                 final client = clientsParId[r.clientId];
                 return DropdownMenuItem(
@@ -105,37 +117,48 @@ class _PaymentFormScreenState extends State<PaymentFormScreen> {
               }).toList(),
               onChanged: (v) => setState(() {
                 _reservationSelectionnee = v;
-                if (v != null) _montantController.text = v.montantTotal.toStringAsFixed(0);
+                if (v != null) {
+                  _montantController.text = v.montantTotal.toStringAsFixed(0);
+                }
               }),
-              validator: (v) => v == null ? 'Veuillez selectionner une reservation' : null,
+              validator: (v) => v == null ? l10n.selectReservation : null,
             ),
             const OrnamentalDivider(),
             AppTextField(
               controller: _montantController,
-              label: 'Montant (DA)',
+              label: l10n.paymentAmount,
               icon: Icons.payments_outlined,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              validator: (v) => Validators.positiveNumber(v, champ: 'Le montant'),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              validator: (v) =>
+                  Validators.positiveNumber(v, champ: l10n.totalAmount),
             ),
             const SizedBox(height: 20),
             AppTextField(
               controller: _methodeController,
-              label: 'Methode de paiement',
+              label: l10n.paymentMethod,
               icon: Icons.credit_card,
-              validator: (v) => Validators.required(v, champ: 'La methode'),
+              validator: (v) =>
+                  Validators.required(v, champ: l10n.paymentMethod),
             ),
             const SizedBox(height: 20),
             DropdownButtonFormField<StatutPaiement>(
               initialValue: _statut,
-              decoration: const InputDecoration(labelText: 'Statut', prefixIcon: Icon(Icons.info_outline)),
+              decoration: InputDecoration(
+                labelText: l10n.paymentStatus,
+                prefixIcon: const Icon(Icons.info_outline),
+              ),
               items: StatutPaiement.values
-                  .map((s) => DropdownMenuItem(value: s, child: Text(s.libelle)))
+                  .map(
+                    (s) => DropdownMenuItem(value: s, child: Text(s.libelle)),
+                  )
                   .toList(),
               onChanged: (v) => setState(() => _statut = v!),
             ),
             const SizedBox(height: 28),
             GradientButton(
-              label: 'ENREGISTRER',
+              label: l10n.save.toUpperCase(),
               loading: _enEnregistrement,
               onPressed: _enregistrer,
             ),

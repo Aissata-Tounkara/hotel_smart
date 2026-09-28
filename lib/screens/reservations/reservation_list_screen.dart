@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../models/client.dart';
 import '../../models/chambre.dart';
 import '../../models/reservation.dart';
@@ -41,30 +42,33 @@ class _ReservationListScreenState extends State<ReservationListScreen> {
   }
 
   Future<void> _checkIn(Reservation reservation) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirme = await afficherConfirmation(
       context,
-      titre: 'Check-in',
-      message: 'Confirmer l\'arrivee du client et occuper la chambre ?',
+      titre: l10n.checkIn,
+      message: l10n.confirmCheckIn,
     );
     if (!confirme || !mounted) return;
     await context.read<ReservationProvider>().effectuerCheckIn(reservation);
   }
 
   Future<void> _checkOut(Reservation reservation) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirme = await afficherConfirmation(
       context,
-      titre: 'Check-out',
-      message: 'Confirmer le depart du client et liberer la chambre ?',
+      titre: l10n.checkOut,
+      message: l10n.confirmCheckOut,
     );
     if (!confirme || !mounted) return;
     await context.read<ReservationProvider>().effectuerCheckOut(reservation);
   }
 
   Future<void> _annuler(Reservation reservation) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirme = await afficherConfirmation(
       context,
-      titre: 'Annuler la reservation',
-      message: 'Etes-vous sur de vouloir annuler cette reservation ?',
+      titre: l10n.cancelReservationTitle,
+      message: l10n.confirmCancelReservation,
       destructif: true,
     );
     if (!confirme || !mounted) return;
@@ -73,6 +77,7 @@ class _ReservationListScreenState extends State<ReservationListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final reservationsSource = context
         .select<ReservationProvider, List<Reservation>>(
           (provider) => provider.reservations,
@@ -110,9 +115,10 @@ class _ReservationListScreenState extends State<ReservationListScreen> {
     }
 
     return Scaffold(
-      appBar: const PremiumAppBar(title: 'Reservations'),
+      appBar: PremiumAppBar(title: l10n.reservationsTitle),
       floatingActionButton: peutGerer
           ? FloatingActionButton(
+              tooltip: l10n.addReservation,
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (_) => const ReservationFormScreen(),
@@ -127,7 +133,7 @@ class _ReservationListScreenState extends State<ReservationListScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
               child: AppTextField(
-                label: 'Rechercher par client ou chambre',
+                label: l10n.reservationSearch,
                 icon: Icons.search,
                 onChanged: (v) => setState(() => _recherche = v),
               ),
@@ -140,7 +146,7 @@ class _ReservationListScreenState extends State<ReservationListScreen> {
                 child: Row(
                   children: [
                     _ChipStatut(
-                      label: 'Toutes',
+                      label: l10n.allReservations,
                       selectionne: filtreStatut == null,
                       onTap: () => reservationProvider.filtrerParStatut(null),
                     ),
@@ -162,9 +168,9 @@ class _ReservationListScreenState extends State<ReservationListScreen> {
               child: enChargement
                   ? const Center(child: CircularProgressIndicator())
                   : reservations.isEmpty
-                  ? const EmptyState(
+                  ? EmptyState(
                       icone: Icons.event_busy,
-                      message: 'Aucune reservation trouvee',
+                      message: l10n.noReservationsFound,
                     )
                   : RefreshIndicator(
                       onRefresh: reservationProvider.charger,
@@ -177,8 +183,15 @@ class _ReservationListScreenState extends State<ReservationListScreen> {
                           final client = clientsParId[reservation.clientId];
                           final chambre = chambresParId[reservation.chambreId];
                           return Semantics(
-                            label:
-                                'Réservation de ${client?.nomComplet ?? 'client inconnu'}, chambre ${chambre?.numero ?? '-'}, du ${UiHelpers.formatDate(reservation.dateArrivee)} au ${UiHelpers.formatDate(reservation.dateDepart)}, ${reservation.dureeSejour} nuits, ${UiHelpers.formatMontant(reservation.montantTotal)}, statut ${reservation.statut.libelle}',
+                            label: l10n.reservationSemanticSummary(
+                              client?.nomComplet ?? l10n.unknownClient,
+                              chambre?.numero ?? '-',
+                              UiHelpers.formatDate(reservation.dateArrivee),
+                              UiHelpers.formatDate(reservation.dateDepart),
+                              reservation.dureeSejour.toString(),
+                              UiHelpers.formatMontant(reservation.montantTotal),
+                              reservation.statut.libelle,
+                            ),
                             child: _CarteReservation(
                               reservation: reservation,
                               client: client,
@@ -295,19 +308,19 @@ class _CarteReservation extends StatelessWidget {
                   FilledButton.tonalIcon(
                     onPressed: onCheckIn,
                     icon: const Icon(Icons.login, size: 18),
-                    label: const Text('Check-in'),
+                    label: Text(AppLocalizations.of(context)!.checkIn),
                   ),
                   OutlinedButton.icon(
                     onPressed: onAnnuler,
                     icon: const Icon(Icons.cancel_outlined, size: 18),
-                    label: const Text('Annuler'),
+                    label: Text(AppLocalizations.of(context)!.cancel),
                   ),
                 ],
                 if (reservation.statut == StatutReservation.confirmee)
                   FilledButton.tonalIcon(
                     onPressed: onCheckOut,
                     icon: const Icon(Icons.logout, size: 18),
-                    label: const Text('Check-out'),
+                    label: Text(AppLocalizations.of(context)!.checkOut),
                   ),
               ],
             ),

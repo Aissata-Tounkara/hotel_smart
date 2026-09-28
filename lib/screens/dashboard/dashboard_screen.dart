@@ -164,16 +164,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         color: Theme.of(context).colorScheme.secondary,
                       ),
                       title: Text(
-                        alerte.titre,
+                        alerte.type == TypeNotification.checkIn
+                            ? l10n.checkInTodayTitle
+                            : l10n.checkOutTodayTitle,
                         style: AppTheme.manrope(fontWeight: FontWeight.w700),
                       ),
                       subtitle: Text(
-                        alerte.message,
+                        alerte.type == TypeNotification.checkIn
+                            ? l10n.checkInDueMessage(
+                                alerte.reservationId.toString(),
+                              )
+                            : l10n.checkOutDueMessage(
+                                alerte.reservationId.toString(),
+                              ),
                         style: AppTheme.manrope(fontSize: 12.5),
                       ),
                       trailing: IconButton(
                         icon: const Icon(Icons.check),
-                        tooltip: 'Marquer la notification comme lue',
+                        tooltip: l10n.markNotificationRead,
                         onPressed: () =>
                             notificationProvider.marquerCommeLue(alerte.id!),
                       ),

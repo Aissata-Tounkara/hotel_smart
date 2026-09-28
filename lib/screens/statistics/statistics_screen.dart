@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../models/chambre.dart';
 import '../../providers/statistics_provider.dart';
 import '../../services/statistics_service.dart';
@@ -48,9 +49,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   Widget build(BuildContext context) {
     final statisticsProvider = context.watch<StatisticsProvider>();
     final stats = statisticsProvider.statistiques;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: const PremiumAppBar(title: 'Statistiques'),
+      appBar: PremiumAppBar(title: l10n.statisticsTitle),
       body: statisticsProvider.enChargement && stats == null
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
@@ -61,7 +63,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   children: [
                     if (stats != null) ...[
                       HeroStatCard(
-                        label: 'Chiffre d\'affaires du mois',
+                        label: l10n.revenueThisMonth,
                         value: UiHelpers.formatMontant(
                           stats.chiffreAffairesMensuel,
                         ),
@@ -69,14 +71,14 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                       ),
                       const SizedBox(height: 14),
                       MiniStat(
-                        label: 'Taux d\'occupation',
+                        label: l10n.occupancyRate,
                         value: '${stats.tauxOccupation.toStringAsFixed(1)}%',
                         icon: Icons.percent,
                       ),
                       const OrnamentalDivider(),
                     ],
                     Text(
-                      'Taux d\'occupation par mois',
+                      l10n.occupancyByMonth,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(height: 16),
@@ -88,7 +90,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                     ),
                     const OrnamentalDivider(),
                     Text(
-                      'Revenus par type de chambre',
+                      l10n.revenueByRoomType,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(height: 16),
@@ -112,7 +114,9 @@ class _GraphiqueOccupation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (donnees.isEmpty) return const Center(child: Text('Aucune donnee'));
+    if (donnees.isEmpty) {
+      return Center(child: Text(AppLocalizations.of(context)!.noData));
+    }
     final couleur = Theme.of(context).colorScheme.primary;
     final couleurTexte = Theme.of(context).textTheme.bodySmall?.color;
     final resume = donnees
@@ -122,7 +126,7 @@ class _GraphiqueOccupation extends StatelessWidget {
         .join(', ');
 
     return Semantics(
-      label: 'Graphique du taux d’occupation par mois. $resume.',
+      label: AppLocalizations.of(context)!.occupancyChartSummary(resume),
       child: BarChart(
         BarChartData(
           maxY: 100,
@@ -188,7 +192,9 @@ class _GraphiqueRevenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (donnees.isEmpty) return const Center(child: Text('Aucune donnee'));
+    if (donnees.isEmpty) {
+      return Center(child: Text(AppLocalizations.of(context)!.noData));
+    }
     final accent = Theme.of(context).colorScheme.secondary;
     final couleurTexte = Theme.of(context).textTheme.bodySmall?.color;
     final maxY = donnees
@@ -199,7 +205,7 @@ class _GraphiqueRevenu extends StatelessWidget {
         .join(', ');
 
     return Semantics(
-      label: 'Graphique des revenus par type de chambre. $resume.',
+      label: AppLocalizations.of(context)!.revenueChartSummary(resume),
       child: BarChart(
         BarChartData(
           maxY: maxY == 0 ? 100 : maxY * 1.2,

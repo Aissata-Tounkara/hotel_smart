@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../models/utilisateur.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/user_provider.dart';
@@ -30,19 +31,18 @@ class _UserListScreenState extends State<UserListScreen> {
   }
 
   Future<void> _supprimer(BuildContext context, Utilisateur utilisateur) async {
+    final l10n = AppLocalizations.of(context)!;
     final authProvider = context.read<AuthProvider>();
     if (utilisateur.id == authProvider.utilisateurCourant?.id) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Vous ne pouvez pas supprimer votre propre compte'),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.personalAccountCannotDelete)));
       return;
     }
     final confirme = await afficherConfirmation(
       context,
-      titre: 'Supprimer l\'utilisateur',
-      message: 'Supprimer le compte de ${utilisateur.nom} ?',
+      titre: l10n.deleteUserTitle,
+      message: l10n.deleteUserConfirmation(utilisateur.nom),
       destructif: true,
     );
     if (!confirme || !context.mounted) return;
@@ -53,10 +53,12 @@ class _UserListScreenState extends State<UserListScreen> {
   Widget build(BuildContext context) {
     final userProvider = context.watch<UserProvider>();
     final utilisateurs = userProvider.utilisateurs;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: const PremiumAppBar(title: 'Utilisateurs'),
+      appBar: PremiumAppBar(title: l10n.users),
       floatingActionButton: FloatingActionButton(
+        tooltip: l10n.addUser,
         onPressed: () => Navigator.of(
           context,
         ).push(MaterialPageRoute(builder: (_) => const UserFormScreen())),
@@ -66,9 +68,9 @@ class _UserListScreenState extends State<UserListScreen> {
         child: userProvider.enChargement
             ? const Center(child: CircularProgressIndicator())
             : utilisateurs.isEmpty
-            ? const EmptyState(
+            ? EmptyState(
                 icone: Icons.people_alt_outlined,
-                message: 'Aucun utilisateur',
+                message: l10n.noUsers,
               )
             : RefreshIndicator(
                 onRefresh: userProvider.charger,
@@ -93,7 +95,7 @@ class _UserListScreenState extends State<UserListScreen> {
                       ),
                       trailing: IconButton(
                         icon: const Icon(Icons.delete_outline),
-                        tooltip: 'Supprimer le compte de ${utilisateur.nom}',
+                        tooltip: l10n.deleteUserTooltip(utilisateur.nom),
                         color: Theme.of(context).colorScheme.error,
                         onPressed: () => _supprimer(context, utilisateur),
                       ),

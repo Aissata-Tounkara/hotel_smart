@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../models/client.dart';
 import '../../models/paiement.dart';
 import '../../models/reservation.dart';
@@ -65,6 +66,7 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final paiements = context.select<PaymentProvider, List<Paiement>>(
       (provider) => provider.paiements,
     );
@@ -82,8 +84,9 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
     final clientsParId = {for (final c in clients) c.id: c};
 
     return Scaffold(
-      appBar: const PremiumAppBar(title: 'Paiements'),
+      appBar: PremiumAppBar(title: l10n.payments),
       floatingActionButton: FloatingActionButton(
+        tooltip: l10n.addPayment,
         onPressed: () => Navigator.of(
           context,
         ).push(MaterialPageRoute(builder: (_) => const PaymentFormScreen())),
@@ -93,9 +96,9 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
         child: enChargement
             ? const Center(child: CircularProgressIndicator())
             : paiements.isEmpty
-            ? const EmptyState(
+            ? EmptyState(
                 icone: Icons.receipt_long_outlined,
-                message: 'Aucun paiement enregistre',
+                message: l10n.paymentNotRecorded,
               )
             : RefreshIndicator(
                 onRefresh: context.read<PaymentProvider>().charger,
@@ -113,13 +116,23 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
                         ? clientsParId[reservation.clientId]
                         : null;
                     return Semantics(
-                      label:
-                          'Paiement de ${client?.nomComplet ?? 'la réservation numéro ${paiement.reservationId}'}, ${UiHelpers.formatMontant(paiement.montant)}, ${paiement.methode}, le ${UiHelpers.formatDate(paiement.datePaiement)}, statut ${paiement.statut.libelle}',
+                      label: l10n.paymentSemanticSummary(
+                        client?.nomComplet ??
+                            l10n.reservationNumber(
+                              paiement.reservationId.toString(),
+                            ),
+                        UiHelpers.formatMontant(paiement.montant),
+                        paiement.methode,
+                        UiHelpers.formatDate(paiement.datePaiement),
+                        paiement.statut.libelle,
+                      ),
                       child: PremiumListTile(
                         icon: Icons.receipt_long_outlined,
                         title:
                             client?.nomComplet ??
-                            'Reservation #${paiement.reservationId}',
+                            l10n.reservationNumber(
+                              paiement.reservationId.toString(),
+                            ),
                         subtitle:
                             '${paiement.methode} - ${UiHelpers.formatDate(paiement.datePaiement)}',
                         onTap: () => _changerStatut(paiement),

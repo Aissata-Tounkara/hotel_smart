@@ -775,6 +775,416 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Erreur inconnue'**
   String get unknownError;
+
+  /// No description provided for @statisticsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Statistiques'**
+  String get statisticsTitle;
+
+  /// No description provided for @revenueThisMonth.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chiffre d’affaires du mois'**
+  String get revenueThisMonth;
+
+  /// No description provided for @occupancyByMonth.
+  ///
+  /// In fr, this message translates to:
+  /// **'Taux d’occupation par mois'**
+  String get occupancyByMonth;
+
+  /// No description provided for @revenueByRoomType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Revenus par type de chambre'**
+  String get revenueByRoomType;
+
+  /// No description provided for @noData.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune donnée'**
+  String get noData;
+
+  /// No description provided for @occupancyChartSummary.
+  ///
+  /// In fr, this message translates to:
+  /// **'Graphique du taux d’occupation par mois. {summary}.'**
+  String occupancyChartSummary(String summary);
+
+  /// No description provided for @revenueChartSummary.
+  ///
+  /// In fr, this message translates to:
+  /// **'Graphique des revenus par type de chambre. {summary}.'**
+  String revenueChartSummary(String summary);
+
+  /// No description provided for @profileTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mon profil'**
+  String get profileTitle;
+
+  /// No description provided for @profileUpdated.
+  ///
+  /// In fr, this message translates to:
+  /// **'Profil mis à jour avec succès'**
+  String get profileUpdated;
+
+  /// No description provided for @name.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom'**
+  String get name;
+
+  /// No description provided for @fullName.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom complet'**
+  String get fullName;
+
+  /// No description provided for @profileNewPasswordOptional.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau mot de passe (optionnel)'**
+  String get profileNewPasswordOptional;
+
+  /// No description provided for @confirmPassword.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confirmer le mot de passe'**
+  String get confirmPassword;
+
+  /// No description provided for @logoutLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déconnexion'**
+  String get logoutLabel;
+
+  /// No description provided for @personalAccountCannotDelete.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous ne pouvez pas supprimer votre propre compte'**
+  String get personalAccountCannotDelete;
+
+  /// No description provided for @deleteUserTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer l’utilisateur'**
+  String get deleteUserTitle;
+
+  /// No description provided for @deleteUserConfirmation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer le compte de {name} ?'**
+  String deleteUserConfirmation(String name);
+
+  /// No description provided for @deleteUserTooltip.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer le compte de {name}'**
+  String deleteUserTooltip(String name);
+
+  /// No description provided for @noUsers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun utilisateur'**
+  String get noUsers;
+
+  /// No description provided for @newUser.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvel utilisateur'**
+  String get newUser;
+
+  /// No description provided for @editUser.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier l’utilisateur'**
+  String get editUser;
+
+  /// No description provided for @role.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rôle'**
+  String get role;
+
+  /// No description provided for @clientRecordToLink.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fiche client à lier'**
+  String get clientRecordToLink;
+
+  /// No description provided for @clientLinkHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'La fiche client doit déjà exister (créée par le réceptionniste)'**
+  String get clientLinkHelp;
+
+  /// No description provided for @selectClientRecord.
+  ///
+  /// In fr, this message translates to:
+  /// **'Veuillez sélectionner une fiche client'**
+  String get selectClientRecord;
+
+  /// No description provided for @reservationsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réservations'**
+  String get reservationsTitle;
+
+  /// No description provided for @myReservationsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes réservations'**
+  String get myReservationsTitle;
+
+  /// No description provided for @allReservations.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes'**
+  String get allReservations;
+
+  /// No description provided for @reservationSearch.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher par client ou chambre'**
+  String get reservationSearch;
+
+  /// No description provided for @noReservationsFound.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune réservation trouvée'**
+  String get noReservationsFound;
+
+  /// No description provided for @confirmCheckIn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confirmer l’arrivée du client et occuper la chambre ?'**
+  String get confirmCheckIn;
+
+  /// No description provided for @confirmCheckOut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confirmer le départ du client et libérer la chambre ?'**
+  String get confirmCheckOut;
+
+  /// No description provided for @confirmCancelReservation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Êtes-vous sûr de vouloir annuler cette réservation ?'**
+  String get confirmCancelReservation;
+
+  /// No description provided for @checkIn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Check-in'**
+  String get checkIn;
+
+  /// No description provided for @checkOut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Check-out'**
+  String get checkOut;
+
+  /// No description provided for @room.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chambre'**
+  String get room;
+
+  /// No description provided for @availableRoomsLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chambres disponibles'**
+  String get availableRoomsLabel;
+
+  /// No description provided for @noRoomsAvailableDates.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune chambre disponible pour ces dates'**
+  String get noRoomsAvailableDates;
+
+  /// No description provided for @totalAmount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant total'**
+  String get totalAmount;
+
+  /// No description provided for @reservationConfirmAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'CONFIRMER LA RÉSERVATION'**
+  String get reservationConfirmAction;
+
+  /// No description provided for @completeAllFields.
+  ///
+  /// In fr, this message translates to:
+  /// **'Veuillez compléter tous les champs'**
+  String get completeAllFields;
+
+  /// No description provided for @selectReservation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Veuillez sélectionner une réservation'**
+  String get selectReservation;
+
+  /// No description provided for @newPayment.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau paiement'**
+  String get newPayment;
+
+  /// No description provided for @newReservation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle réservation'**
+  String get newReservation;
+
+  /// No description provided for @reservation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réservation'**
+  String get reservation;
+
+  /// No description provided for @paymentAmount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant (DA)'**
+  String get paymentAmount;
+
+  /// No description provided for @paymentMethod.
+  ///
+  /// In fr, this message translates to:
+  /// **'Méthode de paiement'**
+  String get paymentMethod;
+
+  /// No description provided for @paymentStatus.
+  ///
+  /// In fr, this message translates to:
+  /// **'Statut'**
+  String get paymentStatus;
+
+  /// No description provided for @paymentNotRecorded.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun paiement enregistré'**
+  String get paymentNotRecorded;
+
+  /// No description provided for @userAccountLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Utilisateur {name}'**
+  String userAccountLabel(String name);
+
+  /// No description provided for @cancelReservationTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler la réservation'**
+  String get cancelReservationTitle;
+
+  /// No description provided for @unknownClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Client inconnu'**
+  String get unknownClient;
+
+  /// No description provided for @accountNotLinkedToClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre compte n’est lié à aucune fiche client. Contactez la réception.'**
+  String get accountNotLinkedToClient;
+
+  /// No description provided for @reservationSemanticSummary.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réservation de {client}, chambre {room}, du {arrival} au {departure}, {nights} nuits, {amount}, statut {status}'**
+  String reservationSemanticSummary(
+    String client,
+    String room,
+    String arrival,
+    String departure,
+    String nights,
+    String amount,
+    String status,
+  );
+
+  /// No description provided for @arrivalDate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Date d’arrivée'**
+  String get arrivalDate;
+
+  /// No description provided for @departureDate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Date de départ'**
+  String get departureDate;
+
+  /// No description provided for @roomPricePerNight.
+  ///
+  /// In fr, this message translates to:
+  /// **'{price} / nuit'**
+  String roomPricePerNight(String price);
+
+  /// No description provided for @addReservation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter une réservation'**
+  String get addReservation;
+
+  /// No description provided for @addPayment.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un paiement'**
+  String get addPayment;
+
+  /// No description provided for @addUser.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un utilisateur'**
+  String get addUser;
+
+  /// No description provided for @reservationNumber.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réservation n° {number}'**
+  String reservationNumber(String number);
+
+  /// No description provided for @paymentSemanticSummary.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paiement de {client}, {amount}, méthode {method}, le {date}, statut {status}'**
+  String paymentSemanticSummary(
+    String client,
+    String amount,
+    String method,
+    String date,
+    String status,
+  );
+
+  /// No description provided for @checkInTodayTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Check-in aujourd’hui'**
+  String get checkInTodayTitle;
+
+  /// No description provided for @checkInDueMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un client est attendu aujourd’hui pour son arrivée (réservation n° {number}).'**
+  String checkInDueMessage(String number);
+
+  /// No description provided for @checkOutTodayTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Check-out aujourd’hui'**
+  String get checkOutTodayTitle;
+
+  /// No description provided for @checkOutDueMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un client doit libérer sa chambre aujourd’hui (réservation n° {number}).'**
+  String checkOutDueMessage(String number);
 }
 
 class _AppLocalizationsDelegate

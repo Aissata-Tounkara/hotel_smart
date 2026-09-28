@@ -377,4 +377,244 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unknownError => 'Unknown error';
+
+  @override
+  String get statisticsTitle => 'Statistics';
+
+  @override
+  String get revenueThisMonth => 'Revenue this month';
+
+  @override
+  String get occupancyByMonth => 'Monthly occupancy rate';
+
+  @override
+  String get revenueByRoomType => 'Revenue by room type';
+
+  @override
+  String get noData => 'No data';
+
+  @override
+  String occupancyChartSummary(String summary) {
+    return 'Monthly occupancy rate chart. $summary.';
+  }
+
+  @override
+  String revenueChartSummary(String summary) {
+    return 'Revenue by room type chart. $summary.';
+  }
+
+  @override
+  String get profileTitle => 'My profile';
+
+  @override
+  String get profileUpdated => 'Profile updated successfully';
+
+  @override
+  String get name => 'Name';
+
+  @override
+  String get fullName => 'Full name';
+
+  @override
+  String get profileNewPasswordOptional => 'New password (optional)';
+
+  @override
+  String get confirmPassword => 'Confirm password';
+
+  @override
+  String get logoutLabel => 'Sign out';
+
+  @override
+  String get personalAccountCannotDelete =>
+      'You cannot delete your own account';
+
+  @override
+  String get deleteUserTitle => 'Delete user';
+
+  @override
+  String deleteUserConfirmation(String name) {
+    return 'Delete the account for $name?';
+  }
+
+  @override
+  String deleteUserTooltip(String name) {
+    return 'Delete the account for $name';
+  }
+
+  @override
+  String get noUsers => 'No users';
+
+  @override
+  String get newUser => 'New user';
+
+  @override
+  String get editUser => 'Edit user';
+
+  @override
+  String get role => 'Role';
+
+  @override
+  String get clientRecordToLink => 'Guest record to link';
+
+  @override
+  String get clientLinkHelp =>
+      'The guest record must already exist (created by the receptionist)';
+
+  @override
+  String get selectClientRecord => 'Please select a guest record';
+
+  @override
+  String get reservationsTitle => 'Reservations';
+
+  @override
+  String get myReservationsTitle => 'My reservations';
+
+  @override
+  String get allReservations => 'All';
+
+  @override
+  String get reservationSearch => 'Search by guest or room';
+
+  @override
+  String get noReservationsFound => 'No reservations found';
+
+  @override
+  String get confirmCheckIn =>
+      'Confirm the guest’s arrival and occupy the room?';
+
+  @override
+  String get confirmCheckOut =>
+      'Confirm the guest’s departure and release the room?';
+
+  @override
+  String get confirmCancelReservation =>
+      'Are you sure you want to cancel this reservation?';
+
+  @override
+  String get checkIn => 'Check-in';
+
+  @override
+  String get checkOut => 'Check-out';
+
+  @override
+  String get room => 'Room';
+
+  @override
+  String get availableRoomsLabel => 'Available rooms';
+
+  @override
+  String get noRoomsAvailableDates => 'No rooms available for these dates';
+
+  @override
+  String get totalAmount => 'Total amount';
+
+  @override
+  String get reservationConfirmAction => 'CONFIRM RESERVATION';
+
+  @override
+  String get completeAllFields => 'Please complete all fields';
+
+  @override
+  String get selectReservation => 'Please select a reservation';
+
+  @override
+  String get newPayment => 'New payment';
+
+  @override
+  String get newReservation => 'New reservation';
+
+  @override
+  String get reservation => 'Reservation';
+
+  @override
+  String get paymentAmount => 'Amount (DZD)';
+
+  @override
+  String get paymentMethod => 'Payment method';
+
+  @override
+  String get paymentStatus => 'Status';
+
+  @override
+  String get paymentNotRecorded => 'No payments recorded';
+
+  @override
+  String userAccountLabel(String name) {
+    return 'User $name';
+  }
+
+  @override
+  String get cancelReservationTitle => 'Cancel reservation';
+
+  @override
+  String get unknownClient => 'Unknown guest';
+
+  @override
+  String get accountNotLinkedToClient =>
+      'Your account is not linked to a guest record. Contact reception.';
+
+  @override
+  String reservationSemanticSummary(
+    String client,
+    String room,
+    String arrival,
+    String departure,
+    String nights,
+    String amount,
+    String status,
+  ) {
+    return 'Reservation for $client, room $room, from $arrival to $departure, $nights nights, $amount, status $status';
+  }
+
+  @override
+  String get arrivalDate => 'Arrival date';
+
+  @override
+  String get departureDate => 'Departure date';
+
+  @override
+  String roomPricePerNight(String price) {
+    return '$price / night';
+  }
+
+  @override
+  String get addReservation => 'Add reservation';
+
+  @override
+  String get addPayment => 'Add payment';
+
+  @override
+  String get addUser => 'Add user';
+
+  @override
+  String reservationNumber(String number) {
+    return 'Reservation # $number';
+  }
+
+  @override
+  String paymentSemanticSummary(
+    String client,
+    String amount,
+    String method,
+    String date,
+    String status,
+  ) {
+    return 'Payment from $client, $amount, method $method, on $date, status $status';
+  }
+
+  @override
+  String get checkInTodayTitle => 'Check-in today';
+
+  @override
+  String checkInDueMessage(String number) {
+    return 'A guest is expected today (reservation # $number).';
+  }
+
+  @override
+  String get checkOutTodayTitle => 'Check-out today';
+
+  @override
+  String checkOutDueMessage(String number) {
+    return 'A guest should check out today (reservation # $number).';
+  }
 }

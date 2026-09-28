@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../models/chambre.dart';
 import '../../models/client.dart';
 import '../../providers/client_provider.dart';
@@ -31,14 +32,18 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => context.read<ClientProvider>().charger());
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => context.read<ClientProvider>().charger(),
+    );
   }
 
   Future<void> _choisirDate({required bool arrivee}) async {
     final maintenant = DateTime.now();
     final date = await showDatePicker(
       context: context,
-      initialDate: arrivee ? maintenant : (_dateArrivee ?? maintenant).add(const Duration(days: 1)),
+      initialDate: arrivee
+          ? maintenant
+          : (_dateArrivee ?? maintenant).add(const Duration(days: 1)),
       firstDate: arrivee ? maintenant : (_dateArrivee ?? maintenant),
       lastDate: maintenant.add(const Duration(days: 730)),
     );
@@ -55,14 +60,22 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
       _chambreSelectionnee = null;
     });
     if (_dateArrivee != null && _dateDepart != null) {
-      await context.read<ReservationProvider>().chercherChambresDisponibles(_dateArrivee!, _dateDepart!);
+      await context.read<ReservationProvider>().chercherChambresDisponibles(
+        _dateArrivee!,
+        _dateDepart!,
+      );
     }
   }
 
   Future<void> _confirmer() async {
-    if (_clientSelectionne == null || _dateArrivee == null || _dateDepart == null || _chambreSelectionnee == null) {
+    if (_clientSelectionne == null ||
+        _dateArrivee == null ||
+        _dateDepart == null ||
+        _chambreSelectionnee == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Veuillez completer tous les champs')),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.completeAllFields),
+        ),
       );
       return;
     }
@@ -80,7 +93,12 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
       Navigator.of(context).pop();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(reservationProvider.erreur ?? 'Erreur inconnue')),
+        SnackBar(
+          content: Text(
+            reservationProvider.erreur ??
+                AppLocalizations.of(context)!.unknownError,
+          ),
+        ),
       );
       reservationProvider.effacerErreur();
     }
@@ -91,21 +109,37 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
     final clientProvider = context.watch<ClientProvider>();
     final reservationProvider = context.watch<ReservationProvider>();
     final or = Theme.of(context).colorScheme.secondary;
-    final montant = (_chambreSelectionnee != null && _dateArrivee != null && _dateDepart != null)
-        ? reservationProvider.calculerMontant(_chambreSelectionnee!, _dateArrivee!, _dateDepart!)
+    final l10n = AppLocalizations.of(context)!;
+    final montant =
+        (_chambreSelectionnee != null &&
+            _dateArrivee != null &&
+            _dateDepart != null)
+        ? reservationProvider.calculerMontant(
+            _chambreSelectionnee!,
+            _dateArrivee!,
+            _dateDepart!,
+          )
         : null;
 
     return Scaffold(
-      appBar: const PremiumAppBar(title: 'Nouvelle reservation'),
+      appBar: PremiumAppBar(title: l10n.newReservation),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
           DropdownButtonFormField<Client>(
             initialValue: _clientSelectionne,
             isExpanded: true,
-            decoration: const InputDecoration(labelText: 'Client', prefixIcon: Icon(Icons.person_outline)),
+            decoration: InputDecoration(
+              labelText: l10n.clients,
+              prefixIcon: const Icon(Icons.person_outline),
+            ),
             items: clientProvider.clients
-                .map((c) => DropdownMenuItem(value: c, child: Text(c.nomComplet, overflow: TextOverflow.ellipsis)))
+                .map(
+                  (c) => DropdownMenuItem(
+                    value: c,
+                    child: Text(c.nomComplet, overflow: TextOverflow.ellipsis),
+                  ),
+                )
                 .toList(),
             onChanged: (v) => setState(() => _clientSelectionne = v),
           ),
@@ -115,7 +149,11 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
               Expanded(
                 child: OutlinedButton.icon(
                   icon: const Icon(Icons.calendar_today_outlined, size: 18),
-                  label: Text(_dateArrivee == null ? 'Date arrivee' : UiHelpers.formatDate(_dateArrivee!)),
+                  label: Text(
+                    _dateArrivee == null
+                        ? l10n.arrivalDate
+                        : UiHelpers.formatDate(_dateArrivee!),
+                  ),
                   onPressed: () => _choisirDate(arrivee: true),
                 ),
               ),
@@ -123,22 +161,34 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
               Expanded(
                 child: OutlinedButton.icon(
                   icon: const Icon(Icons.calendar_today, size: 18),
-                  label: Text(_dateDepart == null ? 'Date depart' : UiHelpers.formatDate(_dateDepart!)),
-                  onPressed: _dateArrivee == null ? null : () => _choisirDate(arrivee: false),
+                  label: Text(
+                    _dateDepart == null
+                        ? l10n.departureDate
+                        : UiHelpers.formatDate(_dateDepart!),
+                  ),
+                  onPressed: _dateArrivee == null
+                      ? null
+                      : () => _choisirDate(arrivee: false),
                 ),
               ),
             ],
           ),
           if (_dateArrivee != null && _dateDepart != null) ...[
             const OrnamentalDivider(),
-            Text('Chambres disponibles', style: Theme.of(context).textTheme.titleMedium),
+            Text(
+              l10n.availableRoomsLabel,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             const SizedBox(height: 8),
             if (reservationProvider.rechercheChambresEnCours)
               const Center(child: CircularProgressIndicator())
             else if (reservationProvider.chambresDisponibles.isEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                child: Text('Aucune chambre disponible pour ces dates', style: Theme.of(context).textTheme.bodyMedium),
+                child: Text(
+                  l10n.noRoomsAvailableDates,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
               )
             else
               RadioGroup<Chambre>(
@@ -146,12 +196,23 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                 onChanged: (v) => setState(() => _chambreSelectionnee = v),
                 child: Column(
                   children: reservationProvider.chambresDisponibles
-                      .map((chambre) => RadioListTile<Chambre>(
-                            value: chambre,
-                            activeColor: or,
-                            title: Text('Chambre ${chambre.numero} - ${chambre.type.libelle}'),
-                            subtitle: Text('${UiHelpers.formatMontant(chambre.prixParNuit)} / nuit'),
-                          ))
+                      .map(
+                        (chambre) => RadioListTile<Chambre>(
+                          value: chambre,
+                          activeColor: or,
+                          title: Text(
+                            l10n.roomNumberType(
+                              chambre.numero,
+                              chambre.type.libelle,
+                            ),
+                          ),
+                          subtitle: Text(
+                            l10n.roomPricePerNight(
+                              UiHelpers.formatMontant(chambre.prixParNuit),
+                            ),
+                          ),
+                        ),
+                      )
                       .toList(),
                 ),
               ),
@@ -161,17 +222,23 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Montant total', style: Theme.of(context).textTheme.titleMedium),
+                Text(
+                  l10n.totalAmount,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
                 Text(
                   UiHelpers.formatMontant(montant),
-                  style: AppTheme.playfair(fontSize: 20, color: Theme.of(context).textTheme.bodyLarge?.color),
+                  style: AppTheme.playfair(
+                    fontSize: 20,
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
+                  ),
                 ),
               ],
             ),
           ],
           const SizedBox(height: 28),
           GradientButton(
-            label: 'CONFIRMER LA RESERVATION',
+            label: l10n.reservationConfirmAction,
             loading: _enEnregistrement,
             onPressed: _confirmer,
           ),

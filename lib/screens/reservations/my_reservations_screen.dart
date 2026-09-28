@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../models/chambre.dart';
 import '../../models/reservation.dart';
 import '../../providers/auth_provider.dart';
@@ -53,6 +54,7 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final chambres = context.select<RoomProvider, List<Chambre>>(
       (provider) => provider.chambres,
     );
@@ -62,20 +64,19 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
     );
 
     return Scaffold(
-      appBar: const PremiumAppBar(title: 'Mes reservations'),
+      appBar: PremiumAppBar(title: l10n.myReservationsTitle),
       body: FadeSlideIn(
         child: _enChargement
             ? const Center(child: CircularProgressIndicator())
             : clientId == null
-            ? const EmptyState(
+            ? EmptyState(
                 icone: Icons.link_off,
-                message:
-                    'Votre compte n\'est relie a aucune fiche client.\nContactez la reception.',
+                message: l10n.accountNotLinkedToClient,
               )
             : (_reservations == null || _reservations!.isEmpty)
-            ? const EmptyState(
+            ? EmptyState(
                 icone: Icons.event_busy,
-                message: 'Vous n\'avez aucune reservation',
+                message: l10n.noReservationsFound,
               )
             : RefreshIndicator(
                 onRefresh: _charger,
@@ -89,12 +90,21 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
                     final reservation = _reservations![i];
                     final chambre = chambresParId[reservation.chambreId];
                     return Semantics(
-                      label:
-                          'Réservation, chambre ${chambre?.numero ?? '-'} ${chambre?.type.libelle ?? ''}, du ${UiHelpers.formatDate(reservation.dateArrivee)} au ${UiHelpers.formatDate(reservation.dateDepart)}, ${UiHelpers.formatMontant(reservation.montantTotal)}, statut ${reservation.statut.libelle}',
+                      label: l10n.reservationSemanticSummary(
+                        l10n.unknownClient,
+                        chambre?.numero ?? '-',
+                        UiHelpers.formatDate(reservation.dateArrivee),
+                        UiHelpers.formatDate(reservation.dateDepart),
+                        reservation.dureeSejour.toString(),
+                        UiHelpers.formatMontant(reservation.montantTotal),
+                        reservation.statut.libelle,
+                      ),
                       child: PremiumListTile(
                         icon: Icons.meeting_room_outlined,
-                        title:
-                            'Chambre ${chambre?.numero ?? '-'} - ${chambre?.type.libelle ?? ''}',
+                        title: l10n.roomNumberType(
+                          chambre?.numero ?? '-',
+                          chambre?.type.libelle ?? '',
+                        ),
                         subtitle:
                             '${UiHelpers.formatDate(reservation.dateArrivee)} -> ${UiHelpers.formatDate(reservation.dateDepart)} - ${UiHelpers.formatMontant(reservation.montantTotal)}',
                         trailing: StatusBadge(

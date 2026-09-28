@@ -1,9 +1,13 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../l10n/app_localizations.dart';
 import '../models/notification_alerte.dart';
 import '../models/reservation.dart';
 import '../repositories/notification_repository.dart';
 import '../repositories/reservation_repository.dart';
+import '../utils/constants.dart';
 
 /// Notifications locales de check-in/check-out du jour (point 31).
 ///
@@ -40,6 +44,11 @@ class NotificationService {
   /// (arrivee aujourd'hui) et check-out (depart aujourd'hui) manquantes.
   Future<List<NotificationAlerte>> genererAlertesDuJour() async {
     await initialiser();
+    final preferences = await SharedPreferences.getInstance();
+    final localeCode = preferences.getString(AppConstants.prefLocale) == 'en'
+        ? 'en'
+        : 'fr';
+    final l10n = lookupAppLocalizations(Locale(localeCode));
 
     final maintenant = DateTime.now();
     final aujourdhui = DateTime(maintenant.year, maintenant.month, maintenant.day);
@@ -64,8 +73,8 @@ class NotificationService {
         final alerte = NotificationAlerte(
           reservationId: reservation.id!,
           type: TypeNotification.checkIn,
-          titre: 'Check-in aujourd\'hui',
-          message: 'Un client est attendu aujourd\'hui pour son arrivee (reservation #${reservation.id}).',
+          titre: l10n.checkInTodayTitle,
+          message: l10n.checkInDueMessage(reservation.id.toString()),
           dateAlerte: DateTime.now(),
         );
         final id = await _notificationRepository.create(alerte);
@@ -79,8 +88,8 @@ class NotificationService {
         final alerte = NotificationAlerte(
           reservationId: reservation.id!,
           type: TypeNotification.checkOut,
-          titre: 'Check-out aujourd\'hui',
-          message: 'Un client doit liberer sa chambre aujourd\'hui (reservation #${reservation.id}).',
+          titre: l10n.checkOutTodayTitle,
+          message: l10n.checkOutDueMessage(reservation.id.toString()),
           dateAlerte: DateTime.now(),
         );
         final id = await _notificationRepository.create(alerte);
