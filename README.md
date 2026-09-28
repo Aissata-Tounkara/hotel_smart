@@ -162,7 +162,17 @@ compte Admin de démonstration par défaut, à changer en production :
 
 ## Télécharger l'APK
 
-Les APK publiés sont disponibles dans les [Releases GitHub](https://github.com/Aissata-Tounkara/hotel_smart/releases).
+Télécharger l'APK de démonstration depuis les [Releases GitHub](https://github.com/Aissata-Tounkara/hotel_smart/releases). Les tags `v*.*.*` déclenchent sa génération et sa publication.
+
+Sur Android, ouvrir le fichier APK téléchargé, autoriser l'installation pour
+le navigateur ou le gestionnaire de fichiers si Android le demande, puis
+confirmer l'installation. L'APK de démonstration est signé avec la clé debug
+Android lorsque `android/key.properties` est absent.
+
+Compte de démonstration administrateur :
+
+- email : `admin@hotelsmart.dz`
+- mot de passe : `Admin@123`
 
 ## Tests
 

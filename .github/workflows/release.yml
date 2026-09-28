@@ -1,0 +1,46 @@
+name: Android release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.41.9
+          cache: true
+      - run: flutter pub get
+      - run: flutter gen-l10n
+      - run: flutter build apk --release
+      - name: Prepare release files
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          cp build/app/outputs/flutter-apk/app-release.apk "hotel_smart-${RELEASE_TAG}.apk"
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+
+          version = os.environ["RELEASE_TAG"].removeprefix("v")
+          lines = Path("CHANGELOG.md").read_text(encoding="utf-8").splitlines()
+          heading = f"## [{version}]"
+          start = next((i for i, line in enumerate(lines) if line.startswith(heading)), None)
+          if start is None:
+              raise SystemExit(f"No CHANGELOG section found for {version}")
+          end = next((i for i in range(start + 1, len(lines)) if lines[i].startswith("## [")), len(lines))
+          Path("release-notes.md").write_text("\n".join(lines[start:end]).strip() + "\n", encoding="utf-8")
+          PY
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ github.ref_name }}
+          body_path: release-notes.md
+          files: hotel_smart-${{ github.ref_name }}.apk
