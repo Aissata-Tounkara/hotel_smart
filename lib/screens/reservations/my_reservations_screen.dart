@@ -38,7 +38,9 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
     await context.read<RoomProvider>().charger();
     if (!mounted) return;
     if (clientId != null) {
-      final reservations = await context.read<ReservationProvider>().getReservationsClient(clientId);
+      final reservations = await context
+          .read<ReservationProvider>()
+          .getReservationsClient(clientId);
       if (!mounted) return;
       setState(() {
         _reservations = reservations;
@@ -62,33 +64,47 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
         child: _enChargement
             ? const Center(child: CircularProgressIndicator())
             : clientId == null
-                ? const EmptyState(
-                    icone: Icons.link_off,
-                    message: 'Votre compte n\'est relie a aucune fiche client.\nContactez la reception.',
-                  )
-                : (_reservations == null || _reservations!.isEmpty)
-                    ? const EmptyState(icone: Icons.event_busy, message: 'Vous n\'avez aucune reservation')
-                    : RefreshIndicator(
-                        onRefresh: _charger,
-                        child: ListView.builder(
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                          itemCount: _reservations!.length,
-                          itemBuilder: (context, i) {
-                            final reservation = _reservations![i];
-                            final chambre = chambresParId[reservation.chambreId];
-                            return PremiumListTile(
-                              icon: Icons.meeting_room_outlined,
-                              title: 'Chambre ${chambre?.numero ?? '-'} - ${chambre?.type.libelle ?? ''}',
-                              subtitle:
-                                  '${UiHelpers.formatDate(reservation.dateArrivee)} -> ${UiHelpers.formatDate(reservation.dateDepart)} - ${UiHelpers.formatMontant(reservation.montantTotal)}',
-                              trailing: StatusBadge(
-                                texte: reservation.statut.libelle,
-                                couleur: UiHelpers.couleurStatutReservation(reservation.statut),
-                              ),
-                            );
-                          },
+            ? const EmptyState(
+                icone: Icons.link_off,
+                message:
+                    'Votre compte n\'est relie a aucune fiche client.\nContactez la reception.',
+              )
+            : (_reservations == null || _reservations!.isEmpty)
+            ? const EmptyState(
+                icone: Icons.event_busy,
+                message: 'Vous n\'avez aucune reservation',
+              )
+            : RefreshIndicator(
+                onRefresh: _charger,
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 8,
+                  ),
+                  itemCount: _reservations!.length,
+                  itemBuilder: (context, i) {
+                    final reservation = _reservations![i];
+                    final chambre = chambresParId[reservation.chambreId];
+                    return Semantics(
+                      label:
+                          'Réservation, chambre ${chambre?.numero ?? '-'} ${chambre?.type.libelle ?? ''}, du ${UiHelpers.formatDate(reservation.dateArrivee)} au ${UiHelpers.formatDate(reservation.dateDepart)}, ${UiHelpers.formatMontant(reservation.montantTotal)}, statut ${reservation.statut.libelle}',
+                      child: PremiumListTile(
+                        icon: Icons.meeting_room_outlined,
+                        title:
+                            'Chambre ${chambre?.numero ?? '-'} - ${chambre?.type.libelle ?? ''}',
+                        subtitle:
+                            '${UiHelpers.formatDate(reservation.dateArrivee)} -> ${UiHelpers.formatDate(reservation.dateDepart)} - ${UiHelpers.formatMontant(reservation.montantTotal)}',
+                        trailing: StatusBadge(
+                          texte: reservation.statut.libelle,
+                          couleur: UiHelpers.couleurStatutReservation(
+                            reservation.statut,
+                          ),
                         ),
                       ),
+                    );
+                  },
+                ),
+              ),
       ),
     );
   }

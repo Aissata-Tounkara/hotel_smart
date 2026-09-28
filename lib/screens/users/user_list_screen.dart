@@ -24,14 +24,18 @@ class _UserListScreenState extends State<UserListScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => context.read<UserProvider>().charger());
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => context.read<UserProvider>().charger(),
+    );
   }
 
   Future<void> _supprimer(BuildContext context, Utilisateur utilisateur) async {
     final authProvider = context.read<AuthProvider>();
     if (utilisateur.id == authProvider.utilisateurCourant?.id) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Vous ne pouvez pas supprimer votre propre compte')),
+        const SnackBar(
+          content: Text('Vous ne pouvez pas supprimer votre propre compte'),
+        ),
       );
       return;
     }
@@ -53,39 +57,50 @@ class _UserListScreenState extends State<UserListScreen> {
     return Scaffold(
       appBar: const PremiumAppBar(title: 'Utilisateurs'),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const UserFormScreen()),
-        ),
+        onPressed: () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (_) => const UserFormScreen())),
         child: const Icon(Icons.person_add),
       ),
       body: FadeSlideIn(
         child: userProvider.enChargement
             ? const Center(child: CircularProgressIndicator())
             : utilisateurs.isEmpty
-                ? const EmptyState(icone: Icons.people_alt_outlined, message: 'Aucun utilisateur')
-                : RefreshIndicator(
-                    onRefresh: userProvider.charger,
-                    child: ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                      itemCount: utilisateurs.length,
-                      itemBuilder: (context, i) {
-                        final utilisateur = utilisateurs[i];
-                        return PremiumListTile(
-                          icon: Icons.person_outline,
-                          title: utilisateur.nom,
-                          subtitle: '${utilisateur.email} - ${utilisateur.role.libelle}',
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => UserFormScreen(utilisateur: utilisateur)),
-                          ),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.delete_outline),
-                            color: Theme.of(context).colorScheme.error,
-                            onPressed: () => _supprimer(context, utilisateur),
-                          ),
-                        );
-                      },
-                    ),
+            ? const EmptyState(
+                icone: Icons.people_alt_outlined,
+                message: 'Aucun utilisateur',
+              )
+            : RefreshIndicator(
+                onRefresh: userProvider.charger,
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 8,
                   ),
+                  itemCount: utilisateurs.length,
+                  itemBuilder: (context, i) {
+                    final utilisateur = utilisateurs[i];
+                    return PremiumListTile(
+                      icon: Icons.person_outline,
+                      title: utilisateur.nom,
+                      subtitle:
+                          '${utilisateur.email} - ${utilisateur.role.libelle}',
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              UserFormScreen(utilisateur: utilisateur),
+                        ),
+                      ),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete_outline),
+                        tooltip: 'Supprimer le compte de ${utilisateur.nom}',
+                        color: Theme.of(context).colorScheme.error,
+                        onPressed: () => _supprimer(context, utilisateur),
+                      ),
+                    );
+                  },
+                ),
+              ),
       ),
     );
   }

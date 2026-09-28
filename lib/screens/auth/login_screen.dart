@@ -58,14 +58,14 @@ class _LoginScreenState extends State<LoginScreen> {
         backgroundColor: AppTheme.bleuNuitProfond,
         body: Stack(
           children: [
-            const DecoratedBox(decoration: BoxDecoration(gradient: AppTheme.degradeBleuNuit)),
+            const DecoratedBox(
+              decoration: BoxDecoration(gradient: AppTheme.degradeBleuNuit),
+            ),
             Positioned(
               bottom: -40,
               left: 0,
               right: 0,
-              child: Center(
-                child: ArtDecoFan(size: 340, color: AppTheme.or),
-              ),
+              child: Center(child: ArtDecoFan(size: 340, color: AppTheme.or)),
             ),
             SafeArea(
               child: Center(
@@ -87,7 +87,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                   gradient: AppTheme.degradeOr,
                                   shape: BoxShape.circle,
                                 ),
-                                child: const Icon(Icons.hotel, color: AppTheme.bleuNuitProfond, size: 42),
+                                child: const Icon(
+                                  Icons.hotel,
+                                  color: AppTheme.bleuNuitProfond,
+                                  size: 42,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 20),
@@ -127,13 +131,24 @@ class _LoginScreenState extends State<LoginScreen> {
                               icon: Icons.lock_outline,
                               obscureText: !_motDePasseVisible,
                               suffixIcon: IconButton(
+                                tooltip: _motDePasseVisible
+                                    ? 'Masquer le mot de passe'
+                                    : 'Afficher le mot de passe',
                                 icon: Icon(
-                                  _motDePasseVisible ? Icons.visibility_off : Icons.visibility,
+                                  _motDePasseVisible
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
                                   color: AppTheme.or,
                                 ),
-                                onPressed: () => setState(() => _motDePasseVisible = !_motDePasseVisible),
+                                onPressed: () => setState(
+                                  () =>
+                                      _motDePasseVisible = !_motDePasseVisible,
+                                ),
                               ),
-                              validator: (v) => Validators.required(v, champ: 'Le mot de passe'),
+                              validator: (v) => Validators.required(
+                                v,
+                                champ: 'Le mot de passe',
+                              ),
                               onFieldSubmitted: (_) => _seConnecter(),
                             ),
                             if (authProvider.erreur != null) ...[
@@ -141,18 +156,30 @@ class _LoginScreenState extends State<LoginScreen> {
                               Container(
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  color: AppTheme.bordeaux.withValues(alpha: 0.18),
+                                  color: AppTheme.bordeaux.withValues(
+                                    alpha: 0.18,
+                                  ),
                                   borderRadius: BorderRadius.circular(4),
-                                  border: Border.all(color: AppTheme.bordeaux.withValues(alpha: 0.5)),
+                                  border: Border.all(
+                                    color: AppTheme.bordeaux.withValues(
+                                      alpha: 0.5,
+                                    ),
+                                  ),
                                 ),
                                 child: Row(
                                   children: [
-                                    const Icon(Icons.error_outline, color: AppTheme.dangerClair, size: 20),
+                                    const Icon(
+                                      Icons.error_outline,
+                                      color: AppTheme.dangerClair,
+                                      size: 20,
+                                    ),
                                     const SizedBox(width: 8),
                                     Expanded(
                                       child: Text(
                                         authProvider.erreur!,
-                                        style: AppTheme.manrope(color: AppTheme.dangerClair),
+                                        style: AppTheme.manrope(
+                                          color: AppTheme.dangerClair,
+                                        ),
                                       ),
                                     ),
                                   ],

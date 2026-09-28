@@ -30,14 +30,17 @@ class _RoomListScreenState extends State<RoomListScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => context.read<RoomProvider>().charger());
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => context.read<RoomProvider>().charger(),
+    );
   }
 
   Future<void> _supprimer(BuildContext context, Chambre chambre) async {
     final confirme = await afficherConfirmation(
       context,
       titre: 'Supprimer la chambre',
-      message: 'Supprimer la chambre ${chambre.numero} ? Cette action est irreversible.',
+      message:
+          'Supprimer la chambre ${chambre.numero} ? Cette action est irreversible.',
       destructif: true,
     );
     if (!confirme || !context.mounted) return;
@@ -77,9 +80,9 @@ class _RoomListScreenState extends State<RoomListScreen> {
       ),
       floatingActionButton: authProvider.peutGererOperations
           ? FloatingActionButton(
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const RoomFormScreen()),
-              ),
+              onPressed: () => Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const RoomFormScreen())),
               child: const Icon(Icons.add),
             )
           : null,
@@ -98,64 +101,106 @@ class _RoomListScreenState extends State<RoomListScreen> {
               child: roomProvider.enChargement
                   ? const Center(child: CircularProgressIndicator())
                   : chambres.isEmpty
-                      ? const EmptyState(icone: Icons.bed_outlined, message: 'Aucune chambre trouvee')
-                      : RefreshIndicator(
-                          onRefresh: roomProvider.charger,
-                          child: _vueCarte
-                              ? GridView.builder(
-                                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
-                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  ? const EmptyState(
+                      icone: Icons.bed_outlined,
+                      message: 'Aucune chambre trouvee',
+                    )
+                  : RefreshIndicator(
+                      onRefresh: roomProvider.charger,
+                      child: _vueCarte
+                          ? GridView.builder(
+                              padding: const EdgeInsets.fromLTRB(
+                                20,
+                                12,
+                                20,
+                                20,
+                              ),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2,
                                     mainAxisSpacing: 12,
                                     crossAxisSpacing: 12,
                                     childAspectRatio: 0.95,
                                   ),
-                                  itemCount: chambres.length,
-                                  itemBuilder: (context, i) => _CarteChambre(
-                                    chambre: chambres[i],
-                                    peutModifier: authProvider.peutGererOperations,
-                                    onModifier: () => Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (_) => RoomFormScreen(chambre: chambres[i])),
-                                    ),
-                                    onSupprimer: () => _supprimer(context, chambres[i]),
+                              itemCount: chambres.length,
+                              itemBuilder: (context, i) => _CarteChambre(
+                                chambre: chambres[i],
+                                peutModifier: authProvider.peutGererOperations,
+                                onModifier: () => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        RoomFormScreen(chambre: chambres[i]),
                                   ),
-                                )
-                              : ListView.builder(
-                                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                                  itemCount: chambres.length,
-                                  itemBuilder: (context, i) {
-                                    final chambre = chambres[i];
-                                    return PremiumListTile(
-                                      icon: Icons.meeting_room_outlined,
-                                      title: 'Chambre ${chambre.numero} - ${chambre.type.libelle}',
-                                      subtitle: '${UiHelpers.formatMontant(chambre.prixParNuit)} / nuit - Etage ${chambre.etage}',
-                                      onTap: authProvider.peutGererOperations
-                                          ? () => Navigator.of(context).push(
-                                                MaterialPageRoute(builder: (_) => RoomFormScreen(chambre: chambre)),
-                                              )
-                                          : null,
-                                      trailing: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          StatusBadge(texte: chambre.statut.libelle, couleur: UiHelpers.couleurStatutChambre(chambre.statut)),
-                                          if (authProvider.peutGererOperations)
-                                            PopupMenuButton<String>(
-                                              onSelected: (v) => v == 'modifier'
-                                                  ? Navigator.of(context).push(
-                                                      MaterialPageRoute(builder: (_) => RoomFormScreen(chambre: chambre)),
-                                                    )
-                                                  : _supprimer(context, chambre),
-                                              itemBuilder: (context) => const [
-                                                PopupMenuItem(value: 'modifier', child: Text('Modifier')),
-                                                PopupMenuItem(value: 'supprimer', child: Text('Supprimer')),
-                                              ],
-                                            ),
-                                        ],
-                                      ),
-                                    );
-                                  },
                                 ),
-                        ),
+                                onSupprimer: () =>
+                                    _supprimer(context, chambres[i]),
+                              ),
+                            )
+                          : ListView.builder(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                              ),
+                              itemCount: chambres.length,
+                              itemBuilder: (context, i) {
+                                final chambre = chambres[i];
+                                return Semantics(
+                                  label:
+                                      'Chambre ${chambre.numero}, type ${chambre.type.libelle}, ${chambre.statut.libelle}, ${UiHelpers.formatMontant(chambre.prixParNuit)} par nuit, étage ${chambre.etage}',
+                                  child: PremiumListTile(
+                                    icon: Icons.meeting_room_outlined,
+                                    title:
+                                        'Chambre ${chambre.numero} - ${chambre.type.libelle}',
+                                    subtitle:
+                                        '${UiHelpers.formatMontant(chambre.prixParNuit)} / nuit - Etage ${chambre.etage}',
+                                    onTap: authProvider.peutGererOperations
+                                        ? () => Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (_) => RoomFormScreen(
+                                                chambre: chambre,
+                                              ),
+                                            ),
+                                          )
+                                        : null,
+                                    trailing: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        StatusBadge(
+                                          texte: chambre.statut.libelle,
+                                          couleur:
+                                              UiHelpers.couleurStatutChambre(
+                                                chambre.statut,
+                                              ),
+                                        ),
+                                        if (authProvider.peutGererOperations)
+                                          PopupMenuButton<String>(
+                                            onSelected: (v) => v == 'modifier'
+                                                ? Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                      builder: (_) =>
+                                                          RoomFormScreen(
+                                                            chambre: chambre,
+                                                          ),
+                                                    ),
+                                                  )
+                                                : _supprimer(context, chambre),
+                                            itemBuilder: (context) => const [
+                                              PopupMenuItem(
+                                                value: 'modifier',
+                                                child: Text('Modifier'),
+                                              ),
+                                              PopupMenuItem(
+                                                value: 'supprimer',
+                                                child: Text('Supprimer'),
+                                              ),
+                                            ],
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                    ),
             ),
           ],
         ),
@@ -180,46 +225,66 @@ class _CarteChambre extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final or = Theme.of(context).colorScheme.secondary;
-    return InkWell(
-      borderRadius: BorderRadius.circular(4),
-      onTap: peutModifier ? onModifier : null,
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: or.withValues(alpha: 0.3)),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(Icons.meeting_room_outlined, color: or),
-                if (peutModifier)
-                  PopupMenuButton<String>(
-                    onSelected: (v) => v == 'modifier' ? onModifier() : onSupprimer(),
-                    itemBuilder: (context) => const [
-                      PopupMenuItem(value: 'modifier', child: Text('Modifier')),
-                      PopupMenuItem(value: 'supprimer', child: Text('Supprimer')),
-                    ],
-                  ),
-              ],
-            ),
-            const Spacer(),
-            Text('Chambre ${chambre.numero}', style: AppTheme.playfair(fontSize: 17)),
-            Text(chambre.type.libelle, style: Theme.of(context).textTheme.bodySmall),
-            const SizedBox(height: 8),
-            Text(
-              UiHelpers.formatMontant(chambre.prixParNuit),
-              style: AppTheme.manrope(fontWeight: FontWeight.w700, color: Theme.of(context).textTheme.bodyLarge?.color),
-            ),
-            const SizedBox(height: 8),
-            StatusBadge(
-              texte: chambre.statut.libelle,
-              couleur: UiHelpers.couleurStatutChambre(chambre.statut),
-            ),
-          ],
+    return Semantics(
+      label:
+          'Chambre ${chambre.numero}, type ${chambre.type.libelle}, ${chambre.statut.libelle}, ${UiHelpers.formatMontant(chambre.prixParNuit)} par nuit, étage ${chambre.etage}',
+      child: InkWell(
+        borderRadius: BorderRadius.circular(4),
+        onTap: peutModifier ? onModifier : null,
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: or.withValues(alpha: 0.3)),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          padding: const EdgeInsets.all(14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(Icons.meeting_room_outlined, color: or),
+                  if (peutModifier)
+                    PopupMenuButton<String>(
+                      onSelected: (v) =>
+                          v == 'modifier' ? onModifier() : onSupprimer(),
+                      itemBuilder: (context) => const [
+                        PopupMenuItem(
+                          value: 'modifier',
+                          child: Text('Modifier'),
+                        ),
+                        PopupMenuItem(
+                          value: 'supprimer',
+                          child: Text('Supprimer'),
+                        ),
+                      ],
+                    ),
+                ],
+              ),
+              const Spacer(),
+              Text(
+                'Chambre ${chambre.numero}',
+                style: AppTheme.playfair(fontSize: 17),
+              ),
+              Text(
+                chambre.type.libelle,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                UiHelpers.formatMontant(chambre.prixParNuit),
+                style: AppTheme.manrope(
+                  fontWeight: FontWeight.w700,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
+                ),
+              ),
+              const SizedBox(height: 8),
+              StatusBadge(
+                texte: chambre.statut.libelle,
+                couleur: UiHelpers.couleurStatutChambre(chambre.statut),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -251,21 +316,31 @@ class _FiltresChambresSheetState extends State<_FiltresChambresSheet> {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
-        left: 20, right: 20, top: 20,
+        left: 20,
+        right: 20,
+        top: 20,
         bottom: MediaQuery.of(context).viewInsets.bottom + 20,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Filtrer les chambres', style: Theme.of(context).textTheme.titleLarge),
+          Text(
+            'Filtrer les chambres',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           const SizedBox(height: 20),
           DropdownButtonFormField<TypeChambre?>(
             initialValue: _type,
             decoration: const InputDecoration(labelText: 'Type'),
             items: [
-              const DropdownMenuItem(value: null, child: Text('Tous les types')),
-              ...TypeChambre.values.map((t) => DropdownMenuItem(value: t, child: Text(t.libelle))),
+              const DropdownMenuItem(
+                value: null,
+                child: Text('Tous les types'),
+              ),
+              ...TypeChambre.values.map(
+                (t) => DropdownMenuItem(value: t, child: Text(t.libelle)),
+              ),
             ],
             onChanged: (v) => setState(() => _type = v),
           ),
@@ -274,13 +349,21 @@ class _FiltresChambresSheetState extends State<_FiltresChambresSheet> {
             initialValue: _statut,
             decoration: const InputDecoration(labelText: 'Statut'),
             items: [
-              const DropdownMenuItem(value: null, child: Text('Tous les statuts')),
-              ...StatutChambre.values.map((s) => DropdownMenuItem(value: s, child: Text(s.libelle))),
+              const DropdownMenuItem(
+                value: null,
+                child: Text('Tous les statuts'),
+              ),
+              ...StatutChambre.values.map(
+                (s) => DropdownMenuItem(value: s, child: Text(s.libelle)),
+              ),
             ],
             onChanged: (v) => setState(() => _statut = v),
           ),
           const SizedBox(height: 12),
-          Text('Prix : ${_prix.start.round()} - ${_prix.end.round()} DA', style: Theme.of(context).textTheme.bodyMedium),
+          Text(
+            'Prix : ${_prix.start.round()} - ${_prix.end.round()} DA',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
           RangeSlider(
             values: _prix,
             min: 0,

@@ -41,17 +41,24 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: StatutPaiement.values
-              .map((s) => ListTile(
-                    title: Text(s.libelle),
-                    trailing: s == paiement.statut ? const Icon(Icons.check) : null,
-                    onTap: () => Navigator.of(context).pop(s),
-                  ))
+              .map(
+                (s) => ListTile(
+                  title: Text(s.libelle),
+                  trailing: s == paiement.statut
+                      ? const Icon(Icons.check)
+                      : null,
+                  onTap: () => Navigator.of(context).pop(s),
+                ),
+              )
               .toList(),
         ),
       ),
     );
     if (nouveauStatut == null || !mounted) return;
-    await context.read<PaymentProvider>().changerStatut(paiement, nouveauStatut);
+    await context.read<PaymentProvider>().changerStatut(
+      paiement,
+      nouveauStatut,
+    );
   }
 
   @override
@@ -60,7 +67,9 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
     final reservationProvider = context.watch<ReservationProvider>();
     final clientProvider = context.watch<ClientProvider>();
 
-    final reservationsParId = {for (final r in reservationProvider.reservations) r.id: r};
+    final reservationsParId = {
+      for (final r in reservationProvider.reservations) r.id: r,
+    };
     final clientsParId = {for (final c in clientProvider.clients) c.id: c};
 
     final paiements = paymentProvider.paiements;
@@ -68,46 +77,72 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
     return Scaffold(
       appBar: const PremiumAppBar(title: 'Paiements'),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const PaymentFormScreen()),
-        ),
+        onPressed: () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (_) => const PaymentFormScreen())),
         child: const Icon(Icons.add),
       ),
       body: FadeSlideIn(
         child: paymentProvider.enChargement
             ? const Center(child: CircularProgressIndicator())
             : paiements.isEmpty
-                ? const EmptyState(icone: Icons.receipt_long_outlined, message: 'Aucun paiement enregistre')
-                : RefreshIndicator(
-                    onRefresh: paymentProvider.charger,
-                    child: ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                      itemCount: paiements.length,
-                      itemBuilder: (context, i) {
-                        final paiement = paiements[i];
-                        final reservation = reservationsParId[paiement.reservationId];
-                        final client = reservation != null ? clientsParId[reservation.clientId] : null;
-                        return PremiumListTile(
-                          icon: Icons.receipt_long_outlined,
-                          title: client?.nomComplet ?? 'Reservation #${paiement.reservationId}',
-                          subtitle: '${paiement.methode} - ${UiHelpers.formatDate(paiement.datePaiement)}',
-                          onTap: () => _changerStatut(paiement),
-                          trailing: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                UiHelpers.formatMontant(paiement.montant),
-                                style: AppTheme.manrope(fontWeight: FontWeight.w700, color: Theme.of(context).textTheme.bodyLarge?.color),
-                              ),
-                              const SizedBox(height: 4),
-                              StatusBadge(texte: paiement.statut.libelle, couleur: UiHelpers.couleurStatutPaiement(paiement.statut)),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
+            ? const EmptyState(
+                icone: Icons.receipt_long_outlined,
+                message: 'Aucun paiement enregistre',
+              )
+            : RefreshIndicator(
+                onRefresh: paymentProvider.charger,
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 8,
                   ),
+                  itemCount: paiements.length,
+                  itemBuilder: (context, i) {
+                    final paiement = paiements[i];
+                    final reservation =
+                        reservationsParId[paiement.reservationId];
+                    final client = reservation != null
+                        ? clientsParId[reservation.clientId]
+                        : null;
+                    return Semantics(
+                      label:
+                          'Paiement de ${client?.nomComplet ?? 'la réservation numéro ${paiement.reservationId}'}, ${UiHelpers.formatMontant(paiement.montant)}, ${paiement.methode}, le ${UiHelpers.formatDate(paiement.datePaiement)}, statut ${paiement.statut.libelle}',
+                      child: PremiumListTile(
+                        icon: Icons.receipt_long_outlined,
+                        title:
+                            client?.nomComplet ??
+                            'Reservation #${paiement.reservationId}',
+                        subtitle:
+                            '${paiement.methode} - ${UiHelpers.formatDate(paiement.datePaiement)}',
+                        onTap: () => _changerStatut(paiement),
+                        trailing: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              UiHelpers.formatMontant(paiement.montant),
+                              style: AppTheme.manrope(
+                                fontWeight: FontWeight.w700,
+                                color: Theme.of(
+                                  context,
+                                ).textTheme.bodyLarge?.color,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            StatusBadge(
+                              texte: paiement.statut.libelle,
+                              couleur: UiHelpers.couleurStatutPaiement(
+                                paiement.statut,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
       ),
     );
   }

@@ -37,7 +37,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Future<void> _deconnecter(BuildContext context) async {
     await context.read<AuthProvider>().logout();
     if (!context.mounted) return;
-    Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
+    Navigator.of(
+      context,
+    ).pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
   }
 
   @override
@@ -59,7 +61,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 IconButton(
                   icon: const Icon(Icons.notifications_outlined),
                   tooltip: 'Notifications',
-                  onPressed: () => _afficherNotifications(context, notificationProvider),
+                  onPressed: () =>
+                      _afficherNotifications(context, notificationProvider),
                 ),
                 if (notificationProvider.alertesNonLues.isNotEmpty)
                   Positioned(
@@ -67,10 +70,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     right: 8,
                     child: Container(
                       padding: const EdgeInsets.all(4),
-                      decoration: const BoxDecoration(color: AppTheme.bordeaux, shape: BoxShape.circle),
+                      decoration: const BoxDecoration(
+                        color: AppTheme.bordeaux,
+                        shape: BoxShape.circle,
+                      ),
                       child: Text(
                         '${notificationProvider.alertesNonLues.length}',
-                        style: const TextStyle(color: Colors.white, fontSize: 10),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                        ),
                       ),
                     ),
                   ),
@@ -113,7 +122,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  void _afficherNotifications(BuildContext context, NotificationProvider notificationProvider) {
+  void _afficherNotifications(
+    BuildContext context,
+    NotificationProvider notificationProvider,
+  ) {
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -122,7 +134,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
           child: alertes.isEmpty
               ? Padding(
                   padding: const EdgeInsets.all(24),
-                  child: Text('Aucune notification non lue', style: AppTheme.manrope()),
+                  child: Text(
+                    'Aucune notification non lue',
+                    style: AppTheme.manrope(),
+                  ),
                 )
               : ListView.builder(
                   shrinkWrap: true,
@@ -131,14 +146,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     final alerte = alertes[i];
                     return ListTile(
                       leading: Icon(
-                        alerte.type.name == 'checkIn' ? Icons.login : Icons.logout,
+                        alerte.type.name == 'checkIn'
+                            ? Icons.login
+                            : Icons.logout,
                         color: Theme.of(context).colorScheme.secondary,
                       ),
-                      title: Text(alerte.titre, style: AppTheme.manrope(fontWeight: FontWeight.w700)),
-                      subtitle: Text(alerte.message, style: AppTheme.manrope(fontSize: 12.5)),
+                      title: Text(
+                        alerte.titre,
+                        style: AppTheme.manrope(fontWeight: FontWeight.w700),
+                      ),
+                      subtitle: Text(
+                        alerte.message,
+                        style: AppTheme.manrope(fontSize: 12.5),
+                      ),
                       trailing: IconButton(
                         icon: const Icon(Icons.check),
-                        onPressed: () => notificationProvider.marquerCommeLue(alerte.id!),
+                        tooltip: 'Marquer la notification comme lue',
+                        onPressed: () =>
+                            notificationProvider.marquerCommeLue(alerte.id!),
                       ),
                     );
                   },
@@ -158,7 +183,12 @@ class _StatistiquesDashboard extends StatelessWidget {
     final stats = statisticsProvider.statistiques;
 
     if (statisticsProvider.enChargement && stats == null) {
-      return const Center(child: Padding(padding: EdgeInsets.all(16), child: CircularProgressIndicator()));
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: CircularProgressIndicator(),
+        ),
+      );
     }
     if (stats == null) return const SizedBox.shrink();
 
@@ -175,9 +205,21 @@ class _StatistiquesDashboard extends StatelessWidget {
           spacing: 12,
           runSpacing: 12,
           children: [
-            MiniStat(label: 'Disponibles', value: '${stats.chambresDisponibles}', icon: Icons.check_circle_outline),
-            MiniStat(label: 'Occupees', value: '${stats.chambresOccupees}', icon: Icons.hotel),
-            MiniStat(label: 'Reservations du jour', value: '${stats.reservationsDuJour}', icon: Icons.event_available),
+            MiniStat(
+              label: 'Disponibles',
+              value: '${stats.chambresDisponibles}',
+              icon: Icons.check_circle_outline,
+            ),
+            MiniStat(
+              label: 'Occupees',
+              value: '${stats.chambresOccupees}',
+              icon: Icons.hotel,
+            ),
+            MiniStat(
+              label: 'Reservations du jour',
+              value: '${stats.reservationsDuJour}',
+              icon: Icons.event_available,
+            ),
           ],
         ),
       ],
@@ -200,10 +242,17 @@ class _EnteteBienvenue extends StatelessWidget {
           width: 52,
           height: 52,
           alignment: Alignment.center,
-          decoration: BoxDecoration(gradient: AppTheme.degradeOr, borderRadius: BorderRadius.circular(4)),
+          decoration: BoxDecoration(
+            gradient: AppTheme.degradeOr,
+            borderRadius: BorderRadius.circular(4),
+          ),
           child: Text(
             utilisateur.nom.isNotEmpty ? utilisateur.nom[0].toUpperCase() : '?',
-            style: AppTheme.playfair(color: AppTheme.bleuNuitProfond, fontSize: 22, fontWeight: FontWeight.w700),
+            style: AppTheme.playfair(
+              color: AppTheme.bleuNuitProfond,
+              fontSize: 22,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ),
         const SizedBox(width: 16),
@@ -217,7 +266,10 @@ class _EnteteBienvenue extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 3,
+                ),
                 decoration: BoxDecoration(
                   color: or.withValues(alpha: 0.12),
                   border: Border.all(color: or.withValues(alpha: 0.5)),
@@ -249,23 +301,56 @@ class _MenuRole extends StatelessWidget {
   Widget build(BuildContext context) {
     final items = <_MenuItem>[
       if (authProvider.peutGererOperations) ...[
-        _MenuItem(AppStrings.get('chambres', arabe: arabe), Icons.bed_outlined, AppRoutes.rooms),
-        _MenuItem(AppStrings.get('reservations', arabe: arabe), Icons.calendar_month_outlined, AppRoutes.reservations),
-        _MenuItem(AppStrings.get('clients', arabe: arabe), Icons.people_outline, AppRoutes.clients),
-        _MenuItem(AppStrings.get('paiements', arabe: arabe), Icons.payments_outlined, AppRoutes.payments),
+        _MenuItem(
+          AppStrings.get('chambres', arabe: arabe),
+          Icons.bed_outlined,
+          AppRoutes.rooms,
+        ),
+        _MenuItem(
+          AppStrings.get('reservations', arabe: arabe),
+          Icons.calendar_month_outlined,
+          AppRoutes.reservations,
+        ),
+        _MenuItem(
+          AppStrings.get('clients', arabe: arabe),
+          Icons.people_outline,
+          AppRoutes.clients,
+        ),
+        _MenuItem(
+          AppStrings.get('paiements', arabe: arabe),
+          Icons.payments_outlined,
+          AppRoutes.payments,
+        ),
       ],
       if (authProvider.estAdmin) ...[
-        _MenuItem(AppStrings.get('utilisateurs', arabe: arabe), Icons.admin_panel_settings_outlined, AppRoutes.users),
-        _MenuItem(AppStrings.get('statistiques', arabe: arabe), Icons.bar_chart_outlined, AppRoutes.statistics),
+        _MenuItem(
+          AppStrings.get('utilisateurs', arabe: arabe),
+          Icons.admin_panel_settings_outlined,
+          AppRoutes.users,
+        ),
+        _MenuItem(
+          AppStrings.get('statistiques', arabe: arabe),
+          Icons.bar_chart_outlined,
+          AppRoutes.statistics,
+        ),
       ],
       if (authProvider.estClient) ...[
-        _MenuItem(AppStrings.get('mes_reservations', arabe: arabe), Icons.event_note_outlined, AppRoutes.myReservations),
+        _MenuItem(
+          AppStrings.get('mes_reservations', arabe: arabe),
+          Icons.event_note_outlined,
+          AppRoutes.myReservations,
+        ),
       ],
-      _MenuItem(AppStrings.get('mon_profil', arabe: arabe), Icons.person_outline, AppRoutes.profile),
+      _MenuItem(
+        AppStrings.get('mon_profil', arabe: arabe),
+        Icons.person_outline,
+        AppRoutes.profile,
+      ),
     ];
 
     final or = Theme.of(context).colorScheme.secondary;
-    final couleurTexte = Theme.of(context).textTheme.bodyLarge?.color ?? AppTheme.encre;
+    final couleurTexte =
+        Theme.of(context).textTheme.bodyLarge?.color ?? AppTheme.encre;
 
     return GridView.count(
       crossAxisCount: 2,
@@ -275,29 +360,35 @@ class _MenuRole extends StatelessWidget {
       mainAxisSpacing: 12,
       childAspectRatio: 1.5,
       children: items
-          .map((item) => InkWell(
-                borderRadius: BorderRadius.circular(4),
-                onTap: () => Navigator.of(context).pushNamed(item.route),
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: or.withValues(alpha: 0.35)),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  padding: const EdgeInsets.all(14),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(item.icone, size: 28, color: or),
-                      const SizedBox(height: 8),
-                      Text(
-                        item.libelle,
-                        textAlign: TextAlign.center,
-                        style: AppTheme.manrope(fontWeight: FontWeight.w600, fontSize: 13, color: couleurTexte),
-                      ),
-                    ],
-                  ),
+          .map(
+            (item) => InkWell(
+              borderRadius: BorderRadius.circular(4),
+              onTap: () => Navigator.of(context).pushNamed(item.route),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: or.withValues(alpha: 0.35)),
+                  borderRadius: BorderRadius.circular(4),
                 ),
-              ))
+                padding: const EdgeInsets.all(14),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(item.icone, size: 28, color: or),
+                    const SizedBox(height: 8),
+                    Text(
+                      item.libelle,
+                      textAlign: TextAlign.center,
+                      style: AppTheme.manrope(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13,
+                        color: couleurTexte,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          )
           .toList(),
     );
   }

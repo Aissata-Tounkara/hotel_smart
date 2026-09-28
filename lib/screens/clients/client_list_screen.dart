@@ -24,21 +24,26 @@ class _ClientListScreenState extends State<ClientListScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => context.read<ClientProvider>().charger());
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => context.read<ClientProvider>().charger(),
+    );
   }
 
   Future<void> _supprimer(BuildContext context, Client client) async {
     final confirme = await afficherConfirmation(
       context,
       titre: 'Supprimer le client',
-      message: 'Supprimer ${client.nomComplet} ? Cette action est irreversible.',
+      message:
+          'Supprimer ${client.nomComplet} ? Cette action est irreversible.',
       destructif: true,
     );
     if (!confirme || !context.mounted) return;
     final succes = await context.read<ClientProvider>().supprimer(client.id!);
     if (!succes && context.mounted) {
       final provider = context.read<ClientProvider>();
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(provider.erreur ?? 'Erreur')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(provider.erreur ?? 'Erreur')));
       provider.effacerErreur();
     }
   }
@@ -74,34 +79,53 @@ class _ClientListScreenState extends State<ClientListScreen> {
               child: clientProvider.enChargement
                   ? const Center(child: CircularProgressIndicator())
                   : clients.isEmpty
-                      ? const EmptyState(icone: Icons.people_outline, message: 'Aucun client trouve')
-                      : RefreshIndicator(
-                          onRefresh: clientProvider.charger,
-                          child: ListView.builder(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                            itemCount: clients.length,
-                            itemBuilder: (context, i) {
-                              final client = clients[i];
-                              return PremiumListTile(
-                                icon: Icons.person_outline,
-                                title: client.nomComplet,
-                                subtitle: '${client.telephone} - ${client.nationalite}',
-                                onTap: authProvider.peutGererOperations
-                                    ? () => Navigator.of(context).push(
-                                          MaterialPageRoute(builder: (_) => ClientFormScreen(client: client)),
-                                        )
-                                    : null,
-                                trailing: authProvider.peutGererOperations
-                                    ? IconButton(
-                                        icon: const Icon(Icons.delete_outline),
-                                        color: Theme.of(context).colorScheme.error,
-                                        onPressed: () => _supprimer(context, client),
-                                      )
-                                    : null,
-                              );
-                            },
-                          ),
+                  ? const EmptyState(
+                      icone: Icons.people_outline,
+                      message: 'Aucun client trouve',
+                    )
+                  : RefreshIndicator(
+                      onRefresh: clientProvider.charger,
+                      child: ListView.builder(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 8,
                         ),
+                        itemCount: clients.length,
+                        itemBuilder: (context, i) {
+                          final client = clients[i];
+                          return Semantics(
+                            label:
+                                'Client ${client.nomComplet}, téléphone ${client.telephone}, nationalité ${client.nationalite}',
+                            child: PremiumListTile(
+                              icon: Icons.person_outline,
+                              title: client.nomComplet,
+                              subtitle:
+                                  '${client.telephone} - ${client.nationalite}',
+                              onTap: authProvider.peutGererOperations
+                                  ? () => Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (_) =>
+                                            ClientFormScreen(client: client),
+                                      ),
+                                    )
+                                  : null,
+                              trailing: authProvider.peutGererOperations
+                                  ? IconButton(
+                                      icon: const Icon(Icons.delete_outline),
+                                      tooltip:
+                                          'Supprimer le client ${client.nomComplet}',
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.error,
+                                      onPressed: () =>
+                                          _supprimer(context, client),
+                                    )
+                                  : null,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
             ),
           ],
         ),

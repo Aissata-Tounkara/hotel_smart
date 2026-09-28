@@ -97,7 +97,9 @@ class _ReservationListScreenState extends State<ReservationListScreen> {
       floatingActionButton: authProvider.peutGererOperations
           ? FloatingActionButton(
               onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const ReservationFormScreen()),
+                MaterialPageRoute(
+                  builder: (_) => const ReservationFormScreen(),
+                ),
               ),
               child: const Icon(Icons.add),
             )
@@ -120,16 +122,21 @@ class _ReservationListScreenState extends State<ReservationListScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   children: [
-                    _ChipStatut(label: 'Toutes', selectionne: reservationProvider.filtreStatut == null,
-                        onTap: () => reservationProvider.filtrerParStatut(null)),
-                    ...StatutReservation.values.map((s) => Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: _ChipStatut(
-                            label: s.libelle,
-                            selectionne: reservationProvider.filtreStatut == s,
-                            onTap: () => reservationProvider.filtrerParStatut(s),
-                          ),
-                        )),
+                    _ChipStatut(
+                      label: 'Toutes',
+                      selectionne: reservationProvider.filtreStatut == null,
+                      onTap: () => reservationProvider.filtrerParStatut(null),
+                    ),
+                    ...StatutReservation.values.map(
+                      (s) => Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: _ChipStatut(
+                          label: s.libelle,
+                          selectionne: reservationProvider.filtreStatut == s,
+                          onTap: () => reservationProvider.filtrerParStatut(s),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -138,29 +145,36 @@ class _ReservationListScreenState extends State<ReservationListScreen> {
               child: reservationProvider.enChargement
                   ? const Center(child: CircularProgressIndicator())
                   : reservations.isEmpty
-                      ? const EmptyState(icone: Icons.event_busy, message: 'Aucune reservation trouvee')
-                      : RefreshIndicator(
-                          onRefresh: reservationProvider.charger,
-                          child: ListView.separated(
-                            padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                            itemCount: reservations.length,
-                            separatorBuilder: (_, _) => const SizedBox(height: 12),
-                            itemBuilder: (context, i) {
-                              final reservation = reservations[i];
-                              final client = clientsParId[reservation.clientId];
-                              final chambre = chambresParId[reservation.chambreId];
-                              return _CarteReservation(
-                                reservation: reservation,
-                                client: client,
-                                chambre: chambre,
-                                peutGerer: authProvider.peutGererOperations,
-                                onCheckIn: () => _checkIn(reservation),
-                                onCheckOut: () => _checkOut(reservation),
-                                onAnnuler: () => _annuler(reservation),
-                              );
-                            },
-                          ),
-                        ),
+                  ? const EmptyState(
+                      icone: Icons.event_busy,
+                      message: 'Aucune reservation trouvee',
+                    )
+                  : RefreshIndicator(
+                      onRefresh: reservationProvider.charger,
+                      child: ListView.separated(
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                        itemCount: reservations.length,
+                        separatorBuilder: (_, _) => const SizedBox(height: 12),
+                        itemBuilder: (context, i) {
+                          final reservation = reservations[i];
+                          final client = clientsParId[reservation.clientId];
+                          final chambre = chambresParId[reservation.chambreId];
+                          return Semantics(
+                            label:
+                                'Réservation de ${client?.nomComplet ?? 'client inconnu'}, chambre ${chambre?.numero ?? '-'}, du ${UiHelpers.formatDate(reservation.dateArrivee)} au ${UiHelpers.formatDate(reservation.dateDepart)}, ${reservation.dureeSejour} nuits, ${UiHelpers.formatMontant(reservation.montantTotal)}, statut ${reservation.statut.libelle}',
+                            child: _CarteReservation(
+                              reservation: reservation,
+                              client: client,
+                              chambre: chambre,
+                              peutGerer: authProvider.peutGererOperations,
+                              onCheckIn: () => _checkIn(reservation),
+                              onCheckOut: () => _checkOut(reservation),
+                              onAnnuler: () => _annuler(reservation),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
             ),
           ],
         ),
@@ -173,11 +187,19 @@ class _ChipStatut extends StatelessWidget {
   final String label;
   final bool selectionne;
   final VoidCallback onTap;
-  const _ChipStatut({required this.label, required this.selectionne, required this.onTap});
+  const _ChipStatut({
+    required this.label,
+    required this.selectionne,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return ChoiceChip(label: Text(label), selected: selectionne, onSelected: (_) => onTap());
+    return ChoiceChip(
+      label: Text(label),
+      selected: selectionne,
+      onSelected: (_) => onTap(),
+    );
   }
 }
 
@@ -218,7 +240,10 @@ class _CarteReservation extends StatelessWidget {
               Expanded(
                 child: Text(
                   client?.nomComplet ?? 'Client inconnu',
-                  style: AppTheme.playfair(fontSize: 16, color: Theme.of(context).textTheme.bodyLarge?.color),
+                  style: AppTheme.playfair(
+                    fontSize: 16,
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
+                  ),
                 ),
               ),
               StatusBadge(
@@ -228,7 +253,10 @@ class _CarteReservation extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          Text('Chambre ${chambre?.numero ?? '-'} - ${chambre?.type.libelle ?? ''}', style: Theme.of(context).textTheme.bodyMedium),
+          Text(
+            'Chambre ${chambre?.numero ?? '-'} - ${chambre?.type.libelle ?? ''}',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
           Text(
             '${UiHelpers.formatDate(reservation.dateArrivee)} -> ${UiHelpers.formatDate(reservation.dateDepart)} (${reservation.dureeSejour} nuits)',
             style: Theme.of(context).textTheme.bodySmall,
@@ -236,7 +264,10 @@ class _CarteReservation extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             UiHelpers.formatMontant(reservation.montantTotal),
-            style: AppTheme.manrope(fontWeight: FontWeight.w700, color: Theme.of(context).textTheme.bodyLarge?.color),
+            style: AppTheme.manrope(
+              fontWeight: FontWeight.w700,
+              color: Theme.of(context).textTheme.bodyLarge?.color,
+            ),
           ),
           if (peutGerer) ...[
             const SizedBox(height: 12),
